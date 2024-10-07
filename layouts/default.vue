@@ -94,11 +94,11 @@ const onCloseSidebarButtonClick = () => {
 </script>
 
 
-<!--<style lang="scss" scoped>-->
-<!--// Prevent icon jump on animation-->
-<!--.va-sidebar {-->
-<!--  width: unset !important;-->
-<!--  min-width: unset !important;-->
-<!--}-->
-<!--</style>-->
+<style lang="scss" scoped>
+// Prevent icon jump on animation
+.va-sidebar {
+  width: unset !important;
+  min-width: unset !important;
+}
+</style>
 
