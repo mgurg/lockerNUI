@@ -29,6 +29,8 @@ Build the application for production:
 bun run build
 ```
 
+`Σ Total size: 2.06 MB (501 kB gzip)`
+
 Locally preview production build:
 
 ```bash
