@@ -39,3 +39,8 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+```bash
+openapi-generator-cli generate -i http://localhost:5000/openapi.json -g typescript-fetch -o ./api-client
+```
