@@ -13,6 +13,10 @@ docker compose up
 ```
 
 ```bash
+docker compose -f compose.dev.yaml build
+```
+
+```bash
 docker compose -f compose.dev.yaml up
 ```
 

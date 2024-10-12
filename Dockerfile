@@ -1,35 +1,33 @@
-# Dockerfile
-
-# Stage 1: Build the application
-FROM node:18-alpine AS build-stage
+# Stage 1: Build the application using Bun
+FROM oven/bun:latest AS build-stage
 
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and lock files
-COPY package*.json ./
+COPY package*.json bun.lockb ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies using Bun
+RUN bun install
 
 # Copy all files
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN bun run build
 
-# Stage 2: Serve the application
-FROM node:18-alpine AS production-stage
+# Stage 2: Serve the application using Bun
+FROM oven/bun:latest AS production-stage
 
 # Set working directory
 WORKDIR /app
 
 # Copy only the necessary files from the build stage
 COPY --from=build-stage /app/.output /app/.output
-COPY --from=build-stage /app/package*.json ./
+COPY --from=build-stage /app/package*.json /app/bun.lockb ./
 
-# Install only production dependencies
-RUN npm install --only=production
+# Install only production dependencies using Bun
+RUN bun install --production
 
 # Expose the port the Nuxt app will run on
 EXPOSE 3000
@@ -37,5 +35,5 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 
-# Command to run the app
-CMD ["node", ".output/server/index.mjs"]
+# Command to run the app using Bun
+CMD ["bun", ".output/server/index.mjs"]
