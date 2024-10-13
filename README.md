@@ -2,6 +2,24 @@
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Docker
+
+```bash
+docker compose build
+```
+
+```bash
+docker compose up
+```
+
+```bash
+docker compose -f compose.dev.yaml build
+```
+
+```bash
+docker compose -f compose.dev.yaml up
+```
+
 ## Setup
 
 Make sure to install the dependencies:
