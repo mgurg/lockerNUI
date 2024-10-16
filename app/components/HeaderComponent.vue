@@ -3,13 +3,10 @@
     <nav>
       <ul>
         <li>
-          <NuxtLink to="/">Home</NuxtLink>
+          <NuxtLink to="/">Start</NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/about">About</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/contact">Contact</NuxtLink>
+          <NuxtLink to="/companies">Firmy</NuxtLink>
         </li>
       </ul>
     </nav>
