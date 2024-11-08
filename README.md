@@ -54,10 +54,16 @@ Locally preview production build:
 bun run preview
 ```
 
+## Updates
 Update all dependencies to latest version
 
 ```bash
  bun update -f
+```
+
+Upgrading **Nuxt**
+```bash
+bunx nuxi@latest upgrade --force
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
