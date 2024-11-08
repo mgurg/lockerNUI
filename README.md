@@ -58,7 +58,7 @@ bun run preview
 Update all dependencies to latest version
 
 ```bash
- bun update -f
+bun update -f
 ```
 
 Upgrading **Nuxt**
