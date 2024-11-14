@@ -1,25 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ['~/assets/css/main.css'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
+    modules: ['@nuxt/ui'],
+    runtimeConfig: {
+        // Private keys are only available on the server
+        // apiSecret: '123'
+        
+        // Public keys that are exposed to the client
+        public: {
+          blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || 'https://default-blog-url.com',
+        }
+      },
+    future: {
+        compatibilityVersion: 4,
     },
-  },
-  
-  modules: [
-    '@vuestic/nuxt'
-  ],
-
-  vuestic: {
-    config: {
-      // Vuestic config here
-    },
-    
-    css: ['typography'],
-  },
-
-  compatibilityDate: '2024-04-03',
-  devtools: { enabled: true }
+    compatibilityDate: '2024-04-03',
+    devtools: {enabled: true}
 })
