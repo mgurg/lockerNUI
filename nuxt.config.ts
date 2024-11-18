@@ -4,12 +4,13 @@ export default defineNuxtConfig({
     runtimeConfig: {
         // Private keys are only available on the server
         // apiSecret: '123'
-        
+
         // Public keys that are exposed to the client
         public: {
-          blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || 'https://default-blog-url.com',
+            blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || 'https://default-blog-url.com',
+            apiBaseUrl: process.env.NUXT_BACKEND_API || 'http://localhost:5000',
         }
-      },
+    },
     future: {
         compatibilityVersion: 4,
     },
