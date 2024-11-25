@@ -7,13 +7,20 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "generate:apiabp": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && openapi --input http://localhost:5000/openapi.json --output ./app/services/proxy/src --client fetch",
+    "generate-client-dev": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client axios",
+    "generate-client-fdev": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client fetch"
   },
   "dependencies": {
     "@nuxt/ui": "^3.0.0-alpha.9",
+    "axios": "^1.7.7",
     "nuxt": "^3.14.1592",
     "vue": "^3.5.13",
     "vue-router": "4.4.5",
     "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "openapi-typescript-codegen": "^0.29.0"
   }
 }
