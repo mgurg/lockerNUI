@@ -14,5 +14,5 @@ export default defineNuxtPlugin((nuxtApp) => {
             : process.server
                 ? "http://api:5000"
                 : "";
-    OpenAPI.WITH_CREDENTIALS = true;
+    OpenAPI.WITH_CREDENTIALS = false;
 });
