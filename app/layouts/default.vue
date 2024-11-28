@@ -4,7 +4,7 @@
     <main >
       <NuxtPage/>
     </main>
-    <FooterComponent/>
+<!--    <FooterComponent/>-->
   </div>
 </template>
 
