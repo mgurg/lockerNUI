@@ -2,25 +2,30 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { RoomAdd } from '../models/RoomAdd';
+import type { PlaceAdd } from '../models/PlaceAdd';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class RoomService {
+export class PlaceService {
     /**
-     * Room By Uuid
-     * @param roomUuid
+     * Place By Name
+     * @param locationName
+     * @param language
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static roomByUuidRoomsRoomUuidGet(
-        roomUuid: string,
+    public static placeByNamePlacesLocationNameGet(
+        locationName: string,
+        language?: (string | null),
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/rooms/{room_uuid}',
+            url: '/places/{location_name}',
             path: {
-                'room_uuid': roomUuid,
+                'location_name': locationName,
+            },
+            query: {
+                'language': language,
             },
             errors: {
                 422: `Validation Error`,
@@ -28,45 +33,30 @@ export class RoomService {
         });
     }
     /**
-     * Room By Url Slug
-     * @param language
-     * @param roomUrlSlug
+     * Place By Uuid
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet(
-        language: string,
-        roomUrlSlug: string,
-    ): CancelablePromise<any> {
+    public static placeByUuidPlacesGeoipGet(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/rooms/url/{language}/{room_url_slug}',
-            path: {
-                'language': language,
-                'room_url_slug': roomUrlSlug,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
+            url: '/places/geoip',
         });
     }
     /**
-     * Rooms By Location
-     * @param language
-     * @param location
+     * Places With Rooms
+     * @param country
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static roomsByLocationRoomsUrlLanguagePlaceLocationGet(
-        language: string,
-        location: string,
+    public static placesWithRoomsPlacesGet(
+        country?: (string | null),
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/rooms/url/{language}/place/{location}',
-            path: {
-                'language': language,
-                'location': location,
+            url: '/places',
+            query: {
+                'country': country,
             },
             errors: {
                 422: `Validation Error`,
@@ -76,15 +66,15 @@ export class RoomService {
     /**
      * Add Room
      * @param requestBody
-     * @returns any Successful Response
+     * @returns void
      * @throws ApiError
      */
-    public static addRoomRoomsPost(
-        requestBody: RoomAdd,
-    ): CancelablePromise<any> {
+    public static addRoomPlacesPost(
+        requestBody: PlaceAdd,
+    ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/rooms',
+            url: '/places',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
