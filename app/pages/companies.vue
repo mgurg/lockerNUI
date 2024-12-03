@@ -1,18 +1,34 @@
 <template>
-  <UContainer>
-    <UAccordion :items="items"/>
-    <div v-if="loading">Loading data...</div>
-    <UPagination
-        v-if="!loading"
-        v-model:page="page"
-        :total="totalItems"
-        :page-count="Math.ceil(totalItems / itemsPerPage)"
-        :to="to"
-        :sibling-count="1"
-        show-edges
-    />
-  </UContainer>
+  <div class="flex flex-col min-h-screen">
+    <!-- Main content -->
+    <div class="flex-grow">
+      <div v-for="(item, index) in items"
+           :key="index">
+        <UCard>
+          {{ item.label }}
+        </UCard>
+      </div>
+      <div v-if="loading">Loading data...</div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="w-full">
+      <div class="flex justify-center items-center py-4">
+        <UPagination
+            v-if="!loading"
+            v-model:page="page"
+            :total="totalItems"
+            :page-count="Math.ceil(totalItems / itemsPerPage)"
+            :to="to"
+            :sibling-count="1"
+            show-edges
+        />
+      </div>
+    </div>
+  </div>
 </template>
+
+
 
 
 <script setup lang="ts">

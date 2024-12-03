@@ -6,6 +6,8 @@ import type { LocationAdd } from './LocationAdd';
 import type { TranslationAdd } from './TranslationAdd';
 export type RoomAdd = {
     name: string;
+    company_uuid: string;
+    department_uuid?: (string | null);
     price_from?: (number | null);
     game_duration?: (number | null);
     players_min?: (number | null);

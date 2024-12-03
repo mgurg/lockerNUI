@@ -6,25 +6,23 @@
         class="flex-1 overflow-y-auto p-6 mb-16"
     >
       <!-- Header Section -->
-      <div class="text-center">
-        <img
-            src="https://via.placeholder.com/100x100"
-            alt="Logo"
-            class="mx-auto mb-4 rounded-full"
-        />
-        <h1 class="text-2xl font-bold">Screen Shot to Code</h1>
-        <p class="text-gray-400 text-sm">By Alwyn Bunsie</p>
-      </div>
+            <div class="text-center">
+              <img
+                  src="https://via.placeholder.com/100x100"
+                  alt="Logo"
+                  class="mx-auto mb-4 rounded-full"
+              />
+              <h1 class="text-2xl font-bold">{{ uuid }}</h1>
+              <p class="text-gray-400 text-sm">By Alwyn Bunsie</p>
+            </div>
 
-      <!-- Description Section -->
+      <!-- Intro -->
       <div class="mt-6 text-center space-y-4">
         <p class="max-w-xl mx-auto text-gray-300">
-          This simple app converts a screenshot to code (HTML/Tailwind CSS, or React
-          or Vue or Bootstrap). Upload your image, provide any additional
-          instructions and say "Make it real!"
+          {{ intro }}
         </p>
 
-        <!-- Long Text Section -->
+        <!-- Puzzles Section -->
         <div class="max-w-xl mx-auto text-gray-400 space-y-4">
           <p v-for="(message, index) in messages" :key="index">
             {{ message }}
@@ -73,7 +71,35 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import {nextTick, ref} from "vue";
+import {useRoute} from "vue-router";
+import {GamesService} from "@/client"
+
+
+const route = useRoute();
+const intro = ref("");
+const puzzles = ref([]);
+const uuid = route.query.uuid;
+
+console.log(GamesService);
+
+const fetchIntro = async () => {
+  try {
+    const response = await GamesService.getIntroGamesIntroGet("474c5581-43d6-4ac0-84ad-39984172aaf6")
+
+    console.log(response);
+    intro.value = response?.intro || "Welcome to the game!";
+  } catch (error) {
+    console.error("Error fetching puzzle data:", error);
+  }
+};
+
+fetchIntro()
+onMounted(fetchIntro);
+
+
+// ---------------------------------------------
+
 
 // Reactive state
 const messages = ref([
@@ -112,10 +138,12 @@ scrollToBottom();
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: #4b5563; /* Dark gray */
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background-color: #374151; /* Slightly darker */
 }

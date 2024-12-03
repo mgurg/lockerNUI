@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { CompaniesPaginated } from '../models/CompaniesPaginated';
 import type { CompanyAdd } from '../models/CompanyAdd';
+import type { DepartmentAdd } from '../models/DepartmentAdd';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -52,6 +53,25 @@ export class CompanyService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/companies',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Add Room
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static addRoomCompaniesDepartmentPost(
+        requestBody: DepartmentAdd,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/companies/department',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

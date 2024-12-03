@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <HeaderComponent/>
-    <main >
-      <NuxtPage/>
-    </main>
-<!--    <FooterComponent/>-->
+  <div class="flex min-h-screen flex-col items-stretch">
+    <HeaderComponent />
+
+    <div class="grow p-6">
+      <slot />
+    </div>
   </div>
 </template>
 

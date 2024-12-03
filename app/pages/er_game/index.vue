@@ -21,7 +21,7 @@
             </UFormField>
 
             <!-- Additional Details -->
-            <UFormField label="Dodatkowe szczegóły/opis" name="description">
+            <UFormField label="Dodatkowe szczegóły/opis/'straszność' :)" name="description">
               <UTextarea
                   v-model="state.description"
                   placeholder=""
@@ -50,20 +50,20 @@
               />
             </UFormField>
 
-            <!-- Fear Level -->
-            <UFormField label="Jak bardzo ma być strasznie?" name="fearLevel">
+            <!-- Audience / Occasion -->
+            <UFormField label="Dla kogo/na jaką okazję?" name="occasion">
               <UInput
-                  v-model="state.fearLevel"
+                  v-model="state.occasion"
                   placeholder=""
                   size="xl"
                   class="w-full max-w-[400px]"
               />
             </UFormField>
 
-            <!-- Audience / Occasion -->
-            <UFormField label="Dla kogo/na jaką okazję?" name="occasion">
+            <!-- Email Level -->
+            <UFormField label="E-mail (blokada botów, nie dostaniesz żadnej wiadomości)" name="confirmationMail">
               <UInput
-                  v-model="state.occasion"
+                  v-model="state.confirmationMail"
                   placeholder=""
                   size="xl"
                   class="w-full max-w-[400px]"
@@ -84,51 +84,69 @@
 
 <script setup>
 import {object, string} from 'yup'
-import {ref} from 'vue'
+import {ref, reactive} from 'vue'
+import {GamesService} from "@/client"
 
+
+const router = useRouter()
+const toast = useToast()
+
+// Validation schema
 const schema = object({
   theme: string().min(8, 'Must be at least 8 characters').required('Required'),
   description: string().min(8, 'Must be at least 8 characters').required('Required'),
-  difficultyLevel: string().min(4, 'Must be at least 4 characters').required('Required'),
-  category: string().min(4, 'Must be at least 4 characters').required('Required'),
-  fearLevel: string().min(4, 'Must be at least 4 characters').required('Required'),
-  occasion: string().min(4, 'Must be at least 4 characters').required('Required'),
+  // difficultyLevel: string().min(4, 'Must be at least 4 characters').required('Required'),
+  // category: string().min(4, 'Must be at least 4 characters').required('Required'),
+  // confirmationMail: string().email('Must be a valid email').required('Required'),
+  // occasion: string().min(4, 'Must be at least 4 characters').required('Required'),
 })
 
+// Form state
 const state = reactive({
-  theme: undefined,
-  description: undefined,
-  difficultyLevel: undefined,
-  category: undefined,
-  fearLevel: undefined,
-  occasion: undefined
-})
-
-const formData = ref({
-  gameLocation: '',
-  additionalDetails: '',
-  city: '',
+  theme: 'starożytna świątynia',
+  description: 'gra z motywami humorystycznymi',
   difficultyLevel: '',
   category: '',
-  fearLevel: '',
-  occasion: ''
+  confirmationMail: '',
+  occasion: '',
 })
 
-const toast = useToast()
+// Form submission handler
+async function onSubmit() {
+  // await router.push({path: `/er_game/play`, query: {uuid: "3d49a241-fc16-4d49-8192-89827f9a7648"}});
+  // return;
+  try {
+    const requestBody = {
+      theme: state.theme,
+      description: state.description,
+      difficulty: state.difficultyLevel,
+      category: state.category,
+      occasion: state.occasion,
+      email: state.confirmationMail || null,
+    }
 
-async function onSubmit(event) {
-  toast.add({title: 'Success', description: 'The form has been submitted.', color: 'success'})
-  console.log(event.data)
-  console.log(formData.value)
-}
+    const response = await GamesService.postTestGamesTestPost(requestBody)
 
-const handleSubmit = () => {
-  // Logic to handle form submission
-  console.log(formData.value)
-
-  toast.add({title: 'Success', description: 'The form has been submitted.', color: 'success'})
+    if (response?.uuid) {
+      await router.push({name: "GamePage", params: {gameUuid: response.uuid}});
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Game creation failed. Please try again.",
+        color: "error",
+      });
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    toast.add({
+      title: "Error",
+      description: "An error occurred while submitting the form.",
+      color: "error",
+    });
+  }
 }
 </script>
+
 
 <style scoped>
 

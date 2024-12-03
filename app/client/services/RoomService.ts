@@ -74,6 +74,25 @@ export class RoomService {
         });
     }
     /**
+     * Add Department
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static addDepartmentRoomsDepartmentPost(
+        requestBody: RoomAdd,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/rooms/department',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Add Room
      * @param requestBody
      * @returns any Successful Response

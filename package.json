@@ -8,11 +8,12 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "generate:apiabp": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && openapi --input http://localhost:5000/openapi.json --output ./app/services/proxy/src --client fetch",
-    "generate-client-dev": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client axios",
-    "generate-client-fdev": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client fetch"
+    "generate-client-axios": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client axios",
+    "generate-client-fetch": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client fetch",
+    "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/clienth -c @hey-api/client-axios"
   },
   "dependencies": {
+    "@hey-api/client-axios": "^0.2.11",
     "@nuxt/ui": "^3.0.0-alpha.9",
     "axios": "^1.7.7",
     "nuxt": "^3.14.1592",
@@ -21,6 +22,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.58.0",
     "openapi-typescript-codegen": "^0.29.0"
   }
 }
