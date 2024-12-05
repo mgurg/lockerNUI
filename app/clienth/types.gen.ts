@@ -4,6 +4,11 @@ export type AnswerRequest = {
     choice: number;
 };
 
+export type AnswerResponse = {
+    result: string;
+    correct: boolean;
+};
+
 export type CompaniesPaginated = {
     data: Array<CompanyIndexResponse>;
     count: number;
@@ -64,19 +69,6 @@ export type GameStartResponse = {
     created_at: string;
 };
 
-export type GameState = {
-    theme: string;
-    details: string;
-    current_puzzle: number;
-    wrong_answers: number;
-    moves: number;
-    hints_remaining: number;
-    game_state: string;
-    story: string;
-    puzzle_descriptions: Array<(string)>;
-    puzzle_history: Array<(string)>;
-};
-
 export type GeoNameAdd = {
     name: string;
     lang: string;
@@ -84,6 +76,11 @@ export type GeoNameAdd = {
 
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
+};
+
+export type IntroResponse = {
+    theme: string;
+    intro: string;
 };
 
 export type LocationAdd = {
@@ -116,6 +113,11 @@ export type PlaceAdd = {
     region: (string | null);
     country: (string | null);
     geo_names: Array<GeoNameAdd>;
+};
+
+export type ReviewRequest = {
+    text: string;
+    score: number;
 };
 
 export type RoomAdd = {
@@ -264,26 +266,6 @@ export type AddRoomCompaniesDepartmentPostResponse = (unknown);
 
 export type AddRoomCompaniesDepartmentPostError = (HTTPValidationError);
 
-export type GetTestGamesTestGetData = {
-    query: {
-        game_uuid: string;
-    };
-};
-
-export type GetTestGamesTestGetResponse = (unknown);
-
-export type GetTestGamesTestGetError = (HTTPValidationError);
-
-export type PostTestGamesTestGameUuidPostData = {
-    path: {
-        game_uuid: string;
-    };
-};
-
-export type PostTestGamesTestGameUuidPostResponse = (unknown);
-
-export type PostTestGamesTestGameUuidPostError = (HTTPValidationError);
-
 export type StartGameGamesStartPostData = {
     body: GameStart;
 };
@@ -298,7 +280,7 @@ export type GetIntroGamesIntroGameUuidGetData = {
     };
 };
 
-export type GetIntroGamesIntroGameUuidGetResponse = (unknown);
+export type GetIntroGamesIntroGameUuidGetResponse = (IntroResponse);
 
 export type GetIntroGamesIntroGameUuidGetError = (HTTPValidationError);
 
@@ -319,29 +301,9 @@ export type SubmitAnswerGamesAnswerGameUuidPostData = {
     };
 };
 
-export type SubmitAnswerGamesAnswerGameUuidPostResponse = (unknown);
+export type SubmitAnswerGamesAnswerGameUuidPostResponse = (AnswerResponse);
 
 export type SubmitAnswerGamesAnswerGameUuidPostError = (HTTPValidationError);
-
-export type GetHintGamesHintPostData = {
-    query: {
-        game_uuid: string;
-    };
-};
-
-export type GetHintGamesHintPostResponse = (unknown);
-
-export type GetHintGamesHintPostError = (HTTPValidationError);
-
-export type GetGameStatusGamesStatusGetData = {
-    query: {
-        game_uuid: string;
-    };
-};
-
-export type GetGameStatusGamesStatusGetResponse = (GameState);
-
-export type GetGameStatusGamesStatusGetError = (HTTPValidationError);
 
 export type GetEndingGamesEndingGameUuidGetData = {
     path: {
@@ -352,6 +314,14 @@ export type GetEndingGamesEndingGameUuidGetData = {
 export type GetEndingGamesEndingGameUuidGetResponse = (GameOutro);
 
 export type GetEndingGamesEndingGameUuidGetError = (HTTPValidationError);
+
+export type GetEndingGamesReviewGameUuidPostData = {
+    body: ReviewRequest;
+};
+
+export type GetEndingGamesReviewGameUuidPostResponse = (void);
+
+export type GetEndingGamesReviewGameUuidPostError = (HTTPValidationError);
 
 export type ReadRootGetResponse = (unknown);
 

@@ -4,12 +4,29 @@ export const AnswerRequestSchema = {
     properties: {
         choice: {
             type: 'integer',
+            exclusiveMinimum: 0,
             title: 'Choice'
         }
     },
     type: 'object',
     required: ['choice'],
     title: 'AnswerRequest'
+} as const;
+
+export const AnswerResponseSchema = {
+    properties: {
+        result: {
+            type: 'string',
+            title: 'Result'
+        },
+        correct: {
+            type: 'boolean',
+            title: 'Correct'
+        }
+    },
+    type: 'object',
+    required: ['result', 'correct'],
+    title: 'AnswerResponse'
 } as const;
 
 export const CompaniesPaginatedSchema = {
@@ -233,28 +250,34 @@ export const GameStartSchema = {
     properties: {
         theme: {
             type: 'string',
+            maxLength: 100,
             title: 'Theme'
         },
         description: {
             type: 'string',
+            maxLength: 140,
             title: 'Description'
         },
         difficulty: {
             type: 'string',
+            maxLength: 100,
             title: 'Difficulty'
         },
         category: {
             type: 'string',
+            maxLength: 100,
             title: 'Category'
         },
         occasion: {
             type: 'string',
+            maxLength: 100,
             title: 'Occasion'
         },
         email: {
             anyOf: [
                 {
                     type: 'string',
+                    maxLength: 100,
                     format: 'email'
                 },
                 {
@@ -295,60 +318,6 @@ export const GameStartResponseSchema = {
     title: 'GameStartResponse'
 } as const;
 
-export const GameStateSchema = {
-    properties: {
-        theme: {
-            type: 'string',
-            title: 'Theme'
-        },
-        details: {
-            type: 'string',
-            title: 'Details'
-        },
-        current_puzzle: {
-            type: 'integer',
-            title: 'Current Puzzle'
-        },
-        wrong_answers: {
-            type: 'integer',
-            title: 'Wrong Answers'
-        },
-        moves: {
-            type: 'integer',
-            title: 'Moves'
-        },
-        hints_remaining: {
-            type: 'integer',
-            title: 'Hints Remaining'
-        },
-        game_state: {
-            type: 'string',
-            title: 'Game State'
-        },
-        story: {
-            type: 'string',
-            title: 'Story'
-        },
-        puzzle_descriptions: {
-            items: {
-                type: 'string'
-            },
-            type: 'array',
-            title: 'Puzzle Descriptions'
-        },
-        puzzle_history: {
-            items: {
-                type: 'string'
-            },
-            type: 'array',
-            title: 'Puzzle History'
-        }
-    },
-    type: 'object',
-    required: ['theme', 'details', 'current_puzzle', 'wrong_answers', 'moves', 'hints_remaining', 'game_state', 'story', 'puzzle_descriptions', 'puzzle_history'],
-    title: 'GameState'
-} as const;
-
 export const GeoNameAddSchema = {
     properties: {
         name: {
@@ -377,6 +346,22 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
+} as const;
+
+export const IntroResponseSchema = {
+    properties: {
+        theme: {
+            type: 'string',
+            title: 'Theme'
+        },
+        intro: {
+            type: 'string',
+            title: 'Intro'
+        }
+    },
+    type: 'object',
+    required: ['theme', 'intro'],
+    title: 'IntroResponse'
 } as const;
 
 export const LocationAddSchema = {
@@ -629,6 +614,22 @@ export const PlaceAddSchema = {
     type: 'object',
     required: ['lat', 'lon', 'lat_min', 'lat_max', 'lon_min', 'lon_max', 'population', 'importance', 'category', 'region', 'country', 'geo_names'],
     title: 'PlaceAdd'
+} as const;
+
+export const ReviewRequestSchema = {
+    properties: {
+        text: {
+            type: 'string',
+            title: 'Text'
+        },
+        score: {
+            type: 'integer',
+            title: 'Score'
+        }
+    },
+    type: 'object',
+    required: ['text', 'score'],
+    title: 'ReviewRequest'
 } as const;
 
 export const RoomAddSchema = {

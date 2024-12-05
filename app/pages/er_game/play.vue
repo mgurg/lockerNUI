@@ -1,125 +1,236 @@
 <template>
   <div class="flex flex-col h-screen bg-gray-900 text-gray-100">
     <!-- Scrollable Content Area -->
-    <div
-        ref="scrollableContent"
-        class="flex-1 overflow-y-auto p-6 mb-16"
-    >
+    <div ref="scrollableContent" class="flex-1 overflow-y-auto p-6 mb-16">
       <!-- Header Section -->
-            <div class="text-center">
-              <img
-                  src="https://via.placeholder.com/100x100"
-                  alt="Logo"
-                  class="mx-auto mb-4 rounded-full"
-              />
-              <h1 class="text-2xl font-bold">{{ uuid }}</h1>
-              <p class="text-gray-400 text-sm">By Alwyn Bunsie</p>
-            </div>
+      <div class="text-center">
+        <h1 class="text-3xl font-extrabold text-sky-500">{{ theme }}</h1>
+<!--        <p class="text-gray-400 text-sm">Let's start your escape room adventure!</p>-->
+      </div>
 
       <!-- Intro -->
       <div class="mt-6 text-center space-y-4">
-        <p class="max-w-xl mx-auto text-gray-300">
-          {{ intro }}
-        </p>
-
-        <!-- Puzzles Section -->
-        <div class="max-w-xl mx-auto text-gray-400 space-y-4">
-          <p v-for="(message, index) in messages" :key="index">
+        <p class="max-w-xl mx-auto text-gray-300">{{ intro }}</p>
+        <!-- Messages Section -->
+        <div class="max-w-xl mx-auto mt-4 space-y-4">
+          <p
+              v-for="(message, index) in messages"
+              :key="index"
+              class="p-4 rounded-lg"
+              :class="getMessageStyle(index)"
+          >
             {{ message }}
           </p>
         </div>
-      </div>
-    </div>
 
-    <!-- Fixed Input Section -->
-    <div class="bg-gray-800 p-4 border-t border-gray-700 fixed bottom-0 left-0 w-full">
-      <div class="flex items-center">
-        <!-- File Upload Icon -->
-        <button
-            class="flex items-center justify-center w-10 h-10 bg-gray-700 rounded-full hover:bg-gray-600 text-gray-300"
-            title="Upload"
-        >
-          📎
-        </button>
+        <!-- Options and Actions -->
+        <div v-if="!isGameFinished || gameEnding.length === 0" class="mt-6">
+          <p class="text-gray-400 text-sm mb-4">
+            {{
+              isPuzzleCompleted ? "Kliknij Dalej, aby kontynuować" : "Wybierz działanie:"
+            }}
+          </p>
 
-        <!-- Text Input -->
-        <!-- <div class="grid gap-4 grid-cols-5">
-            <UButton to="https://github.com/nuxt/ui" target="_blank" size="xl">1</UButton>
-            <UButton to="https://github.com/nuxt/ui" target="_blank" size="xl">2</UButton>
-            <UButton to="https://github.com/nuxt/ui" target="_blank" size="xl">3</UButton>
-            <UButton to="https://github.com/nuxt/ui" target="_blank" size="xl">HINT</UButton>
-          </div> -->
-        <UInput
-            v-model="newMessage"
-            @keyup.enter="addMessage"
-            type="text"
-            size="xl"
-            class="flex-1 bg-gray-800 text-gray-300 placeholder-gray-500 px-4 py-2 ml-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Message Screen Shot to Code"
-        />
+          <!-- Options -->
+          <div class="max-w-md mx-auto space-y-2"
+               v-if="!isPuzzleCompleted && options.length > 0">
+            <ul class="space-y-2">
+              <li
+                  v-for="option in options"
+                  :key="option.number"
+                  class="text-gray-200 bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-sky-600 transition"
+                  @click="submitAnswer(option.number)"
+              >
+                {{ option.number }}. {{ option.text }}
+              </li>
+              <li
+                  class="text-gray-200 bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-sky-600 transition text-center"
+                  @click="submitAnswer('hint')"
+              >
+                Hint
+              </li>
+            </ul>
+          </div>
 
-        <!-- Submit Button -->
-        <UButton
-            @click="addMessage"
-            class="ml-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow"
-        >
-          Submit
-        </UButton>
+          <!-- Next Puzzle Button -->
+          <div v-else class="text-center mt-4">
+            <UButton size="lg" color="primary" @click="fetchPuzzle">
+              Dalej
+            </UButton>
+          </div>
+        </div>
+
+
+        <!-- Game Finished Section -->
+        <div class="mt-6 text-center" v-if="isGameFinished && gameEnding.length > 1">
+          <h2 class="text-xl font-bold text-green-500">Gra skończona! 🎉</h2>
+          <p class="text-gray-400">Kliknij i podziel się opinią.</p>
+          <UButton
+              size="lg"
+              class="mt-4 bg-red-600 hover:bg-red-700 transition text-white"
+              @click="redirectToExternalPage"
+          >
+            Play Again
+          </UButton>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {nextTick, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {useRoute} from "vue-router";
-import {GamesService} from "@/client"
+import {
+  getEndingGamesEndingGameUuidGet,
+  getIntroGamesIntroGameUuidGet,
+  getPuzzleGamesPuzzleGameUuidGet,
+  submitAnswerGamesAnswerGameUuidPost,
+} from "@/clienth/index.ts";
 
-
+const toast = useToast();
 const route = useRoute();
+const router = useRouter()
+
+// Game State
 const intro = ref("");
-const puzzles = ref([]);
+const theme = ref("");
 const uuid = route.query.uuid;
 
-console.log(GamesService);
+const scenario = ref("");
+const baseHint = ref("");
+const options = ref([]);
+const wrongFeedback = ref([]);
+const correctAnswer = ref(null);
+const correctAnswerText = ref("");
+const currentPuzzleNumber = ref(null);
+const lastSolvedPuzzleNumber = ref(null);
+const gameEnding = ref("");
 
+// Messages
+const messages = ref([]);
+const scrollableContent = ref(null);
+
+// Computed Properties
+const isPuzzleCompleted = computed(
+    () => currentPuzzleNumber.value === lastSolvedPuzzleNumber.value
+);
+const isGameFinished = computed(() => lastSolvedPuzzleNumber.value === 4);
+
+// Functions
 const fetchIntro = async () => {
   try {
-    const response = await GamesService.getIntroGamesIntroGet("474c5581-43d6-4ac0-84ad-39984172aaf6")
-
-    console.log(response);
-    intro.value = response?.intro || "Welcome to the game!";
+    const response = await getIntroGamesIntroGameUuidGet({
+      path: {game_uuid: uuid},
+    });
+    intro.value = response?.data?.intro || "Coś poszło nie tak :/";
+    theme.value = response?.data?.theme || "Błąd ładowania gry";
   } catch (error) {
-    console.error("Error fetching puzzle data:", error);
+    console.error("Error fetching intro:", error);
   }
 };
 
-fetchIntro()
-onMounted(fetchIntro);
+const fetchPuzzle = async () => {
+  if (isGameFinished.value) {
+    const response = await getEndingGamesEndingGameUuidGet({
+      path: {game_uuid: uuid},
+    });
+    gameEnding.value = response?.data?.outro || "Thank you for playing!";
+    addMessage(gameEnding.value);
+    return;
+  }
+
+  try {
+    const response = await getPuzzleGamesPuzzleGameUuidGet({
+      path: {game_uuid: uuid},
+    });
+
+    console.log("Puzzle Response:", response?.data);
+
+    scenario.value = response?.data?.scenario || "No scenario received";
+    baseHint.value = response?.data?.base_hint || "No hints available";
+    options.value = response?.data?.options || [];
+    wrongFeedback.value = response?.data?.wrong_feedback || [];
+    correctAnswer.value = response?.data?.correct || null;
+    correctAnswerText.value = response?.data?.result || "Correct answer!";
+    currentPuzzleNumber.value = response?.data?.current_puzzle || null;
+
+    // Reset lastSolvedPuzzleNumber to ensure UI refresh
+    lastSolvedPuzzleNumber.value = null;
+
+    addMessage(scenario.value);
+  } catch (error) {
+    console.error("Error fetching puzzle:", error);
+  }
+
+  console.log({
+    currentPuzzleNumber: currentPuzzleNumber.value,
+    lastSolvedPuzzleNumber: lastSolvedPuzzleNumber.value,
+    options: options.value
+  });
+};
 
 
-// ---------------------------------------------
+const submitAnswer = async (answer) => {
+  if (answer === "hint") {
+    // Handle the hint action locally without making a request
+    toast.add({
+      title: baseHint.value || "No hints available.",
+      icon: "i-lucide-lightbulb",
+    });
+    return;
+  }
+
+  try {
+    // Send request with the user's answer to the server
+    const response = await submitAnswerGamesAnswerGameUuidPost({
+      path: {game_uuid: uuid},
+      body: {choice: answer},
+    });
+
+    // Update state based on the server response
+    const isCorrect = response?.data?.correct;
+    const feedback = response?.data?.result;
+
+    if (feedback === "You are trapped!") {
+      // Game Over logic
+      addMessage(feedback);
+      isGameFinished.value = true;
+      return;
+    }
+
+    if (isCorrect) {
+      // Correct answer
+      addMessage(response?.data?.message || correctAnswerText.value);
+      lastSolvedPuzzleNumber.value = currentPuzzleNumber.value;
+    } else {
+      // Incorrect answer
+      toast.add({
+        title: feedback,
+        icon: "i-lucide-alert-triangle",
+      });
+    }
+  } catch (error) {
+    console.error("Error submitting answer:", error);
+    toast.add({
+      title: "Failed to submit answer. Please try again.",
+      icon: "i-lucide-alert-triangle",
+    });
+  }
+};
 
 
-// Reactive state
-const messages = ref([
-  "This app is designed to simplify your workflow.",
-  "Simply upload your design files, provide instructions, and let the app do the work!",
-  "Collaborate with your team and save time.",
-]);
-const newMessage = ref("");
-const scrollableContent = ref(null);
+// Messaging and Scrolling
 
-// Function to add a new message
-const addMessage = () => {
-  if (newMessage.value.trim() !== "") {
-    messages.value.push(newMessage.value.trim());
-    newMessage.value = "";
+const addMessage = async (message) => {
+  if (message.trim()) {
+    messages.value.push(message.trim());
+    await nextTick();
     scrollToBottom();
   }
 };
 
-// Function to scroll to the bottom
+
 const scrollToBottom = () => {
   nextTick(() => {
     const scrollable = scrollableContent.value;
@@ -129,8 +240,19 @@ const scrollToBottom = () => {
   });
 };
 
-// Ensure content is scrolled to the bottom on mount
-scrollToBottom();
+// Style Helpers
+const getMessageStyle = (index) => {
+  if (index % 2 === 0) return "bg-gray-800 border-l-4 border-sky-500";
+  return "bg-gray-700 border-l-4 border-green-500";
+};
+
+// Redirect to External Page
+const redirectToExternalPage = async () => {
+  await router.push({path: `/er_game/summary`, query: {uuid: uuid}});
+};
+
+// Initialize
+onMounted(fetchIntro);
 </script>
 
 <style scoped>
@@ -146,5 +268,16 @@ scrollToBottom();
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #374151; /* Slightly darker */
+}
+
+/* Add spacing and styles for better appearance */
+.puzzle-options li {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.puzzle-options li:hover {
+  background-color: #3b82f6; /* Sky blue */
+  color: #fff;
 }
 </style>
