@@ -315,13 +315,16 @@ export type GetEndingGamesEndingGameUuidGetResponse = (GameOutro);
 
 export type GetEndingGamesEndingGameUuidGetError = (HTTPValidationError);
 
-export type GetEndingGamesReviewGameUuidPostData = {
+export type AddReviewGamesReviewGameUuidPostData = {
     body: ReviewRequest;
+    path: {
+        game_uuid: string;
+    };
 };
 
-export type GetEndingGamesReviewGameUuidPostResponse = (void);
+export type AddReviewGamesReviewGameUuidPostResponse = (void);
 
-export type GetEndingGamesReviewGameUuidPostError = (HTTPValidationError);
+export type AddReviewGamesReviewGameUuidPostError = (HTTPValidationError);
 
 export type ReadRootGetResponse = (unknown);
 

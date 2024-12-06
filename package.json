@@ -8,9 +8,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "generate-client-axios": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client axios",
-    "generate-client-fetch": "openapi --input http://localhost:5000/openapi.json --output ./app/client --client fetch",
-    "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/clienth -c @hey-api/client-axios"
+    "generate-client-axios": "openapi --input http://localhost:5000/openapi.json --output ./app/cliento --client axios",
+    "generate-client-fetch": "openapi --input http://localhost:5000/openapi.json --output ./app/cliento --client fetch",
+    "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios"
   },
   "dependencies": {
     "@hey-api/client-axios": "^0.2.11",

@@ -95,7 +95,7 @@
 <script setup>
 import {object, string} from 'yup'
 import {reactive} from 'vue'
-import {startGameGamesStartPost} from "@/clienth/index.ts";
+import {startGameGamesStartPost} from "@/client/index.ts";
 
 
 const router = useRouter()

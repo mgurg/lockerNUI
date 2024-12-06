@@ -86,7 +86,7 @@ import {
   getIntroGamesIntroGameUuidGet,
   getPuzzleGamesPuzzleGameUuidGet,
   submitAnswerGamesAnswerGameUuidPost,
-} from "@/clienth/index.ts";
+} from "@/client/index.ts";
 
 const toast = useToast();
 const route = useRoute();

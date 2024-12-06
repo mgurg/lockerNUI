@@ -51,7 +51,7 @@
 <script setup>
 import {useRoute, useRouter} from "#vue-router";
 import {reactive} from "vue";
-import {getEndingGamesReviewGameUuidPost} from "@/clienth/index.ts";
+import {addReviewGamesReviewGameUuidPost} from "@/client/index.ts";
 
 const toast = useToast();
 const route = useRoute();
@@ -66,7 +66,7 @@ const state = reactive({
 
 async function onSubmit() {
   try {
-    const response = await getEndingGamesReviewGameUuidPost({
+    const response = await addReviewGamesReviewGameUuidPost({
       path: {game_uuid: uuid},
       body: {
         text: state.reviewText,
