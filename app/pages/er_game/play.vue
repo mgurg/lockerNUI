@@ -1,16 +1,22 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-900 text-gray-100">
+  <div class="flex flex-col h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <!-- Scrollable Content Area -->
-    <div ref="scrollableContent" class="flex-1 overflow-y-auto p-6 mb-16">
+    <div
+        ref="scrollableContent"
+        class="flex-1 overflow-y-auto p-6 mb-16"
+    >
       <!-- Header Section -->
       <div class="text-center">
-        <h1 class="text-3xl font-extrabold text-sky-500 capitalize">{{ theme }}</h1>
-<!--        <p class="text-gray-400 text-sm">Let's start your escape room adventure!</p>-->
+        <h1 class="text-3xl font-extrabold capitalize text-sky-600 dark:text-sky-400">
+          {{ theme }}
+        </h1>
       </div>
 
       <!-- Intro -->
       <div class="mt-6 text-center space-y-4">
-        <p class="max-w-xl mx-auto text-gray-300">{{ intro }}</p>
+        <p class="max-w-xl mx-auto">
+          {{ intro }}
+        </p>
         <!-- Messages Section -->
         <div class="max-w-xl mx-auto mt-4 space-y-4">
           <p
@@ -25,26 +31,23 @@
 
         <!-- Options and Actions -->
         <div v-if="!isGameFinished || gameEnding.length === 0" class="mt-6">
-          <p class="text-gray-400 text-sm mb-4">
-            {{
-              isPuzzleCompleted ? "Kliknij Dalej, aby kontynuować" : "Wybierz działanie:"
-            }}
+          <p class="text-sm mb-4 text-gray-600 dark:text-gray-400">
+            {{ isPuzzleCompleted ? "Kliknij Dalej, aby kontynuować" : "Wybierz działanie:" }}
           </p>
 
           <!-- Options -->
-          <div class="max-w-md mx-auto space-y-2"
-               v-if="!isPuzzleCompleted && options.length > 0">
+          <div class="max-w-md mx-auto space-y-2" v-if="!isPuzzleCompleted && options.length > 0">
             <ul class="space-y-2">
               <li
                   v-for="option in options"
                   :key="option.number"
-                  class="text-gray-200 bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-sky-600 transition"
+                  class="p-3 rounded-lg cursor-pointer transition bg-gray-200 text-gray-900 hover:bg-sky-600 hover:text-white dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-sky-500"
                   @click="submitAnswer(option.number)"
               >
                 {{ option.number }}. {{ option.text }}
               </li>
               <li
-                  class="text-gray-200 bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-sky-600 transition text-center"
+                  class="p-3 rounded-lg cursor-pointer transition text-center bg-gray-200 text-gray-900 hover:bg-sky-600 hover:text-white dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-sky-500"
                   @click="submitAnswer('hint')"
               >
                 Podpowiedź
@@ -54,17 +57,20 @@
 
           <!-- Next Puzzle Button -->
           <div v-else class="text-center mt-4">
-            <UButton size="lg" color="primary" @click="fetchPuzzle" :loading="loading">
+            <UButton
+                size="lg"
+                color="primary"
+                @click="fetchPuzzle"
+                :loading="loading"
+            >
               Dalej
             </UButton>
           </div>
         </div>
 
-
         <!-- Game Finished Section -->
         <div class="mt-6 text-center" v-if="isGameFinished && gameEnding.length > 1">
           <h2 class="text-xl font-bold text-green-500">Gra skończona! 🎉</h2>
-<!--          <p class="text-gray-400">Kliknij i podziel się opinią.</p>-->
           <UButton
               size="lg"
               class="mt-4 bg-red-600 hover:bg-red-700 transition text-white"
@@ -77,6 +83,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import {computed, nextTick, ref} from "vue";
@@ -267,12 +274,21 @@ onMounted(fetchIntro);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* Dark gray */
+  background-color: #d1d5db; /* Light gray for light mode */
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #374151; /* Slightly darker */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* Dark gray for dark mode */
+}
+
+/* Ensure message contrast */
+.bg-gray-800 {
+  color: #ffffff; /* White text for contrast in dark mode */
+}
+
+.dark .bg-gray-700 {
+  color: #e5e7eb; /* Lighter text in dark mode */
 }
 
 /* Add spacing and styles for better appearance */
@@ -286,3 +302,4 @@ onMounted(fetchIntro);
   color: #fff;
 }
 </style>
+
