@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <div class="flex flex-col h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 px-3 sm:px-6">
     <!-- Scrollable Content Area -->
     <div
         ref="scrollableContent"
@@ -254,9 +254,14 @@ const scrollToBottom = () => {
 
 // Style Helpers
 const getMessageStyle = (index) => {
-  if (index % 2 === 0) return "bg-gray-800 border-l-4 border-sky-500";
-  return "bg-gray-700 border-l-4 border-green-500";
+  return [
+    "border-l-4 p-4 rounded-lg",
+    index % 2 === 0
+        ? "bg-gray-300 text-gray-900 border-sky-500 dark:bg-gray-800 dark:text-gray-100"
+        : "bg-gray-200 text-gray-900 border-green-500 dark:bg-gray-700 dark:text-gray-100",
+  ].join(" ");
 };
+
 
 // Redirect to External Page
 const redirectToExternalPage = async () => {
