@@ -5,9 +5,9 @@
         <li>
           <NuxtLink to="/">Start</NuxtLink>
         </li>
-        <li>
-          <NuxtLink to="/companies">Firmy</NuxtLink>
-        </li>
+<!--        <li>-->
+<!--          <NuxtLink to="/companies">Firmy</NuxtLink>-->
+<!--        </li>-->
         <li>
           <NuxtLink to="/er_game">Gra</NuxtLink>
         </li>

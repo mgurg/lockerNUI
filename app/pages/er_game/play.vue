@@ -4,7 +4,7 @@
     <div ref="scrollableContent" class="flex-1 overflow-y-auto p-6 mb-16">
       <!-- Header Section -->
       <div class="text-center">
-        <h1 class="text-3xl font-extrabold text-sky-500">{{ theme }}</h1>
+        <h1 class="text-3xl font-extrabold text-sky-500 capitalize">{{ theme }}</h1>
 <!--        <p class="text-gray-400 text-sm">Let's start your escape room adventure!</p>-->
       </div>
 
@@ -47,14 +47,14 @@
                   class="text-gray-200 bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-sky-600 transition text-center"
                   @click="submitAnswer('hint')"
               >
-                Hint
+                Podpowiedź
               </li>
             </ul>
           </div>
 
           <!-- Next Puzzle Button -->
           <div v-else class="text-center mt-4">
-            <UButton size="lg" color="primary" @click="fetchPuzzle">
+            <UButton size="lg" color="primary" @click="fetchPuzzle" :loading="loading">
               Dalej
             </UButton>
           </div>
@@ -64,13 +64,13 @@
         <!-- Game Finished Section -->
         <div class="mt-6 text-center" v-if="isGameFinished && gameEnding.length > 1">
           <h2 class="text-xl font-bold text-green-500">Gra skończona! 🎉</h2>
-          <p class="text-gray-400">Kliknij i podziel się opinią.</p>
+<!--          <p class="text-gray-400">Kliknij i podziel się opinią.</p>-->
           <UButton
               size="lg"
               class="mt-4 bg-red-600 hover:bg-red-700 transition text-white"
               @click="redirectToExternalPage"
           >
-            Play Again
+            Kliknij i podziel się opinią
           </UButton>
         </div>
       </div>
@@ -93,6 +93,7 @@ const route = useRoute();
 const router = useRouter()
 
 // Game State
+const loading = ref(false);
 const intro = ref("");
 const theme = ref("");
 const uuid = route.query.uuid;
@@ -131,12 +132,14 @@ const fetchIntro = async () => {
 };
 
 const fetchPuzzle = async () => {
+  loading.value = true;
   if (isGameFinished.value) {
     const response = await getEndingGamesEndingGameUuidGet({
       path: {game_uuid: uuid},
     });
     gameEnding.value = response?.data?.outro || "Thank you for playing!";
     addMessage(gameEnding.value);
+    loading.value = false;
     return;
   }
 
@@ -145,7 +148,7 @@ const fetchPuzzle = async () => {
       path: {game_uuid: uuid},
     });
 
-    console.log("Puzzle Response:", response?.data);
+    // console.log("Puzzle Response:", response?.data);
 
     scenario.value = response?.data?.scenario || "No scenario received";
     baseHint.value = response?.data?.base_hint || "No hints available";
@@ -159,15 +162,17 @@ const fetchPuzzle = async () => {
     lastSolvedPuzzleNumber.value = null;
 
     addMessage(scenario.value);
+    loading.value = false;
   } catch (error) {
+    loading.value = false;
     console.error("Error fetching puzzle:", error);
   }
 
-  console.log({
-    currentPuzzleNumber: currentPuzzleNumber.value,
-    lastSolvedPuzzleNumber: lastSolvedPuzzleNumber.value,
-    options: options.value
-  });
+  // console.log({
+  //   currentPuzzleNumber: currentPuzzleNumber.value,
+  //   lastSolvedPuzzleNumber: lastSolvedPuzzleNumber.value,
+  //   options: options.value
+  // });
 };
 
 

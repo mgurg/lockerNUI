@@ -6,7 +6,7 @@
           <div v-for="(message, index) in bootMessages" :key="index">{{ message }}</div>
         </div>
         <div v-else class="flex flex-col gap-4">
-          <h1 class="text-2xl text-center">Wirtualny escape room w Twoim domu</h1>
+          <h1 class="text-2xl text-center my-8">Wirtualny escape room w Twoim domu</h1>
           <div class="flex flex-col gap-4">
             <UForm
                 :schema="schema"
@@ -15,11 +15,11 @@
                 class="space-y-4"
             >
               <!-- Game Location -->
-              <UFormField label="Wprowadź motyw" name="theme">
+              <UFormField label="Wprowadź motyw/lokalizację" name="theme">
                 <UInput
                     v-model="state.theme"
                     maxlength=100
-                    placeholder="opuszczona świątynia, stacja kosmiczna"
+                    placeholder="np. opuszczona świątynia, stacja kosmiczna"
                     size="xl"
                     class="w-full"
                 />
@@ -30,7 +30,7 @@
                 <UTextarea
                     v-model="state.description"
                     maxlength=140
-                    placeholder=""
+                    placeholder="podaj dodatkowe wskazówki/wytyczne"
                     size="xl"
                     class="w-full"
                 />
@@ -81,7 +81,7 @@
 <!--              </UFormField>-->
 
               <!-- Submit Button -->
-              <UButton type="submit" block>
+              <UButton type="submit">
                 Stwórz pokój i zacznij grę 🚀️
               </UButton>
             </UForm>
@@ -107,18 +107,18 @@ const schema = object({
   description: string().min(8, 'Must be at least 8 characters').required('Required'),
   difficultyLevel: string().min(4, 'Must be at least 4 characters').required('Required'),
   category: string().min(4, 'Must be at least 4 characters').required('Required'),
-  confirmationMail: string().email('Must be a valid email').required('Required'),
   occasion: string().min(4, 'Must be at least 4 characters').required('Required'),
+  // confirmationMail: string().email('Must be a valid email').required('Required'),
 })
 
 // Form state
 const state = reactive({
-  theme: 'starożytna świątynia',
-  description: 'gra z motywami humorystycznymi',
+  theme: '',
+  description: '',
   difficultyLevel: '',
   category: '',
-  confirmationMail: '',
   occasion: '',
+  // confirmationMail: '',
 })
 
 // Loading state and booting messages
