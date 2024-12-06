@@ -17,6 +17,11 @@ COPY . .
 # Add build args for environment variables
 ARG NUXT_PUBLIC_BLOG_URL
 ENV NUXT_PUBLIC_BLOG_URL=${NUXT_PUBLIC_BLOG_URL}
+
+ARG NUXT_BACKEND_API
+ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
+
+
 RUN bun run build
 
 # Stage 2: Serve the application using Bun
@@ -38,6 +43,7 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 ENV NUXT_PUBLIC_BLOG_URL=${NUXT_PUBLIC_BLOG_URL}
+ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
 
 # Command to run the app using Bun
 CMD ["bun", ".output/server/index.mjs"]
