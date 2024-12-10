@@ -1,6 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    modules: ['@nuxt/ui'],
+    modules: ['@nuxt/ui', 'nuxt-umami'],
+    umami: {
+        id: 'my-w3b517e-id',
+        host: 'https://my-umami.xyz',
+        autoTrack: true,
+        // proxy: 'cloak',
+        // useDirective: true,
+        // ignoreLocalhost: true,
+        // excludeQueryParams: false,
+        // domains: ['cool-site.app', 'my-space.site'],
+        // customEndpoint: '/my-custom-endpoint',
+        // enabled: false,
+        // logErrors: true,
+    },
     runtimeConfig: {
         // Private keys are only available on the server
         // apiSecret: '123'
