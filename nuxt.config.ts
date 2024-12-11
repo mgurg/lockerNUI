@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     },
     i18n: {
         strategy: 'prefix',
-        locales: ['en', 'pl'],
+        locales: ['pl'],
         defaultLocale: 'pl'
     },
     runtimeConfig: {
