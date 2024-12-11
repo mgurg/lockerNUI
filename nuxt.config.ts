@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    modules: ['@nuxt/ui', 'nuxt-umami'],
+    modules: ['@nuxt/ui', 'nuxt-umami', '@nuxtjs/i18n'],
     umami: {
         id: 'my-w3b517e-id',
         host: 'https://my-umami.xyz',
@@ -13,6 +13,11 @@ export default defineNuxtConfig({
         // customEndpoint: '/my-custom-endpoint',
         // enabled: false,
         // logErrors: true,
+    },
+    i18n: {
+        strategy: 'prefix',
+        locales: ['en', 'pl'],
+        defaultLocale: 'pl'
     },
     runtimeConfig: {
         // Private keys are only available on the server
