@@ -3,11 +3,11 @@ export default defineNuxtConfig({
     modules: ['@nuxt/ui', 'nuxt-umami', '@nuxtjs/i18n'],
     umami: {
         id: 'my-w3b517e-id',
-        host: 'https://my-umami.xyz',
+        host: 'https://cloud.umami.is',
         autoTrack: true,
         // proxy: 'cloak',
         // useDirective: true,
-        // ignoreLocalhost: true,
+        ignoreLocalhost: true,
         // excludeQueryParams: false,
         // domains: ['cool-site.app', 'my-space.site'],
         // customEndpoint: '/my-custom-endpoint',
