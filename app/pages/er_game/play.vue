@@ -96,8 +96,8 @@ import {
 } from "@/client/index.ts";
 
 const toast = useToast();
+const localePath = useLocalePath()
 const route = useRoute();
-const router = useRouter()
 
 // Game State
 const loading = ref(false);
@@ -265,7 +265,10 @@ const getMessageStyle = (index) => {
 
 // Redirect to External Page
 const redirectToExternalPage = async () => {
-  await router.push({path: `/er_game/summary`, query: {uuid: uuid}});
+  await navigateTo({
+    path: localePath('/er_game/summary'),
+    query: {uuid: uuid}
+  });
 };
 
 // Initialize

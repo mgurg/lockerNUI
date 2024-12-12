@@ -174,8 +174,10 @@ async function onSubmit() {
     loading.value = false;
 
     if (response?.data?.uuid) {
-      await router.push({ path: `/er_game/play`, query: { uuid: response.data.uuid } });
-    } else {
+      await navigateTo({
+        path: localePath('/er_game/play'),
+        query: { uuid: response.data.uuid }
+      });    } else {
       toast.add({
         title: 'Error',
         description: 'Game creation failed. Please try again.',

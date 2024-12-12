@@ -18,7 +18,7 @@
       Powodzenia w eksperymentowaniu i dobrej zabawy 🙂
 
       <template #footer>
-        <UButton to="/er_game">Rozpocznij grę 🕹️</UButton>
+        <UButton :to="localePath('/er_game')">Rozpocznij grę 🕹️</UButton>
       </template>
     </UCard>
   </UContainer>
@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 const runtimeConfig = useRuntimeConfig()
+const localePath = useLocalePath()
 </script>
 
 <style scoped>
