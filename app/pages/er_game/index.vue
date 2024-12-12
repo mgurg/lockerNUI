@@ -102,7 +102,7 @@ const router = useRouter()
 const localePath = useLocalePath()
 const toast = useToast()
 
-const LATIN_SCRIPT_PATTERN = /^[\p{L}\p{N}\s.,!?'-]*$/u;
+const LATIN_SCRIPT_PATTERN = /^[\p{L}\p{N}\s\p{P}\p{Emoji}]*$/u;
 
 // Validation schema
 const schema = object({
