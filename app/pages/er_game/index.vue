@@ -70,15 +70,15 @@
               </UFormField>
 
               <!-- Email Level -->
-<!--              <UFormField label="E-mail (blokada botów, nie dostaniesz żadnej wiadomości)" name="confirmationMail">-->
-<!--                <UInput-->
-<!--                    v-model="state.confirmationMail"-->
-<!--                    maxlength=100-->
-<!--                    placeholder=""-->
-<!--                    size="xl"-->
-<!--                    class="w-full"-->
-<!--                />-->
-<!--              </UFormField>-->
+              <!--              <UFormField label="E-mail (blokada botów, nie dostaniesz żadnej wiadomości)" name="confirmationMail">-->
+              <!--                <UInput-->
+              <!--                    v-model="state.confirmationMail"-->
+              <!--                    maxlength=100-->
+              <!--                    placeholder=""-->
+              <!--                    size="xl"-->
+              <!--                    class="w-full"-->
+              <!--                />-->
+              <!--              </UFormField>-->
 
               <!-- Submit Button -->
               <UButton type="submit">
@@ -99,15 +99,18 @@ import {startGameGamesStartPost} from "@/client/index.ts";
 
 
 const router = useRouter()
+const localePath = useLocalePath()
 const toast = useToast()
+
+const LATIN_SCRIPT_PATTERN = /^[\p{L}\p{N}\s.,!?'-]*$/u;
 
 // Validation schema
 const schema = object({
-  theme: string().min(8, 'Must be at least 8 characters').required('Required'),
-  description: string().min(8, 'Must be at least 8 characters').required('Required'),
-  difficultyLevel: string().min(4, 'Must be at least 4 characters').required('Required'),
-  category: string().min(4, 'Must be at least 4 characters').required('Required'),
-  occasion: string().min(4, 'Must be at least 4 characters').required('Required'),
+  theme: string().min(8, 'Must be at least 8 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
+  description: string().min(8, 'Must be at least 8 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
+  difficultyLevel: string().min(4, 'Must be at least 4 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
+  category: string().min(4, 'Must be at least 4 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
+  occasion: string().min(4, 'Must be at least 4 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
   // confirmationMail: string().email('Must be a valid email').required('Required'),
 })
 
