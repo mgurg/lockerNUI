@@ -104,7 +104,6 @@ const toast = useToast()
 
 const LATIN_SCRIPT_PATTERN = /^[\p{L}\p{N}\s\p{P}\p{Emoji}]*$/u;
 
-// Validation schema
 const schema = object({
   theme: string().min(8, 'Must be at least 8 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
   description: string().min(8, 'Must be at least 8 characters').matches(LATIN_SCRIPT_PATTERN, 'Must only contain Latin characters, numbers, and basic punctuation').required('Required'),
@@ -114,7 +113,6 @@ const schema = object({
   // confirmationMail: string().email('Must be a valid email').required('Required'),
 })
 
-// Form state
 const state = reactive({
   theme: '',
   description: '',
@@ -124,14 +122,12 @@ const state = reactive({
   // confirmationMail: '',
 })
 
-// Loading state and booting messages
 const loading = ref(false);
 const bootMessages = ref([
   "Initializing escape room...",
 
 ]);
 
-// Function to update booting messages dynamically
 function updateBootMessages() {
   const additionalMessages = [
     "Loading ancient temple textures...",
@@ -155,7 +151,6 @@ function updateBootMessages() {
   }, 1000);
 }
 
-// Form submission handler
 async function onSubmit() {
   loading.value = true;
   updateBootMessages();
@@ -176,8 +171,9 @@ async function onSubmit() {
     if (response?.data?.uuid) {
       await navigateTo({
         path: localePath('/er_game/play'),
-        query: { uuid: response.data.uuid }
-      });    } else {
+        query: {uuid: response.data.uuid}
+      });
+    } else {
       toast.add({
         title: 'Error',
         description: 'Game creation failed. Please try again.',

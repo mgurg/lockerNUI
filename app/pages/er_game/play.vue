@@ -99,7 +99,6 @@ const toast = useToast();
 const localePath = useLocalePath()
 const route = useRoute();
 
-// Game State
 const loading = ref(false);
 const intro = ref("");
 const theme = ref("");
@@ -115,17 +114,14 @@ const currentPuzzleNumber = ref(null);
 const lastSolvedPuzzleNumber = ref(null);
 const gameEnding = ref("");
 
-// Messages
 const messages = ref([]);
 const scrollableContent = ref(null);
 
-// Computed Properties
 const isPuzzleCompleted = computed(
     () => currentPuzzleNumber.value === lastSolvedPuzzleNumber.value
 );
 const isGameFinished = computed(() => lastSolvedPuzzleNumber.value === 4);
 
-// Functions
 const fetchIntro = async () => {
   try {
     const response = await getIntroGamesIntroGameUuidGet({
@@ -155,8 +151,6 @@ const fetchPuzzle = async () => {
       path: {game_uuid: uuid},
     });
 
-    // console.log("Puzzle Response:", response?.data);
-
     scenario.value = response?.data?.scenario || "No scenario received";
     baseHint.value = response?.data?.base_hint || "No hints available";
     options.value = response?.data?.options || [];
@@ -165,7 +159,6 @@ const fetchPuzzle = async () => {
     correctAnswerText.value = response?.data?.result || "Correct answer!";
     currentPuzzleNumber.value = response?.data?.current_puzzle || null;
 
-    // Reset lastSolvedPuzzleNumber to ensure UI refresh
     lastSolvedPuzzleNumber.value = null;
 
     addMessage(scenario.value);
@@ -174,18 +167,11 @@ const fetchPuzzle = async () => {
     loading.value = false;
     console.error("Error fetching puzzle:", error);
   }
-
-  // console.log({
-  //   currentPuzzleNumber: currentPuzzleNumber.value,
-  //   lastSolvedPuzzleNumber: lastSolvedPuzzleNumber.value,
-  //   options: options.value
-  // });
 };
 
 
 const submitAnswer = async (answer) => {
   if (answer === "hint") {
-    // Handle the hint action locally without making a request
     toast.add({
       title: baseHint.value || "No hints available.",
       icon: "i-lucide-lightbulb",
@@ -194,29 +180,24 @@ const submitAnswer = async (answer) => {
   }
 
   try {
-    // Send request with the user's answer to the server
     const response = await submitAnswerGamesAnswerGameUuidPost({
       path: {game_uuid: uuid},
       body: {choice: answer},
     });
 
-    // Update state based on the server response
     const isCorrect = response?.data?.correct;
     const feedback = response?.data?.result;
 
     if (feedback === "You are trapped!") {
-      // Game Over logic
       addMessage(feedback);
       isGameFinished.value = true;
       return;
     }
 
     if (isCorrect) {
-      // Correct answer
       addMessage(response?.data?.message || correctAnswerText.value);
       lastSolvedPuzzleNumber.value = currentPuzzleNumber.value;
     } else {
-      // Incorrect answer
       toast.add({
         title: feedback,
         icon: "i-lucide-alert-triangle",
@@ -230,9 +211,6 @@ const submitAnswer = async (answer) => {
     });
   }
 };
-
-
-// Messaging and Scrolling
 
 const addMessage = async (message) => {
   if (message.trim()) {
@@ -252,7 +230,6 @@ const scrollToBottom = () => {
   });
 };
 
-// Style Helpers
 const getMessageStyle = (index) => {
   return [
     "border-l-4 p-4 rounded-lg",
@@ -262,8 +239,6 @@ const getMessageStyle = (index) => {
   ].join(" ");
 };
 
-
-// Redirect to External Page
 const redirectToExternalPage = async () => {
   await navigateTo({
     path: localePath('/er_game/summary'),
@@ -271,7 +246,6 @@ const redirectToExternalPage = async () => {
   });
 };
 
-// Initialize
 onMounted(fetchIntro);
 </script>
 
