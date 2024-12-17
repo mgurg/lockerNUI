@@ -3,10 +3,10 @@
     <nav>
       <ul>
         <li>
-          <NuxtLink to="/">Start</NuxtLink>
+          <NuxtLinkLocale to="/">Start</NuxtLinkLocale>
         </li>
         <li>
-          <NuxtLink to="/companies">Firmy</NuxtLink>
+          <NuxtLinkLocale to="/er_game">Gra</NuxtLinkLocale>
         </li>
       </ul>
     </nav>
