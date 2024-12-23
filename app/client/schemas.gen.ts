@@ -210,27 +210,27 @@ export const CurrentPuzzleResponseSchema = {
 export const DepartmentAddSchema = {
     properties: {
         company_uuid: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'uuid'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            format: 'uuid',
             title: 'Company Uuid'
-        },
-        location: {
-            '$ref': '#/components/schemas/LocationAdd'
         },
         name: {
             type: 'string',
             title: 'Name'
+        },
+        location: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/LocationAdd'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
-    required: ['location', 'name'],
+    required: ['company_uuid', 'name'],
     title: 'DepartmentAdd'
 } as const;
 
@@ -362,6 +362,82 @@ export const IntroResponseSchema = {
     type: 'object',
     required: ['theme', 'intro'],
     title: 'IntroResponse'
+} as const;
+
+export const LocationSchema = {
+    properties: {
+        street_address: {
+            type: 'string',
+            title: 'Street Address'
+        },
+        city: {
+            type: 'string',
+            title: 'City'
+        },
+        state_province: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'State Province'
+        },
+        postal_code: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Postal Code'
+        },
+        country: {
+            type: 'string',
+            pattern: '^\\w{2}$',
+            title: 'Country'
+        },
+        located_in: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Located In'
+        },
+        lat: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Lat'
+        },
+        lon: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Lon'
+        }
+    },
+    type: 'object',
+    required: ['street_address', 'city', 'country'],
+    title: 'Location'
 } as const;
 
 export const LocationAddSchema = {
@@ -733,15 +809,101 @@ export const RoomAddSchema = {
             title: 'Mt Id'
         },
         location: {
-            '$ref': '#/components/schemas/LocationAdd'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/LocationAdd'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         },
         translation: {
-            '$ref': '#/components/schemas/TranslationAdd'
+            items: {
+                '$ref': '#/components/schemas/TranslationAdd'
+            },
+            type: 'array',
+            title: 'Translation'
         }
     },
     type: 'object',
-    required: ['name', 'company_uuid', 'location', 'translation'],
+    required: ['name', 'company_uuid', 'translation'],
     title: 'RoomAdd'
+} as const;
+
+export const RoomIndexResponseSchema = {
+    properties: {
+        uuid: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Uuid'
+        },
+        url_slug: {
+            type: 'string',
+            title: 'Url Slug'
+        },
+        reservation_url: {
+            type: 'string',
+            title: 'Reservation Url'
+        },
+        players_min: {
+            type: 'integer',
+            title: 'Players Min'
+        },
+        players_max: {
+            type: 'integer',
+            title: 'Players Max'
+        },
+        price_from: {
+            type: 'number',
+            title: 'Price From'
+        },
+        game_duration: {
+            type: 'integer',
+            title: 'Game Duration'
+        },
+        location: {
+            '$ref': '#/components/schemas/Location'
+        },
+        translation: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/RoomTranslation'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        }
+    },
+    type: 'object',
+    required: ['uuid', 'url_slug', 'reservation_url', 'players_min', 'players_max', 'price_from', 'game_duration', 'location'],
+    title: 'RoomIndexResponse'
+} as const;
+
+export const RoomTranslationSchema = {
+    properties: {
+        lang: {
+            type: 'string',
+            pattern: '^\\w{2}$',
+            title: 'Lang'
+        },
+        title: {
+            type: 'string',
+            title: 'Title'
+        },
+        lead: {
+            type: 'string',
+            title: 'Lead'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['lang', 'title', 'lead', 'description'],
+    title: 'RoomTranslation'
 } as const;
 
 export const TranslationAddSchema = {

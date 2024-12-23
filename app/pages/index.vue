@@ -31,16 +31,37 @@
       Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
       króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
       <div class="my-4">
-        <UButton :to="localePath('l/krakow')">🐉 Kraków</UButton>
+        <UButton
+            v-for="(city, index) in cities"
+            :key="index"
+            :to="localePath(`/l/${city.ascii_name}`)"
+        >{{ city.city }}
+        </UButton>
       </div>
     </UCard>
   </UContainer>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const runtimeConfig = useRuntimeConfig()
 const localePath = useLocalePath()
+
+import {placesWithRoomsPlacesGet} from "@/client/index.ts";
+
+const cities = ref()
+
+const fetchCities = async () => {
+  const response = await placesWithRoomsPlacesGet({
+    query: { country: "pl" },
+  });
+  cities.value = response.data;  // Access the data field of the response
+}
+
+fetchCities()
+
+
 </script>
+
 
 <style scoped>
 </style>

@@ -44,9 +44,9 @@ export type CurrentPuzzleResponse = {
 };
 
 export type DepartmentAdd = {
-    company_uuid?: (string | null);
-    location: LocationAdd;
+    company_uuid: string;
     name: string;
+    location?: (LocationAdd | null);
 };
 
 export type GameOutro = {
@@ -81,6 +81,17 @@ export type HTTPValidationError = {
 export type IntroResponse = {
     theme: string;
     intro: string;
+};
+
+export type Location = {
+    street_address: string;
+    city: string;
+    state_province?: (string | null);
+    postal_code?: (string | null);
+    country: string;
+    located_in?: (string | null);
+    lat?: (number | null);
+    lon?: (number | null);
 };
 
 export type LocationAdd = {
@@ -131,8 +142,27 @@ export type RoomAdd = {
     reservation_url?: (string | null);
     lm_id?: (string | null);
     mt_id?: (string | null);
-    location: LocationAdd;
-    translation: TranslationAdd;
+    location?: (LocationAdd | null);
+    translation: Array<TranslationAdd>;
+};
+
+export type RoomIndexResponse = {
+    uuid: string;
+    url_slug: string;
+    reservation_url: string;
+    players_min: number;
+    players_max: number;
+    price_from: number;
+    game_duration: number;
+    location: Location;
+    translation?: (RoomTranslation | null);
+};
+
+export type RoomTranslation = {
+    lang: string;
+    title: string;
+    lead: string;
+    description: string;
 };
 
 export type TranslationAdd = {
@@ -163,6 +193,16 @@ export type RoomByUuidRoomsRoomUuidGetResponse = (unknown);
 
 export type RoomByUuidRoomsRoomUuidGetError = (HTTPValidationError);
 
+export type DeleteRoomRoomsRoomUuidDeleteData = {
+    path: {
+        room_uuid: string;
+    };
+};
+
+export type DeleteRoomRoomsRoomUuidDeleteResponse = (void);
+
+export type DeleteRoomRoomsRoomUuidDeleteError = (HTTPValidationError);
+
 export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetData = {
     path: {
         language: string;
@@ -170,7 +210,7 @@ export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetData = {
     };
 };
 
-export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponse = (unknown);
+export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponse = (RoomIndexResponse);
 
 export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetError = (HTTPValidationError);
 
@@ -178,6 +218,12 @@ export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetData = {
     path: {
         language: string;
         location: string;
+    };
+    query?: {
+        field?: 'name' | 'created_at';
+        limit?: number;
+        offset?: number;
+        order?: 'asc' | 'desc';
     };
 };
 
@@ -201,6 +247,14 @@ export type AddRoomRoomsPostResponse = (unknown);
 
 export type AddRoomRoomsPostError = (HTTPValidationError);
 
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteData = {
+    body: RoomAdd;
+};
+
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponse = (void);
+
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteError = (HTTPValidationError);
+
 export type PlaceByNamePlacesLocationNameGetData = {
     path: {
         location_name: string;
@@ -214,9 +268,15 @@ export type PlaceByNamePlacesLocationNameGetResponse = (unknown);
 
 export type PlaceByNamePlacesLocationNameGetError = (HTTPValidationError);
 
+export type PlaceByUuidPlacesGeoipGetData = {
+    headers?: {
+        'x-forwarded-for'?: (string | null);
+    };
+};
+
 export type PlaceByUuidPlacesGeoipGetResponse = (unknown);
 
-export type PlaceByUuidPlacesGeoipGetError = unknown;
+export type PlaceByUuidPlacesGeoipGetError = (HTTPValidationError);
 
 export type PlacesWithRoomsPlacesGetData = {
     query?: {
@@ -258,13 +318,13 @@ export type AddCompanyCompaniesPostResponse = (void);
 
 export type AddCompanyCompaniesPostError = (HTTPValidationError);
 
-export type AddRoomCompaniesDepartmentPostData = {
+export type AddCompanyDepartmentCompaniesDepartmentPostData = {
     body: DepartmentAdd;
 };
 
-export type AddRoomCompaniesDepartmentPostResponse = (unknown);
+export type AddCompanyDepartmentCompaniesDepartmentPostResponse = (void);
 
-export type AddRoomCompaniesDepartmentPostError = (HTTPValidationError);
+export type AddCompanyDepartmentCompaniesDepartmentPostError = (HTTPValidationError);
 
 export type StartGameGamesStartPostData = {
     body: GameStart;
@@ -275,6 +335,9 @@ export type StartGameGamesStartPostResponse = (GameStartResponse);
 export type StartGameGamesStartPostError = (HTTPValidationError);
 
 export type GetIntroGamesIntroGameUuidGetData = {
+    headers?: {
+        'x-forwarded-for'?: (string | null);
+    };
     path: {
         game_uuid: string;
     };

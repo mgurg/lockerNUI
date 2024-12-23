@@ -61,6 +61,11 @@ Update all dependencies to latest version
 bun update -f
 ```
 
+Install dependencies (lockfile)
+```bash
+bun install --frozen-lockfile
+```
+
 Upgrading **Nuxt**
 ```bash
 bunx nuxi@latest upgrade --force
