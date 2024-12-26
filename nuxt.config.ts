@@ -15,9 +15,9 @@ export default defineNuxtConfig({
         // logErrors: true,
     },
     i18n: {
-        strategy: 'prefix',
+        strategy: 'prefix_except_default',
         locales: ['pl'],
-        defaultLocale: 'pl'
+        defaultLocale: 'pl',
     },
     runtimeConfig: {
         // Private keys are only available on the server
@@ -33,5 +33,10 @@ export default defineNuxtConfig({
         compatibilityVersion: 4,
     },
     compatibilityDate: '2024-04-03',
-    devtools: {enabled: true}
+    devtools: {enabled: true},
+    nitro: {
+        routeRules: {
+            '/api/**': { cors: true },
+        }
+    }
 })
