@@ -15,7 +15,7 @@ export default defineNuxtConfig({
         // logErrors: true,
     },
     i18n: {
-        strategy: 'prefix_except_default',
+        strategy: 'prefix',
         locales: ['pl'],
         defaultLocale: 'pl',
     },
@@ -34,9 +34,9 @@ export default defineNuxtConfig({
     },
     compatibilityDate: '2024-04-03',
     devtools: {enabled: true},
-    nitro: {
-        routeRules: {
-            '/api/**': { cors: true },
-        }
-    }
+    // nitro: {
+    //     routeRules: {
+    //         '/api/**': { cors: true },
+    //     }
+    // }
 })
