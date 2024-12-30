@@ -23,22 +23,22 @@
       </template>
     </UCard>
 
-    <UCard class="mt-5">
-      <template #header>
-        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
-      </template>
+<!--    <UCard class="mt-5">-->
+<!--      <template #header>-->
+<!--        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>-->
+<!--      </template>-->
 
-      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
-      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
-      <div class="my-4">
-        <UButton
-            v-for="(city, index) in cities"
-            :key="index"
-            :to="localePath(`/l/${city.ascii_name}`)"
-        >{{ city.city }}
-        </UButton>
-      </div>
-    </UCard>
+<!--      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie-->
+<!--      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:-->
+<!--      <div class="my-4">-->
+<!--        <UButton-->
+<!--            v-for="(city, index) in cities"-->
+<!--            :key="index"-->
+<!--            :to="localePath(`/l/${city.ascii_name}`)"-->
+<!--        >{{ city.city }}-->
+<!--        </UButton>-->
+<!--      </div>-->
+<!--    </UCard>-->
   </UContainer>
 </template>
 
@@ -46,12 +46,12 @@
 const runtimeConfig = useRuntimeConfig()
 const localePath = useLocalePath()
 
-import {placesWithRoomsPlacesGet} from "@/client/index.ts";
+import {getPlacesWithRoomsPlacesGet} from "@/client/index.ts";
 
 const cities = ref()
 
 const fetchCities = async () => {
-  const response = await placesWithRoomsPlacesGet({
+  const response = await getPlacesWithRoomsPlacesGet({
     query: { country: "pl" },
   });
   cities.value = response.data;  // Access the data field of the response

@@ -29,6 +29,109 @@ export const AnswerResponseSchema = {
     title: 'AnswerResponse'
 } as const;
 
+export const CityDetailsResponseSchema = {
+    properties: {
+        city_name: {
+            type: 'string',
+            title: 'City Name'
+        },
+        city_name_inflect: {
+            type: 'string',
+            title: 'City Name Inflect'
+        },
+        lat: {
+            type: 'number',
+            title: 'Lat'
+        },
+        lon: {
+            type: 'number',
+            title: 'Lon'
+        },
+        lat_min: {
+            type: 'number',
+            title: 'Lat Min'
+        },
+        lon_min: {
+            type: 'number',
+            title: 'Lon Min'
+        },
+        lat_max: {
+            type: 'number',
+            title: 'Lat Max'
+        },
+        lon_max: {
+            type: 'number',
+            title: 'Lon Max'
+        },
+        population: {
+            type: 'integer',
+            title: 'Population'
+        },
+        importance: {
+            type: 'number',
+            title: 'Importance'
+        },
+        category: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Category'
+        },
+        region: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Region'
+        },
+        country: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Country'
+        },
+        seo_title: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Seo Title'
+        },
+        seo_description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Seo Description'
+        }
+    },
+    type: 'object',
+    required: ['city_name', 'city_name_inflect', 'lat', 'lon', 'lat_min', 'lon_min', 'lat_max', 'lon_max', 'population', 'importance'],
+    title: 'CityDetailsResponse'
+} as const;
+
 export const CompaniesPaginatedSchema = {
     properties: {
         data: {
@@ -503,7 +606,9 @@ export const LocationAddSchema = {
         lat: {
             anyOf: [
                 {
-                    type: 'number'
+                    type: 'number',
+                    maximum: 90,
+                    minimum: -90
                 },
                 {
                     type: 'null'
@@ -514,7 +619,9 @@ export const LocationAddSchema = {
         lon: {
             anyOf: [
                 {
-                    type: 'number'
+                    type: 'number',
+                    maximum: 180,
+                    minimum: -180
                 },
                 {
                     type: 'null'
@@ -824,10 +931,18 @@ export const RoomAddSchema = {
             },
             type: 'array',
             title: 'Translation'
+        },
+        supported_languages: {
+            items: {
+                type: 'string',
+                pattern: '^\\w{2}$'
+            },
+            type: 'array',
+            title: 'Supported Languages'
         }
     },
     type: 'object',
-    required: ['name', 'company_uuid', 'translation'],
+    required: ['name', 'company_uuid', 'translation', 'supported_languages'],
     title: 'RoomAdd'
 } as const;
 

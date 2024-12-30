@@ -8,8 +8,6 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "generate-client-axios": "openapi --input http://localhost:5000/openapi.json --output ./app/cliento --client axios",
-    "generate-client-fetch": "openapi --input http://localhost:5000/openapi.json --output ./app/cliento --client fetch",
     "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios"
   },
   "dependencies": {
@@ -24,7 +22,6 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.58.0",
-    "openapi-typescript-codegen": "^0.29.0"
+    "@hey-api/openapi-ts": "^0.58.0"
   }
 }

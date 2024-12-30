@@ -9,6 +9,24 @@ export type AnswerResponse = {
     correct: boolean;
 };
 
+export type CityDetailsResponse = {
+    city_name: string;
+    city_name_inflect: string;
+    lat: number;
+    lon: number;
+    lat_min: number;
+    lon_min: number;
+    lat_max: number;
+    lon_max: number;
+    population: number;
+    importance: number;
+    category?: (string | null);
+    region?: (string | null);
+    country?: (string | null);
+    seo_title?: (string | null);
+    seo_description?: (string | null);
+};
+
 export type CompaniesPaginated = {
     data: Array<CompanyIndexResponse>;
     count: number;
@@ -144,6 +162,7 @@ export type RoomAdd = {
     mt_id?: (string | null);
     location?: (LocationAdd | null);
     translation: Array<TranslationAdd>;
+    supported_languages: Array<(string)>;
 };
 
 export type RoomIndexResponse = {
@@ -248,45 +267,24 @@ export type AddRoomRoomsPostResponse = (unknown);
 export type AddRoomRoomsPostError = (HTTPValidationError);
 
 export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteData = {
-    body: RoomAdd;
+    path: {
+        department_uuid: string;
+    };
 };
 
 export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponse = (void);
 
 export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteError = (HTTPValidationError);
 
-export type PlaceByNamePlacesLocationNameGetData = {
-    path: {
-        location_name: string;
-    };
-    query?: {
-        language?: (string | null);
-    };
-};
-
-export type PlaceByNamePlacesLocationNameGetResponse = (unknown);
-
-export type PlaceByNamePlacesLocationNameGetError = (HTTPValidationError);
-
-export type PlaceByUuidPlacesGeoipGetData = {
-    headers?: {
-        'x-forwarded-for'?: (string | null);
-    };
-};
-
-export type PlaceByUuidPlacesGeoipGetResponse = (unknown);
-
-export type PlaceByUuidPlacesGeoipGetError = (HTTPValidationError);
-
-export type PlacesWithRoomsPlacesGetData = {
+export type GetPlacesWithRoomsPlacesGetData = {
     query?: {
         country?: (string | null);
     };
 };
 
-export type PlacesWithRoomsPlacesGetResponse = (unknown);
+export type GetPlacesWithRoomsPlacesGetResponse = (unknown);
 
-export type PlacesWithRoomsPlacesGetError = (HTTPValidationError);
+export type GetPlacesWithRoomsPlacesGetError = (HTTPValidationError);
 
 export type AddRoomPlacesPostData = {
     body: PlaceAdd;
@@ -295,6 +293,43 @@ export type AddRoomPlacesPostData = {
 export type AddRoomPlacesPostResponse = (void);
 
 export type AddRoomPlacesPostError = (HTTPValidationError);
+
+export type DetailsPlacesCityAsciiNameGetData = {
+    path: {
+        city_ascii_name: string;
+    };
+    query: {
+        country: string;
+        language: string;
+    };
+};
+
+export type DetailsPlacesCityAsciiNameGetResponse = (CityDetailsResponse);
+
+export type DetailsPlacesCityAsciiNameGetError = (HTTPValidationError);
+
+export type GetRoomsByLocationPlacesRoomsLocationNameGetData = {
+    path: {
+        location_name: string;
+    };
+    query?: {
+        language?: (string | null);
+    };
+};
+
+export type GetRoomsByLocationPlacesRoomsLocationNameGetResponse = (unknown);
+
+export type GetRoomsByLocationPlacesRoomsLocationNameGetError = (HTTPValidationError);
+
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetData = {
+    headers?: {
+        'x-forwarded-for'?: (string | null);
+    };
+};
+
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetResponse = (unknown);
+
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetError = (HTTPValidationError);
 
 export type GetCompaniesCompaniesGetData = {
     query?: {
@@ -388,6 +423,10 @@ export type AddReviewGamesReviewGameUuidPostData = {
 export type AddReviewGamesReviewGameUuidPostResponse = (void);
 
 export type AddReviewGamesReviewGameUuidPostError = (HTTPValidationError);
+
+export type LoactionsSitemapSeoSitemapGetResponse = (unknown);
+
+export type LoactionsSitemapSeoSitemapGetError = unknown;
 
 export type ReadRootGetResponse = (unknown);
 
