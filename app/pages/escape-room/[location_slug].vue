@@ -96,7 +96,7 @@
           dodane do naszej bazy. Odeślę Cię na razie do mapy Google. kliknij w link poniżej a zostaniesz przeniesiony
           do mapy miasta {{ cityDetails.city_name }} 🗺️</p>
 
-        <UButton class="my-4" :to="mapLink">Eksploruj mapę</UButton>
+        <UButton class="my-4" :to="mapLink">Eksploruj mapę escape room-ów w {{ cityDetails.city_name_inflect }}</UButton>
 
 
       </div>
@@ -161,6 +161,15 @@ const redirectToRoomDetailsPage = async (url) => {
     path: localePath(`/${url}`)
   });
 };
+
+
+const cityName = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
+useSeoMeta({
+  title: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
+  ogTitle: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
+  description: computed(() => `Znajdź najlepsze escape roomy w ${cityName.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
+  ogDescription: computed(() => `Znajdź najlepsze escape roomy w ${cityName.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
+});
 </script>
 
 <style scoped>

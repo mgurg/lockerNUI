@@ -23,22 +23,22 @@
       </template>
     </UCard>
 
-<!--    <UCard class="mt-5">-->
-<!--      <template #header>-->
-<!--        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>-->
-<!--      </template>-->
+    <!--    <UCard class="mt-5">-->
+    <!--      <template #header>-->
+    <!--        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>-->
+    <!--      </template>-->
 
-<!--      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie-->
-<!--      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:-->
-<!--      <div class="my-4">-->
-<!--        <UButton-->
-<!--            v-for="(city, index) in cities"-->
-<!--            :key="index"-->
-<!--            :to="localePath(`/l/${city.ascii_name}`)"-->
-<!--        >{{ city.city }}-->
-<!--        </UButton>-->
-<!--      </div>-->
-<!--    </UCard>-->
+    <!--      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie-->
+    <!--      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:-->
+    <!--      <div class="my-4">-->
+    <!--        <UButton-->
+    <!--            v-for="(city, index) in cities"-->
+    <!--            :key="index"-->
+    <!--            :to="localePath(`/l/${city.ascii_name}`)"-->
+    <!--        >{{ city.city }}-->
+    <!--        </UButton>-->
+    <!--      </div>-->
+    <!--    </UCard>-->
   </UContainer>
 </template>
 
@@ -52,14 +52,19 @@ const cities = ref()
 
 const fetchCities = async () => {
   const response = await getPlacesWithRoomsPlacesGet({
-    query: { country: "pl" },
+    query: {country: "pl"},
   });
   cities.value = response.data;  // Access the data field of the response
 }
 
 fetchCities()
 
-
+useSeoMeta({
+  title: 'Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI',
+  ogTitle: 'Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI',
+  description: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
+  ogDescription: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
+})
 </script>
 
 
