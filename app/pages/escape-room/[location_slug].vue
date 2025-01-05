@@ -167,7 +167,7 @@ const redirectToRoomDetailsPage = async (url) => {
 const cityName = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  { rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}l${route.fullPath}` },
+  { rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}` },
 ];
 
 useHead({
