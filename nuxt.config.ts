@@ -16,7 +16,10 @@ export default defineNuxtConfig({
     },
     i18n: {
         strategy: 'prefix',
-        locales: ['pl'],
+        locales: [
+            {code: 'pl', iso: 'pl-PL', name: 'Polski'},
+            // {code: 'en', iso: 'en-US', name: 'English'}
+        ],
         defaultLocale: 'pl',
     },
     runtimeConfig: {
@@ -26,6 +29,7 @@ export default defineNuxtConfig({
         // Public keys that are exposed to the client
         public: {
             blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || 'https://default-blog-url.com',
+            baseDomain: process.env.NUXT_PUBLIC_DOMAIN || 'http://localhost:3000',
             apiBaseUrl: process.env.NUXT_BACKEND_API || 'http://localhost:5000',
         }
     },

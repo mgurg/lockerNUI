@@ -117,6 +117,7 @@ import type {CityDetailsResponse} from '~/client/types.gen';
 
 const localePath = useLocalePath()
 const route = useRoute()
+const runtimeConfig = useRuntimeConfig()
 
 const citySlug = route.params.slug || route.path.split("/").pop();
 const rooms = ref();
@@ -164,6 +165,17 @@ const redirectToRoomDetailsPage = async (url) => {
 
 
 const cityName = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
+const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
+const hreflangLinks = [
+  { rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}l${route.fullPath}` },
+];
+
+useHead({
+  link: [
+    { rel: 'canonical', href: canonicalUrl },
+    ...hreflangLinks,
+  ],
+});
 useSeoMeta({
   title: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
   ogTitle: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
