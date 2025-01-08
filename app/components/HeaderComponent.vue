@@ -1,80 +1,76 @@
 <template>
-  <header>
+  <header class="flex items-center justify-between px-4 py-2 shadow-md">
+    <!-- Navigation Links -->
     <nav>
-      <ul>
+      <ul class="flex gap-4">
         <li>
-          <NuxtLinkLocale
-              :to="'/'"
-              :class="{ active: $route.path === '/pl' }"
-              class="nav-link"
-          >
-            Start
-          </NuxtLinkLocale>
+          <NuxtLinkLocale to="/" active-class="text-primary" class="hover:text-primary">Start</NuxtLinkLocale>
         </li>
         <li>
-          <NuxtLinkLocale
-              :to="'/er_game'"
-              :class="{ active: $route.path === '/pl/er_game' }"
-              class="nav-link"
-          >
-            Wirtualny Escape Room
-          </NuxtLinkLocale>
+          <NuxtLinkLocale to="/er_game" active-class="text-primary" class="hover:text-primary">Wirtualny Escape Room</NuxtLinkLocale>
         </li>
         <li>
-          <NuxtLinkLocale
-              :to="runtimeConfig.public.blogUrl"
-              :class="{ active: $route.path === runtimeConfig.public.blogUrl }"
-              class="nav-link"
-          >
-            Blog
-          </NuxtLinkLocale>
+          <NuxtLinkLocale :to="runtimeConfig.public.blogUrl" active-class="text-primary" class="hover:text-primary">Blog</NuxtLinkLocale>
         </li>
       </ul>
     </nav>
+
+    <!-- Dark Mode Toggle -->
+    <div>
+      <UButton
+          @click="toggleDarkMode"
+          class="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-700 dark:hover:bg-gray-100"
+          :aria-label="`Switch to ${colorMode.preference === 'dark' ? 'light' : 'dark'} mode`"
+          :icon="colorMode.preference === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
+      >
+      </UButton>
+    </div>
   </header>
 </template>
 
-<style scoped>
-/* Base header styles */
+<script setup lang="ts">
+
+
+// Access runtime configuration
+const runtimeConfig = useRuntimeConfig()
+
+// Use Nuxt's color mode composable
+const colorMode = useColorMode()
+
+// Toggle light/dark mode
+const toggleDarkMode = () => {
+  colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark'
+}
+</script>
+
+<style>
 header {
+  background-color: var(--ui-background);
+  color: var(--ui-text);
   padding: 1rem;
   margin-bottom: 3rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: var(--ui-background);
 }
 
-/* Navigation styles */
 nav ul {
   list-style: none;
-  display: flex;
-  gap: 1rem;
   margin: 0;
   padding: 0;
 }
 
-.nav-link {
-  color: var(--ui-text);
+nav li {
+  display: inline-block;
+}
+
+a {
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.2s, color 0.2s;
+  color: inherit;
 }
 
-.nav-link:hover {
-  background-color: var(--ui-primary-hover);
-  color: var(--ui-primary-text-hover);
+a:hover {
+  text-decoration: underline;
 }
 
-/* Active link styling */
-.nav-link.active {
-  background-color: var(--ui-primary);
-  color: var(--ui-primary-text);
+.text-primary {
+  color: var(--ui-primary);
 }
 </style>
-
-<script setup lang="ts">
-import { useRoute } from 'vue-router'
-
-const runtimeConfig = useRuntimeConfig()
-const $route = useRoute()
-</script>

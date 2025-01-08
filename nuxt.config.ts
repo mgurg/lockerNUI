@@ -22,6 +22,12 @@ export default defineNuxtConfig({
         ],
         defaultLocale: 'pl',
     },
+    router: {
+        options: {
+            linkActiveClass: "active",
+            linkExactActiveClass: "exact-active"
+        }
+    },
     runtimeConfig: {
         // Private keys are only available on the server
         // apiSecret: '123'
