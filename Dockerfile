@@ -1,11 +1,11 @@
 # Stage 1: Build the application using Bun
-FROM oven/bun:latest AS build-stage
+FROM oven/bun:1.2-slim AS build-stage
 
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and lock files
-COPY package*.json bun.lockb ./
+COPY package*.json bun.lock ./
 
 # Install dependencies using Bun
 RUN bun install
@@ -34,14 +34,14 @@ ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 RUN bun run build
 
 # Stage 2: Serve the application using Bun
-FROM oven/bun:latest AS production-stage
+FROM oven/bun:1.2-slim AS production-stage
 
 # Set working directory
 WORKDIR /app
 
 # Copy only the necessary files from the build stage
 COPY --from=build-stage /app/.output /app/.output
-COPY --from=build-stage /app/package*.json /app/bun.lockb ./
+COPY --from=build-stage /app/package*.json /app/bun.lock ./
 
 # Install only production dependencies using Bun
 RUN bun install --production

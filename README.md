@@ -29,6 +29,10 @@ Make sure to install the dependencies:
 bun install
 ```
 
+```bash
+bun install --omit=dev
+```
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
@@ -56,6 +60,10 @@ bun run preview
 
 ## Updates
 Update all dependencies to latest version
+
+```bash
+bun outdated
+```
 
 ```bash
 bun update -f
