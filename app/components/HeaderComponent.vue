@@ -43,7 +43,7 @@ const toggleDarkMode = () => {
 }
 </script>
 
-<style>
+<style scoped>
 header {
   background-color: var(--ui-background);
   color: var(--ui-text);

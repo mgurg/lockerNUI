@@ -96,7 +96,10 @@
           dodane do naszej bazy. Odeślę Cię na razie do mapy Google. kliknij w link poniżej a zostaniesz przeniesiony
           do mapy miasta {{ cityDetails.city_name }} 🗺️</p>
 
-        <UButton class="my-4" :to="mapLink">Eksploruj mapę escape room-ów w {{ cityDetails.city_name_inflect }}</UButton>
+        <UButton class="my-4" :to="mapLink">Eksploruj mapę escape room-ów w {{
+            cityDetails.city_name_inflect
+          }}
+        </UButton>
 
 
       </div>
@@ -112,7 +115,10 @@
 <script setup lang="ts">
 import type {Ref} from 'vue';
 import {ref} from 'vue';
-import {detailsPlacesCityAsciiNameGet, roomsByLocationRoomsUrlLanguagePlaceLocationGet,} from "~/client";
+import {
+  detailsPlacesCityAsciiNameGet,
+  roomsByLocationRoomsUrlLanguagePlaceLocationGet,
+} from "~/client";
 import type {CityDetailsResponse} from '~/client/types.gen';
 
 const localePath = useLocalePath()
@@ -136,7 +142,13 @@ const fetchCityDetails = async () => {
       path: {city_ascii_name: citySlug},
       query: {language: "pl", country: "PL"},
     });
-    cityDetails.value = response.data;
+    cityDetails.value = response.data ?? null;
+    console.log(response.status);
+    if (response?.status === 404) {
+      console.error("City not found. Redirecting to the main page.");
+      // Redirect to the main page
+      await redirectToRoomDetailsPage('escape-room/near-me', );
+    }
   } catch (error) {
     console.error("Failed to fetch city details:", error);
   }
@@ -157,9 +169,10 @@ const fetchRooms = async () => {
 fetchCityDetails();
 fetchRooms();
 
-const redirectToRoomDetailsPage = async (url) => {
+const redirectToRoomDetailsPage = async (url:string, query: any) => {
   await navigateTo({
-    path: localePath(`/${url}`)
+    path: localePath(`/${url}`),
+    query,
   });
 };
 
@@ -167,12 +180,12 @@ const redirectToRoomDetailsPage = async (url) => {
 const cityName = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  { rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}` },
+  {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
 ];
 
 useHead({
   link: [
-    { rel: 'canonical', href: canonicalUrl },
+    {rel: 'canonical', href: canonicalUrl},
     ...hreflangLinks,
   ],
 });
