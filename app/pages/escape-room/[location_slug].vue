@@ -175,6 +175,9 @@ useHead({
     { rel: 'canonical', href: canonicalUrl },
     ...hreflangLinks,
   ],
+  htmlAttrs: {
+    lang: 'pl',
+  },
 });
 useSeoMeta({
   title: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
