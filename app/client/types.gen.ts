@@ -9,6 +9,10 @@ export type AnswerResponse = {
     correct: boolean;
 };
 
+export type BaseUuid = {
+    uuid: string;
+};
+
 export type CityDetailsResponse = {
     city_name: string;
     city_name_inflect: string;
@@ -20,11 +24,11 @@ export type CityDetailsResponse = {
     lon_max: number;
     population: number;
     importance: number;
-    category?: (string | null);
-    region?: (string | null);
-    country?: (string | null);
-    seo_title?: (string | null);
-    seo_description?: (string | null);
+    category?: string | null;
+    region?: string | null;
+    country?: string | null;
+    seo_title?: string | null;
+    seo_description?: string | null;
 };
 
 export type CompaniesPaginated = {
@@ -36,13 +40,13 @@ export type CompaniesPaginated = {
 
 export type CompanyAdd = {
     name: string;
-    brand?: (string | null);
-    gov_id?: (string | null);
-    gov_id_type?: (string | null);
-    place_id?: (string | null);
-    website?: (string | null);
-    email?: (string | null);
-    phone?: (string | null);
+    brand?: string | null;
+    gov_id?: string | null;
+    gov_id_type?: string | null;
+    place_id?: string | null;
+    website?: string | null;
+    email?: string | null;
+    phone?: string | null;
     location: LocationAdd;
 };
 
@@ -64,7 +68,7 @@ export type CurrentPuzzleResponse = {
 export type DepartmentAdd = {
     company_uuid: string;
     name: string;
-    location?: (LocationAdd | null);
+    location?: LocationAdd | null;
 };
 
 export type GameOutro = {
@@ -77,7 +81,7 @@ export type GameStart = {
     difficulty: string;
     category: string;
     occasion: string;
-    email?: (string | null);
+    email?: string | null;
 };
 
 export type GameStartResponse = {
@@ -92,7 +96,7 @@ export type GeoNameAdd = {
     lang: string;
 };
 
-export type HTTPValidationError = {
+export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
 
@@ -104,24 +108,24 @@ export type IntroResponse = {
 export type Location = {
     street_address: string;
     city: string;
-    state_province?: (string | null);
-    postal_code?: (string | null);
+    state_province?: string | null;
+    postal_code?: string | null;
     country: string;
-    located_in?: (string | null);
-    lat?: (number | null);
-    lon?: (number | null);
+    located_in?: string | null;
+    lat?: number | null;
+    lon?: number | null;
 };
 
 export type LocationAdd = {
     street_address: string;
     city: string;
-    state_province?: (string | null);
-    postal_code?: (string | null);
+    state_province?: string | null;
+    postal_code?: string | null;
     country: string;
-    located_in?: (string | null);
-    type?: ('company' | 'department' | 'room' | null);
-    lat?: (number | null);
-    lon?: (number | null);
+    located_in?: string | null;
+    type?: ('company' | 'department' | 'room') | null;
+    lat?: number | null;
+    lon?: number | null;
 };
 
 export type Option = {
@@ -130,17 +134,17 @@ export type Option = {
 };
 
 export type PlaceAdd = {
-    lat: (number | string | null);
-    lon: (number | string | null);
-    lat_min: (number | string | null);
-    lat_max: (number | string | null);
-    lon_min: (number | string | null);
-    lon_max: (number | string | null);
-    population: (number | null);
-    importance: (number | null);
+    lat: number | string | null;
+    lon: number | string | null;
+    lat_min: number | string | null;
+    lat_max: number | string | null;
+    lon_min: number | string | null;
+    lon_max: number | string | null;
+    population: number | null;
+    importance: number | null;
     category: string;
-    region: (string | null);
-    country: (string | null);
+    region: string | null;
+    country: string | null;
     geo_names: Array<GeoNameAdd>;
 };
 
@@ -152,17 +156,17 @@ export type ReviewRequest = {
 export type RoomAdd = {
     name: string;
     company_uuid: string;
-    department_uuid?: (string | null);
-    price_from?: (number | null);
-    game_duration?: (number | null);
-    players_min?: (number | null);
-    players_max?: (number | null);
-    reservation_url?: (string | null);
-    lm_id?: (string | null);
-    mt_id?: (string | null);
-    location?: (LocationAdd | null);
+    department_uuid?: string | null;
+    price_from?: number | null;
+    game_duration?: number | null;
+    players_min?: number | null;
+    players_max?: number | null;
+    reservation_url?: string | null;
+    lm_id?: string | null;
+    mt_id?: string | null;
+    location?: LocationAdd | null;
     translation: Array<TranslationAdd>;
-    supported_languages: Array<(string)>;
+    supported_languages: Array<string>;
 };
 
 export type RoomIndexResponse = {
@@ -174,7 +178,7 @@ export type RoomIndexResponse = {
     price_from: number;
     game_duration: number;
     location: Location;
-    translation?: (RoomTranslation | null);
+    translation?: RoomTranslation | null;
 };
 
 export type RoomTranslation = {
@@ -187,12 +191,12 @@ export type RoomTranslation = {
 export type TranslationAdd = {
     lang: string;
     title: string;
-    lead?: (string | null);
-    description?: (string | null);
+    lead?: string | null;
+    description?: string | null;
 };
 
 export type ValidationError = {
-    loc: Array<(string | number)>;
+    loc: Array<string | number>;
     msg: string;
     type: string;
 };
@@ -202,232 +206,595 @@ export type WrongFeedback = {
     feedback: string;
 };
 
-export type RoomByUuidRoomsRoomUuidGetData = {
-    path: {
-        room_uuid: string;
-    };
-};
-
-export type RoomByUuidRoomsRoomUuidGetResponse = (unknown);
-
-export type RoomByUuidRoomsRoomUuidGetError = (HTTPValidationError);
-
 export type DeleteRoomRoomsRoomUuidDeleteData = {
+    body?: never;
     path: {
         room_uuid: string;
     };
+    query?: never;
+    url: '/rooms/{room_uuid}';
 };
 
-export type DeleteRoomRoomsRoomUuidDeleteResponse = (void);
+export type DeleteRoomRoomsRoomUuidDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type DeleteRoomRoomsRoomUuidDeleteError = (HTTPValidationError);
+export type DeleteRoomRoomsRoomUuidDeleteError = DeleteRoomRoomsRoomUuidDeleteErrors[keyof DeleteRoomRoomsRoomUuidDeleteErrors];
+
+export type DeleteRoomRoomsRoomUuidDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteRoomRoomsRoomUuidDeleteResponse = DeleteRoomRoomsRoomUuidDeleteResponses[keyof DeleteRoomRoomsRoomUuidDeleteResponses];
+
+export type RoomByUuidRoomsRoomUuidGetData = {
+    body?: never;
+    path: {
+        room_uuid: string;
+    };
+    query?: never;
+    url: '/rooms/{room_uuid}';
+};
+
+export type RoomByUuidRoomsRoomUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RoomByUuidRoomsRoomUuidGetError = RoomByUuidRoomsRoomUuidGetErrors[keyof RoomByUuidRoomsRoomUuidGetErrors];
+
+export type RoomByUuidRoomsRoomUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetData = {
+    body?: never;
     path: {
         language: string;
         room_url_slug: string;
     };
+    query?: never;
+    url: '/rooms/url/{language}/{room_url_slug}';
 };
 
-export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponse = (RoomIndexResponse);
+export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetError = (HTTPValidationError);
+export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetError = RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetErrors[keyof RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetErrors];
+
+export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: RoomIndexResponse;
+};
+
+export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponse = RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponses[keyof RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponses];
 
 export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetData = {
+    body?: never;
     path: {
         language: string;
         location: string;
     };
     query?: {
-        field?: 'name' | 'created_at';
         limit?: number;
         offset?: number;
+        field?: 'name' | 'created_at';
         order?: 'asc' | 'desc';
     };
+    url: '/rooms/url/{language}/place/{location}';
 };
 
-export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetResponse = (unknown);
+export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetError = (HTTPValidationError);
+export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetError = RoomsByLocationRoomsUrlLanguagePlaceLocationGetErrors[keyof RoomsByLocationRoomsUrlLanguagePlaceLocationGetErrors];
+
+export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type AddDepartmentRoomsDepartmentPostData = {
     body: RoomAdd;
+    path?: never;
+    query?: never;
+    url: '/rooms/department';
 };
 
-export type AddDepartmentRoomsDepartmentPostResponse = (unknown);
+export type AddDepartmentRoomsDepartmentPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddDepartmentRoomsDepartmentPostError = (HTTPValidationError);
+export type AddDepartmentRoomsDepartmentPostError = AddDepartmentRoomsDepartmentPostErrors[keyof AddDepartmentRoomsDepartmentPostErrors];
+
+export type AddDepartmentRoomsDepartmentPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type AddRoomRoomsPostData = {
     body: RoomAdd;
+    path?: never;
+    query?: never;
+    url: '/rooms';
 };
 
-export type AddRoomRoomsPostResponse = (unknown);
+export type AddRoomRoomsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddRoomRoomsPostError = (HTTPValidationError);
+export type AddRoomRoomsPostError = AddRoomRoomsPostErrors[keyof AddRoomRoomsPostErrors];
+
+export type AddRoomRoomsPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteData = {
+    body?: never;
     path: {
         department_uuid: string;
     };
+    query?: never;
+    url: '/rooms/department/{department_uuid}';
 };
 
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponse = (void);
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteError = (HTTPValidationError);
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteError = DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors[keyof DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors];
+
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponse = DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses[keyof DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses];
 
 export type GetPlacesWithRoomsPlacesGetData = {
+    body?: never;
+    path?: never;
     query?: {
-        country?: (string | null);
+        country?: string | null;
     };
+    url: '/places';
 };
 
-export type GetPlacesWithRoomsPlacesGetResponse = (unknown);
+export type GetPlacesWithRoomsPlacesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetPlacesWithRoomsPlacesGetError = (HTTPValidationError);
+export type GetPlacesWithRoomsPlacesGetError = GetPlacesWithRoomsPlacesGetErrors[keyof GetPlacesWithRoomsPlacesGetErrors];
+
+export type GetPlacesWithRoomsPlacesGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type AddRoomPlacesPostData = {
     body: PlaceAdd;
+    path?: never;
+    query?: never;
+    url: '/places';
 };
 
-export type AddRoomPlacesPostResponse = (void);
+export type AddRoomPlacesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddRoomPlacesPostError = (HTTPValidationError);
+export type AddRoomPlacesPostError = AddRoomPlacesPostErrors[keyof AddRoomPlacesPostErrors];
+
+export type AddRoomPlacesPostResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AddRoomPlacesPostResponse = AddRoomPlacesPostResponses[keyof AddRoomPlacesPostResponses];
 
 export type DetailsPlacesCityAsciiNameGetData = {
+    body?: never;
     path: {
         city_ascii_name: string;
     };
     query: {
-        country: string;
         language: string;
+        country: string;
     };
+    url: '/places/{city_ascii_name}';
 };
 
-export type DetailsPlacesCityAsciiNameGetResponse = (CityDetailsResponse);
+export type DetailsPlacesCityAsciiNameGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type DetailsPlacesCityAsciiNameGetError = (HTTPValidationError);
+export type DetailsPlacesCityAsciiNameGetError = DetailsPlacesCityAsciiNameGetErrors[keyof DetailsPlacesCityAsciiNameGetErrors];
+
+export type DetailsPlacesCityAsciiNameGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CityDetailsResponse;
+};
+
+export type DetailsPlacesCityAsciiNameGetResponse = DetailsPlacesCityAsciiNameGetResponses[keyof DetailsPlacesCityAsciiNameGetResponses];
 
 export type GetRoomsByLocationPlacesRoomsLocationNameGetData = {
+    body?: never;
     path: {
         location_name: string;
     };
     query?: {
-        language?: (string | null);
+        language?: string | null;
     };
+    url: '/places/rooms/{location_name}';
 };
 
-export type GetRoomsByLocationPlacesRoomsLocationNameGetResponse = (unknown);
+export type GetRoomsByLocationPlacesRoomsLocationNameGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetRoomsByLocationPlacesRoomsLocationNameGetError = (HTTPValidationError);
+export type GetRoomsByLocationPlacesRoomsLocationNameGetError = GetRoomsByLocationPlacesRoomsLocationNameGetErrors[keyof GetRoomsByLocationPlacesRoomsLocationNameGetErrors];
+
+export type GetRoomsByLocationPlacesRoomsLocationNameGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetRoomsByGeolocationPlacesRoomsGeoipGetData = {
+    body?: never;
     headers?: {
-        'x-forwarded-for'?: (string | null);
+        'x-forwarded-for'?: string | null;
     };
+    path?: never;
+    query?: never;
+    url: '/places/rooms/geoip';
 };
 
-export type GetRoomsByGeolocationPlacesRoomsGeoipGetResponse = (unknown);
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetRoomsByGeolocationPlacesRoomsGeoipGetError = (HTTPValidationError);
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetError = GetRoomsByGeolocationPlacesRoomsGeoipGetErrors[keyof GetRoomsByGeolocationPlacesRoomsGeoipGetErrors];
+
+export type GetRoomsByGeolocationPlacesRoomsGeoipGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetCompaniesCompaniesGetData = {
+    body?: never;
+    path?: never;
     query?: {
-        field?: 'name' | 'created_at';
+        search?: string | null;
         limit?: number;
         offset?: number;
+        field?: 'name' | 'created_at';
         order?: 'asc' | 'desc';
-        search?: (string | null);
     };
+    url: '/companies';
 };
 
-export type GetCompaniesCompaniesGetResponse = (CompaniesPaginated);
+export type GetCompaniesCompaniesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetCompaniesCompaniesGetError = (HTTPValidationError);
+export type GetCompaniesCompaniesGetError = GetCompaniesCompaniesGetErrors[keyof GetCompaniesCompaniesGetErrors];
+
+export type GetCompaniesCompaniesGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CompaniesPaginated;
+};
+
+export type GetCompaniesCompaniesGetResponse = GetCompaniesCompaniesGetResponses[keyof GetCompaniesCompaniesGetResponses];
 
 export type AddCompanyCompaniesPostData = {
     body: CompanyAdd;
+    path?: never;
+    query?: never;
+    url: '/companies';
 };
 
-export type AddCompanyCompaniesPostResponse = (void);
+export type AddCompanyCompaniesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddCompanyCompaniesPostError = (HTTPValidationError);
+export type AddCompanyCompaniesPostError = AddCompanyCompaniesPostErrors[keyof AddCompanyCompaniesPostErrors];
+
+export type AddCompanyCompaniesPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: BaseUuid;
+};
+
+export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
 
 export type AddCompanyDepartmentCompaniesDepartmentPostData = {
     body: DepartmentAdd;
+    path?: never;
+    query?: never;
+    url: '/companies/department';
 };
 
-export type AddCompanyDepartmentCompaniesDepartmentPostResponse = (void);
+export type AddCompanyDepartmentCompaniesDepartmentPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddCompanyDepartmentCompaniesDepartmentPostError = (HTTPValidationError);
+export type AddCompanyDepartmentCompaniesDepartmentPostError = AddCompanyDepartmentCompaniesDepartmentPostErrors[keyof AddCompanyDepartmentCompaniesDepartmentPostErrors];
+
+export type AddCompanyDepartmentCompaniesDepartmentPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: BaseUuid;
+};
+
+export type AddCompanyDepartmentCompaniesDepartmentPostResponse = AddCompanyDepartmentCompaniesDepartmentPostResponses[keyof AddCompanyDepartmentCompaniesDepartmentPostResponses];
 
 export type StartGameGamesStartPostData = {
     body: GameStart;
+    path?: never;
+    query?: never;
+    url: '/games/start';
 };
 
-export type StartGameGamesStartPostResponse = (GameStartResponse);
+export type StartGameGamesStartPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type StartGameGamesStartPostError = (HTTPValidationError);
+export type StartGameGamesStartPostError = StartGameGamesStartPostErrors[keyof StartGameGamesStartPostErrors];
+
+export type StartGameGamesStartPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: GameStartResponse;
+};
+
+export type StartGameGamesStartPostResponse = StartGameGamesStartPostResponses[keyof StartGameGamesStartPostResponses];
 
 export type GetIntroGamesIntroGameUuidGetData = {
+    body?: never;
     headers?: {
-        'x-forwarded-for'?: (string | null);
+        'x-forwarded-for'?: string | null;
     };
     path: {
         game_uuid: string;
     };
+    query?: never;
+    url: '/games/intro/{game_uuid}';
 };
 
-export type GetIntroGamesIntroGameUuidGetResponse = (IntroResponse);
+export type GetIntroGamesIntroGameUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetIntroGamesIntroGameUuidGetError = (HTTPValidationError);
+export type GetIntroGamesIntroGameUuidGetError = GetIntroGamesIntroGameUuidGetErrors[keyof GetIntroGamesIntroGameUuidGetErrors];
+
+export type GetIntroGamesIntroGameUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: IntroResponse;
+};
+
+export type GetIntroGamesIntroGameUuidGetResponse = GetIntroGamesIntroGameUuidGetResponses[keyof GetIntroGamesIntroGameUuidGetResponses];
 
 export type GetPuzzleGamesPuzzleGameUuidGetData = {
+    body?: never;
     path: {
         game_uuid: string;
     };
+    query?: never;
+    url: '/games/puzzle/{game_uuid}';
 };
 
-export type GetPuzzleGamesPuzzleGameUuidGetResponse = (CurrentPuzzleResponse);
+export type GetPuzzleGamesPuzzleGameUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetPuzzleGamesPuzzleGameUuidGetError = (HTTPValidationError);
+export type GetPuzzleGamesPuzzleGameUuidGetError = GetPuzzleGamesPuzzleGameUuidGetErrors[keyof GetPuzzleGamesPuzzleGameUuidGetErrors];
+
+export type GetPuzzleGamesPuzzleGameUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CurrentPuzzleResponse;
+};
+
+export type GetPuzzleGamesPuzzleGameUuidGetResponse = GetPuzzleGamesPuzzleGameUuidGetResponses[keyof GetPuzzleGamesPuzzleGameUuidGetResponses];
 
 export type SubmitAnswerGamesAnswerGameUuidPostData = {
     body: AnswerRequest;
     path: {
         game_uuid: string;
     };
+    query?: never;
+    url: '/games/answer/{game_uuid}';
 };
 
-export type SubmitAnswerGamesAnswerGameUuidPostResponse = (AnswerResponse);
+export type SubmitAnswerGamesAnswerGameUuidPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type SubmitAnswerGamesAnswerGameUuidPostError = (HTTPValidationError);
+export type SubmitAnswerGamesAnswerGameUuidPostError = SubmitAnswerGamesAnswerGameUuidPostErrors[keyof SubmitAnswerGamesAnswerGameUuidPostErrors];
+
+export type SubmitAnswerGamesAnswerGameUuidPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: AnswerResponse;
+};
+
+export type SubmitAnswerGamesAnswerGameUuidPostResponse = SubmitAnswerGamesAnswerGameUuidPostResponses[keyof SubmitAnswerGamesAnswerGameUuidPostResponses];
 
 export type GetEndingGamesEndingGameUuidGetData = {
+    body?: never;
     path: {
         game_uuid: string;
     };
+    query?: never;
+    url: '/games/ending/{game_uuid}';
 };
 
-export type GetEndingGamesEndingGameUuidGetResponse = (GameOutro);
+export type GetEndingGamesEndingGameUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type GetEndingGamesEndingGameUuidGetError = (HTTPValidationError);
+export type GetEndingGamesEndingGameUuidGetError = GetEndingGamesEndingGameUuidGetErrors[keyof GetEndingGamesEndingGameUuidGetErrors];
+
+export type GetEndingGamesEndingGameUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: GameOutro;
+};
+
+export type GetEndingGamesEndingGameUuidGetResponse = GetEndingGamesEndingGameUuidGetResponses[keyof GetEndingGamesEndingGameUuidGetResponses];
 
 export type AddReviewGamesReviewGameUuidPostData = {
     body: ReviewRequest;
     path: {
         game_uuid: string;
     };
+    query?: never;
+    url: '/games/review/{game_uuid}';
 };
 
-export type AddReviewGamesReviewGameUuidPostResponse = (void);
+export type AddReviewGamesReviewGameUuidPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
 
-export type AddReviewGamesReviewGameUuidPostError = (HTTPValidationError);
+export type AddReviewGamesReviewGameUuidPostError = AddReviewGamesReviewGameUuidPostErrors[keyof AddReviewGamesReviewGameUuidPostErrors];
 
-export type LoactionsSitemapSeoSitemapGetResponse = (unknown);
+export type AddReviewGamesReviewGameUuidPostResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
 
-export type LoactionsSitemapSeoSitemapGetError = unknown;
+export type AddReviewGamesReviewGameUuidPostResponse = AddReviewGamesReviewGameUuidPostResponses[keyof AddReviewGamesReviewGameUuidPostResponses];
 
-export type ReadRootGetResponse = (unknown);
+export type LoactionsSitemapSeoSitemapGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/seo/sitemap';
+};
 
-export type ReadRootGetError = unknown;
+export type LoactionsSitemapSeoSitemapGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadRootGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/';
+};
+
+export type ReadRootGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ClientOptions = {
+    baseURL: 'http://localhost:5000' | (string & {});
+};

@@ -1,4 +1,4 @@
-import {client} from "@/client/sdk.gen.ts";
+import {client} from "@/client/client.gen.ts";
 
 export default defineNuxtPlugin((nuxtApp) => {
     const runtimeConfig = useRuntimeConfig()
