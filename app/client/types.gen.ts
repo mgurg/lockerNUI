@@ -172,11 +172,11 @@ export type RoomAdd = {
 export type RoomIndexResponse = {
     uuid: string;
     url_slug: string;
-    reservation_url: string;
-    players_min: number;
-    players_max: number;
-    price_from: number;
-    game_duration: number;
+    reservation_url: string | null;
+    players_min: number | null;
+    players_max: number | null;
+    price_from: number | null;
+    game_duration: number | null;
     location: Location;
     translation?: RoomTranslation | null;
 };
@@ -775,6 +775,20 @@ export type LoactionsSitemapSeoSitemapGetData = {
 };
 
 export type LoactionsSitemapSeoSitemapGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetFirstUnverifiedCompanyCcCompanyGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/cc/company';
+};
+
+export type GetFirstUnverifiedCompanyCcCompanyGetResponses = {
     /**
      * Successful Response
      */

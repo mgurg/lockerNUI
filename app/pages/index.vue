@@ -23,22 +23,22 @@
       </template>
     </UCard>
 
-    <!--    <UCard class="mt-5">-->
-    <!--      <template #header>-->
-    <!--        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>-->
-    <!--      </template>-->
+        <UCard class="mt-5">
+          <template #header>
+            <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
+          </template>
 
-    <!--      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie-->
-    <!--      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:-->
-    <!--      <div class="my-4">-->
-    <!--        <UButton-->
-    <!--            v-for="(city, index) in cities"-->
-    <!--            :key="index"-->
-    <!--            :to="localePath(`/l/${city.ascii_name}`)"-->
-    <!--        >{{ city.city }}-->
-    <!--        </UButton>-->
-    <!--      </div>-->
-    <!--    </UCard>-->
+          Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
+          króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
+          <div class="my-4 py-4 flex flex-wrap gap-2">
+            <UButton
+                v-for="(city, index) in cities"
+                :key="index"
+                :to="localePath(`/escape-room/${city.ascii_name}`)"
+            >{{ city.city }}
+            </UButton>
+          </div>
+        </UCard>
   </UContainer>
 </template>
 
