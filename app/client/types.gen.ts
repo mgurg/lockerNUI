@@ -71,6 +71,11 @@ export type DepartmentAdd = {
     location?: LocationAdd | null;
 };
 
+export type DepartmentEdit = {
+    name: string;
+    location?: LocationEdit | null;
+};
+
 export type GameOutro = {
     outro: string;
 };
@@ -124,6 +129,17 @@ export type LocationAdd = {
     country: string;
     located_in?: string | null;
     type?: ('company' | 'department' | 'room') | null;
+    lat?: number | null;
+    lon?: number | null;
+};
+
+export type LocationEdit = {
+    street_address?: string | null;
+    city?: string | null;
+    state_province?: string | null;
+    postal_code?: string | null;
+    country: string;
+    located_in?: string | null;
     lat?: number | null;
     lon?: number | null;
 };
@@ -233,7 +249,7 @@ export type DeleteRoomRoomsRoomUuidDeleteResponses = {
 
 export type DeleteRoomRoomsRoomUuidDeleteResponse = DeleteRoomRoomsRoomUuidDeleteResponses[keyof DeleteRoomRoomsRoomUuidDeleteResponses];
 
-export type RoomByUuidRoomsRoomUuidGetData = {
+export type GetRoomByUuidRoomsRoomUuidGetData = {
     body?: never;
     path: {
         room_uuid: string;
@@ -242,16 +258,16 @@ export type RoomByUuidRoomsRoomUuidGetData = {
     url: '/rooms/{room_uuid}';
 };
 
-export type RoomByUuidRoomsRoomUuidGetErrors = {
+export type GetRoomByUuidRoomsRoomUuidGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type RoomByUuidRoomsRoomUuidGetError = RoomByUuidRoomsRoomUuidGetErrors[keyof RoomByUuidRoomsRoomUuidGetErrors];
+export type GetRoomByUuidRoomsRoomUuidGetError = GetRoomByUuidRoomsRoomUuidGetErrors[keyof GetRoomByUuidRoomsRoomUuidGetErrors];
 
-export type RoomByUuidRoomsRoomUuidGetResponses = {
+export type GetRoomByUuidRoomsRoomUuidGetResponses = {
     /**
      * Successful Response
      */
@@ -317,29 +333,6 @@ export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetResponses = {
     200: unknown;
 };
 
-export type AddDepartmentRoomsDepartmentPostData = {
-    body: RoomAdd;
-    path?: never;
-    query?: never;
-    url: '/rooms/department';
-};
-
-export type AddDepartmentRoomsDepartmentPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AddDepartmentRoomsDepartmentPostError = AddDepartmentRoomsDepartmentPostErrors[keyof AddDepartmentRoomsDepartmentPostErrors];
-
-export type AddDepartmentRoomsDepartmentPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
 export type AddRoomRoomsPostData = {
     body: RoomAdd;
     path?: never;
@@ -362,33 +355,6 @@ export type AddRoomRoomsPostResponses = {
      */
     200: unknown;
 };
-
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteData = {
-    body?: never;
-    path: {
-        department_uuid: string;
-    };
-    query?: never;
-    url: '/rooms/department/{department_uuid}';
-};
-
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteError = DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors[keyof DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteErrors];
-
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses = {
-    /**
-     * Successful Response
-     */
-    204: void;
-};
-
-export type DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponse = DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses[keyof DeleteDepartmentRoomsDepartmentDepartmentUuidDeleteResponses];
 
 export type GetPlacesWithRoomsPlacesGetData = {
     body?: never;
@@ -579,30 +545,132 @@ export type AddCompanyCompaniesPostResponses = {
 
 export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
 
-export type AddCompanyDepartmentCompaniesDepartmentPostData = {
-    body: DepartmentAdd;
-    path?: never;
+export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetData = {
+    body?: never;
+    path: {
+        company_uuid: string;
+    };
     query?: never;
-    url: '/companies/department';
+    url: '/companies/{company_uuid}/departments';
 };
 
-export type AddCompanyDepartmentCompaniesDepartmentPostErrors = {
+export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type AddCompanyDepartmentCompaniesDepartmentPostError = AddCompanyDepartmentCompaniesDepartmentPostErrors[keyof AddCompanyDepartmentCompaniesDepartmentPostErrors];
+export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetError = GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors[keyof GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors];
 
-export type AddCompanyDepartmentCompaniesDepartmentPostResponses = {
+export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteData = {
+    body?: never;
+    path: {
+        department_uuid: string;
+    };
+    query?: never;
+    url: '/companies/departments/{department_uuid}';
+};
+
+export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteError = DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteErrors[keyof DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteErrors];
+
+export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteResponse = DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteResponses[keyof DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteResponses];
+
+export type GetDepartmentCompaniesDepartmentsDepartmentUuidGetData = {
+    body?: never;
+    path: {
+        department_uuid: string;
+    };
+    query?: never;
+    url: '/companies/departments/{department_uuid}';
+};
+
+export type GetDepartmentCompaniesDepartmentsDepartmentUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDepartmentCompaniesDepartmentsDepartmentUuidGetError = GetDepartmentCompaniesDepartmentsDepartmentUuidGetErrors[keyof GetDepartmentCompaniesDepartmentsDepartmentUuidGetErrors];
+
+export type GetDepartmentCompaniesDepartmentsDepartmentUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchData = {
+    body: DepartmentEdit;
+    path: {
+        department_uuid: string;
+    };
+    query?: never;
+    url: '/companies/departments/{department_uuid}';
+};
+
+export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchError = UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchErrors[keyof UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchErrors];
+
+export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type CreateDepartmentCompaniesDepartmentsPostData = {
+    body: DepartmentAdd;
+    path?: never;
+    query?: never;
+    url: '/companies/departments';
+};
+
+export type CreateDepartmentCompaniesDepartmentsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateDepartmentCompaniesDepartmentsPostError = CreateDepartmentCompaniesDepartmentsPostErrors[keyof CreateDepartmentCompaniesDepartmentsPostErrors];
+
+export type CreateDepartmentCompaniesDepartmentsPostResponses = {
     /**
      * Successful Response
      */
     200: BaseUuid;
 };
 
-export type AddCompanyDepartmentCompaniesDepartmentPostResponse = AddCompanyDepartmentCompaniesDepartmentPostResponses[keyof AddCompanyDepartmentCompaniesDepartmentPostResponses];
+export type CreateDepartmentCompaniesDepartmentsPostResponse = CreateDepartmentCompaniesDepartmentsPostResponses[keyof CreateDepartmentCompaniesDepartmentsPostResponses];
 
 export type StartGameGamesStartPostData = {
     body: GameStart;
