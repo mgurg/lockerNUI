@@ -1,353 +1,133 @@
 <template>
-  <h1 class="text-2xl text-center my-1">ER COMPANY</h1>
-  <div v-if="isLoaded">
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <h2 class="text-xl font-semibold">Company Details</h2>
-        <UForm :schema="schema" :state="companyState" @submit="onSubmit" class="space-y-4">
-          <UFormField label="UUID" name="uuid">
-            <UInput v-model="companyState.uuid" readonly class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Brand" name="brand">
-            <UInput v-model="companyState.brand" maxlength="100" size="xl" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Government ID" name="gov_id">
-            <UInput v-model="companyState.gov_id" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Gov ID Type" name="gov_id_type">
-            <UInput v-model="companyState.gov_id_type" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Website" name="website">
-            <UInput v-model="companyState.website" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Email" name="email">
-            <UInput v-model="companyState.email" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Phone" name="phone">
-            <UInput v-model="companyState.phone" class="w-full"/>
-          </UFormField>
-        </UForm>
-      </div>
-
-      <div>
-        <h2 class="text-xl font-semibold">Location Details</h2>
-        <UForm :schema="locationSchema" :state="locationState" @submit="onSubmit" class="space-y-4">
-          <UFormField label="City" name="city">
-            <UInput v-model="locationState.city" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Street Address" name="street_address">
-            <UInput v-model="locationState.street_address" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Postal Code" name="postal_code">
-            <UInput v-model="locationState.postal_code" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Country" name="country">
-            <UInput v-model="locationState.country" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Latitude" name="lat">
-            <UInput v-model="locationState.lat" type="number" step="0.000001" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="Longitude" name="lon">
-            <UInput v-model="locationState.lon" type="number" step="0.000001" class="w-full"/>
-          </UFormField>
-        </UForm>
-
-        <div class="mt-6 flex justify-end">
-          <UButton  color="info" icon="i-lucide-pencil" type="submit" @click="onSubmit">
-            Aktualizuj
-          </UButton>
+  <div class="container mx-auto p-4">
+    <UCard>
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold">Companies List</h2>
+          <UBadge color="gray" variant="soft">
+            Total: {{ count }}
+          </UBadge>
         </div>
-      </div>
-    </div>
+      </template>
 
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold">Departments</h2>
-      <div v-if="departments.length" class="flex flex-wrap gap-2 mt-2">
-        <UButton
-            v-for="department in departments"
-            :key="department.uuid"
-            @click="fetchDepartmentDetails(department.uuid)"
-            variant="outline"
+      <div v-if="!isLoaded" class="flex justify-center items-center py-10">
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8" />
+      </div>
+
+      <div v-else-if="companies.length === 0" class="text-center py-10 text-gray-500">
+        No companies found
+      </div>
+
+      <div v-else class="space-y-4">
+        <UCard
+            v-for="company in companies"
+            :key="company.uuid"
+            class="hover:bg-gray-50 transition-colors"
         >
-          {{ department.name }}
-        </UButton>
-      </div>
-
-      <div v-if="selectedDepartment" class="mt-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <h3 class="text-lg font-medium">Department Details</h3>
-            <UForm :schema="departmentSchema" :state="departmentState" @submit="onSubmit" class="space-y-4">
-              <UFormField label="UUID" name="uuid">
-                <UInput v-model="departmentState.uuid" class="w-full"/>
-              </UFormField>
-              <UFormField label="Department Name" name="name">
-                <UInput v-model="departmentState.name" class="w-full"/>
-              </UFormField>
-            </UForm>
-            <div class="my-4 py-4 flex flex-wrap gap-2">
-              <UButton color="success" icon="i-lucide-plus" @click="createDepartment()">Dodaj</UButton>
-              <UButton color="info" icon="i-lucide-pencil" @click="updateDepartment(departmentState.uuid)">Edytuj</UButton>
-              <UButton color="error" icon="i-lucide-eraser" @click="deleteDepartment(departmentState.uuid)">Usuń</UButton>
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-lg font-semibold">
+                {{ company.name }}
+              </h3>
+              <div class="mt-2 flex items-center space-x-2">
+                <UIcon name="i-heroicons-map-pin" class="h-5 w-5 text-gray-500" />
+                <span class="text-gray-600">
+                  {{ company.location?.city || 'No Location' }}
+                </span>
+              </div>
             </div>
+
+            <div class="flex flex-col items-end">
+              <div class="flex items-center gap-2 mb-2 flex-wrap justify-end">
+                <UButton
+                    v-for="dept in company.departments"
+                    :key="dept.uuid"
+                    to="https://github.com/nuxt/ui"
+                    icon="i-lucide-rocket"
+                    color="blue"
+                    variant="solid"
+                    size="sm"
+                    class="mb-1"
+                >
+                  {{ dept.name }}
+                </UButton>
+              </div>
+
+              <div class="space-y-1">
+                <UButton
+                    v-for="room in company.rooms"
+                    to="https://github.com/nuxt/ui"
+                    :key="room.uuid"
+                    icon="i-lucide-rocket"
+                    color="green"
+                    variant="outline"
+                    size="md"
+                    class="max-w-[200px] truncate mb-1"
+                >
+                  {{ room.name }}
+                </UButton>
+              </div>
+            </div>
+
+
           </div>
-          <div>
-            <h2 class="text-xl font-semibold">Location Department Details</h2>
-            <UForm :schema="locationSchema" :state="locationDepartmentState" @submit="onSubmit" class="space-y-4">
-              <UFormField label="City" name="city">
-                <UInput v-model="locationDepartmentState.city" class="w-full"/>
-              </UFormField>
+        </UCard>
+      </div>
 
-              <UFormField label="Street Address" name="street_address">
-                <UInput v-model="locationDepartmentState.street_address" class="w-full"/>
-              </UFormField>
-
-              <UFormField label="Postal Code" name="postal_code">
-                <UInput v-model="locationDepartmentState.postal_code" class="w-full"/>
-              </UFormField>
-
-              <UFormField label="Country" name="country">
-                <UInput v-model="locationDepartmentState.country" class="w-full"/>
-              </UFormField>
-
-              <UFormField label="Latitude" name="lat">
-                <UInput v-model="locationDepartmentState.lat" type="number" step="0.000001" class="w-full"/>
-              </UFormField>
-
-              <UFormField label="Longitude" name="lon">
-                <UInput v-model="locationDepartmentState.lon" type="number" step="0.000001" class="w-full"/>
-              </UFormField>
-            </UForm>
-
-          </div>
+      <template #footer>
+        <div class="flex justify-center mt-4">
+          <UPagination
+              v-if="isLoaded"
+              :page-count="limit"
+              :total="count"
+              v-model:page="page"
+              @update:page="fetchCompanies"
+          />
         </div>
-
-      </div>
-    </div>
-
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold">Rooms</h2>
-      <div v-if="rooms.length" class="flex flex-wrap gap-2 mt-2">
-        <UButton
-            v-for="room in rooms"
-            :key="room.uuid"
-            @click="fetchRoomDetails(room.uuid)"
-            variant="outline"
-        >
-          {{ room.name }}
-        </UButton>
-      </div>
-
-      <div v-if="selectedRoom" class="mt-4">
-        <h3 class="text-lg font-medium">Room Details</h3>
-        <UForm :schema="roomSchema" :state="selectedRoom" @submit="onSubmit" class="space-y-4">
-          <UFormField label="Room Name" name="name">
-            <UInput v-model="selectedRoom.name" class="w-full"/>
-          </UFormField>
-        </UForm>
-      </div>
-    </div>
-
-
+      </template>
+    </UCard>
   </div>
 </template>
 
 <script setup>
-import {ref, reactive} from 'vue';
-import {object, string, number} from 'yup';
-import {
-  getFirstUnverifiedCompanyCcCompanyGet,
-  getRoomByUuidRoomsRoomUuidGet,
-  getDepartmentCompaniesDepartmentsDepartmentUuidGet,
-  getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
-  createDepartmentCompaniesDepartmentsPost,
-  updateDepartmentCompaniesDepartmentsDepartmentUuidPatch,
-  deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete
-} from '@/client/index.ts';
+import { ref } from 'vue'
+import { getCompaniesCompaniesGet } from '@/client/index.ts'
 
-// Validation schemas
-const schema = object({
-  brand: string().min(8, 'Must be at least 8 characters').required('Required'),
-  gov_id: string().required('Required'),
-  gov_id_type: string().required('Required'),
-  website: string().url('Must be a valid URL'),
-  email: string().email('Must be a valid email'),
-  phone: string(),
-});
+const companies = ref([])
+const isLoaded = ref(false)
+const count = ref(0)
+const limit = ref(10)
+const page = ref(1)
 
-const locationSchema = object({
-  city: string().required('Required'),
-  street_address: string().required('Required'),
-  postal_code: string().required('Required'),
-  country: string().required('Required'),
-  lat: number().typeError('Must be a number'),
-  lon: number().typeError('Must be a number'),
-});
-
-const departmentSchema = object({
-  name: string().required('Required'),
-});
-
-const roomSchema = object({
-  name: string().required('Required'),
-});
-
-// State management
-const companyState = reactive({
-  brand: '',
-  uuid: '',
-  gov_id: '',
-  gov_id_type: '',
-  website: '',
-  email: '',
-  phone: '',
-});
-
-const locationState = reactive({
-  city: '',
-  street_address: '',
-  postal_code: '',
-  country: '',
-  lat: '',
-  lon: '',
-});
-
-const departmentState = reactive({
-  name: '',
-  uuid: '',
-});
-
-const locationDepartmentState = reactive({
-  city: '',
-  street_address: '',
-  postal_code: '',
-  country: '',
-  lat: '',
-  lon: '',
-});
-
-const departments = ref([]);
-const rooms = ref([]);
-const selectedDepartment = ref(null);
-const selectedRoom = ref(null);
-const isLoaded = ref(false);
-
-// Methods
-async function onSubmit() {
+async function fetchCompanies(newPage = 1) {
   try {
-    // Combine states for API submission
-    const submitData = {
-      ...companyState,
-      location: locationState,
-      departments: departments.value,
-      rooms: rooms.value,
-    };
+    isLoaded.value = false
+    page.value = newPage
 
-    // TODO: Implement API call to update company data
-    console.log('Submitting data:', submitData);
-  } catch (error) {
-    console.error('Error submitting form:', error);
-  }
-}
-
-async function fetchUnverifiedCompanies() {
-  try {
-    const response = await getFirstUnverifiedCompanyCcCompanyGet();
-    if (response.data) {
-      // Update company state
-      Object.assign(companyState, response.data);
-
-      // Update location state
-      if (response.data.location) {
-        Object.assign(locationState, response.data.location);
+    const response = await getCompaniesCompaniesGet({ query: {
+        offset: (newPage - 1) * limit.value,
+        limit: limit.value
       }
-
-      // Update departments and rooms
-      departments.value = response.data.departments || [];
-      rooms.value = response.data.rooms || [];
-
-      isLoaded.value = true;
-    }
-  } catch (error) {
-    console.error('Error fetching company data:', error);
-  }
-}
-
-async function fetchDepartmentDetails(departmentUuid) {
-  try {
-    // TODO: Implement actual API call
-    // const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: {company_uuid: companyState.uuid}});
-    const response = await getDepartmentCompaniesDepartmentsDepartmentUuidGet({path: {department_uuid: departmentUuid}});
-    Object.assign(departmentState, response.data);
-    if (response.data.location) {
-      Object.assign(locationDepartmentState, response.data.location);
-    }
-    selectedDepartment.value = {name: "Fetched Department", uuid: departmentUuid};
-    console.log(`Fetching department details for ${departmentUuid}`);
-  } catch (error) {
-    console.error('Error fetching department:', error);
-  }
-}
-
-async function fetchRoomDetails(roomUuid) {
-  try {
-    // TODO: Implement actual API call
-    const response = await getRoomByUuidRoomsRoomUuidGet({
-      path: {room_uuid: roomUuid},
     })
-    console.log(`Fetching room details for ${roomUuid}`);
-    selectedRoom.value = {name: "Fetched Room", uuid: roomUuid};
+
+    if (response.data) {
+      companies.value = response.data.data
+      count.value = response.data.count
+      limit.value = response.data.limit
+      isLoaded.value = true
+    }
   } catch (error) {
-    console.error('Error fetching room:', error);
+    console.error('Error fetching company data:', error)
+    useToast().add({
+      title: 'Error',
+      description: 'Failed to fetch companies',
+      color: 'red'
+    })
+    isLoaded.value = true
   }
 }
 
-async function createDepartment() {
-  const data = {
-    company_uuid: companyState.uuid,
-    name: departmentState.name,
-    location: locationDepartmentState,
-  };
-  console.log(data)
-  const response = await createDepartmentCompaniesDepartmentsPost({
-    body: data,
-  })
-
-}
-
-async function updateDepartment(departmentUuid) {
-  const data = {
-    name: departmentState.name,
-    location: locationDepartmentState,
-  };
-  console.log(data)
-  const response = await updateDepartmentCompaniesDepartmentsDepartmentUuidPatch({
-    body: data,
-    path: {department_uuid: departmentUuid},
-  })
-
-}
-
-async function deleteDepartment(departmentUuid) {
-  console.log(departmentUuid)
-  const response = await deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete(
-      {
-        path: {department_uuid: departmentUuid},
-      }
-  )
-}
-
-// Initialize data
-fetchUnverifiedCompanies();
+onMounted(() => {
+  fetchCompanies()
+})
 </script>

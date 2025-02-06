@@ -50,6 +50,18 @@ export type CompanyAdd = {
     location: LocationAdd;
 };
 
+export type CompanyEdit = {
+    name?: string | null;
+    brand?: string | null;
+    gov_id?: string | null;
+    gov_id_type?: string | null;
+    place_id?: string | null;
+    website?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    location?: LocationAdd | null;
+};
+
 export type CompanyIndexResponse = {
     uuid: string;
     name: string;
@@ -68,11 +80,11 @@ export type CurrentPuzzleResponse = {
 export type DepartmentAdd = {
     company_uuid: string;
     name: string;
-    location?: LocationAdd | null;
+    location: LocationAdd;
 };
 
 export type DepartmentEdit = {
-    name: string;
+    name?: string | null;
     location?: LocationEdit | null;
 };
 
@@ -545,6 +557,33 @@ export type AddCompanyCompaniesPostResponses = {
 
 export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
 
+export type UpdateCompanyCompaniesCompanyUuidPatchData = {
+    body: CompanyEdit;
+    path: {
+        company_uuid: string;
+    };
+    query?: never;
+    url: '/companies/{company_uuid}';
+};
+
+export type UpdateCompanyCompaniesCompanyUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateCompanyCompaniesCompanyUuidPatchError = UpdateCompanyCompaniesCompanyUuidPatchErrors[keyof UpdateCompanyCompaniesCompanyUuidPatchErrors];
+
+export type UpdateCompanyCompaniesCompanyUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UpdateCompanyCompaniesCompanyUuidPatchResponse = UpdateCompanyCompaniesCompanyUuidPatchResponses[keyof UpdateCompanyCompaniesCompanyUuidPatchResponses];
+
 export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetData = {
     body?: never;
     path: {
@@ -644,8 +683,10 @@ export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    204: void;
 };
+
+export type UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchResponse = UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchResponses[keyof UpdateDepartmentCompaniesDepartmentsDepartmentUuidPatchResponses];
 
 export type CreateDepartmentCompaniesDepartmentsPostData = {
     body: DepartmentAdd;
