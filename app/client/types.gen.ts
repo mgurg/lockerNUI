@@ -13,6 +13,20 @@ export type BaseUuid = {
     uuid: string;
 };
 
+export type BasicDepartment = {
+    uuid: string;
+    name: string;
+};
+
+export type BasicLocation = {
+    city: string | null;
+};
+
+export type BasicRoom = {
+    uuid: string;
+    name: string;
+};
+
 export type CityDetailsResponse = {
     city_name: string;
     city_name_inflect: string;
@@ -59,12 +73,16 @@ export type CompanyEdit = {
     website?: string | null;
     email?: string | null;
     phone?: string | null;
-    location?: LocationAdd | null;
+    location?: LocationEdit | null;
 };
 
 export type CompanyIndexResponse = {
     uuid: string;
     name: string;
+    verified_at: string | null;
+    location: BasicLocation | null;
+    departments: Array<BasicDepartment> | null;
+    rooms: Array<BasicRoom> | null;
 };
 
 export type CurrentPuzzleResponse = {
@@ -556,6 +574,31 @@ export type AddCompanyCompaniesPostResponses = {
 };
 
 export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
+
+export type GetCompanyByUuidCompaniesCompanyUuidGetData = {
+    body?: never;
+    path: {
+        company_uuid: string;
+    };
+    query?: never;
+    url: '/companies/{company_uuid}';
+};
+
+export type GetCompanyByUuidCompaniesCompanyUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCompanyByUuidCompaniesCompanyUuidGetError = GetCompanyByUuidCompaniesCompanyUuidGetErrors[keyof GetCompanyByUuidCompaniesCompanyUuidGetErrors];
+
+export type GetCompanyByUuidCompaniesCompanyUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type UpdateCompanyCompaniesCompanyUuidPatchData = {
     body: CompanyEdit;

@@ -28,6 +28,7 @@
             <div>
               <h3 class="text-lg font-semibold">
                 {{ company.name }}
+                <UButton :color="company.validated_at ? 'success' : 'warning'"  @click="redirectToExternalPage(company.uuid, '/cc/company')">GO</UButton>
               </h3>
               <div class="mt-2 flex items-center space-x-2">
                 <UIcon name="i-heroicons-map-pin" class="h-5 w-5 text-gray-500" />
@@ -42,7 +43,6 @@
                 <UButton
                     v-for="dept in company.departments"
                     :key="dept.uuid"
-                    to="https://github.com/nuxt/ui"
                     icon="i-lucide-rocket"
                     color="blue"
                     variant="solid"
@@ -53,10 +53,10 @@
                 </UButton>
               </div>
 
-              <div class="space-y-1">
+              <div class="space-y-1 flex items-center gap-2 mb-2 flex-wrap justify-start">
                 <UButton
                     v-for="room in company.rooms"
-                    to="https://github.com/nuxt/ui"
+                    @click="redirectToExternalPage(room.uuid, '/cc/room')"
                     :key="room.uuid"
                     icon="i-lucide-rocket"
                     color="green"
@@ -93,6 +93,8 @@
 import { ref } from 'vue'
 import { getCompaniesCompaniesGet } from '@/client/index.ts'
 
+const localePath = useLocalePath()
+
 const companies = ref([])
 const isLoaded = ref(false)
 const count = ref(0)
@@ -126,6 +128,13 @@ async function fetchCompanies(newPage = 1) {
     isLoaded.value = true
   }
 }
+
+const redirectToExternalPage = async (uuid, path) => {
+  await navigateTo({
+    path: localePath(path),
+    query: {uuid: uuid}
+  });
+};
 
 onMounted(() => {
   fetchCompanies()
