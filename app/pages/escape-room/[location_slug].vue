@@ -1,7 +1,7 @@
 <template>
   <UContainer>
     <div v-if="isLoading">
-      <USkeleton class="h-32 w-full" />
+      <USkeleton class="h-32 w-full"/>
     </div>
 
     <div v-else-if="error">
@@ -30,7 +30,7 @@
                 <h2 class="text-xl font-semibold">
                   {{ room.translation.title }}
                 </h2>
-                <UChip />
+                <UChip/>
               </div>
             </template>
 
@@ -165,7 +165,6 @@
         </div>
 
 
-
         <!-- Google Maps section -->
         <div class="space-y-4">
           <h2 class="text-2xl font-bold">Znajdź escape room na mapie</h2>
@@ -181,16 +180,34 @@
             Otwórz mapę
           </UButton>
         </div>
+
+
+        <!-- Google Maps section -->
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold">Pobliskie miejscowości</h2>
+          <p class="text-gray-500 dark:text-gray-400">
+            Podrzucam jeszcze listę najbliższych miejscowości która mam w bazie na wypadek gdybym przegapił jakiś ER
+          </p>
+
+          <div class="my-4 py-4 flex flex-wrap gap-2">
+            <UButton
+                v-for="(city, index) in nearbyCities"
+                :key="index"
+            >{{ city.name }}
+            </UButton>
+          </div>
+        </div>
       </section>
     </template>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { CityDetailsResponse } from '~/client/types.gen'
+import {computed, ref} from 'vue'
+import type {CityDetailsResponse} from '~/client/types.gen'
 import {
-  detailsPlacesCityAsciiNameGet,
+  getCityDetailsPlacesCityAsciiNameGet,
+  getNearbyCitiesPlacesNearbyCityCityAsciiNameGet,
   getRoomsCountRoomsCountGet,
   getRoomsNearbyRoomsNearbyCityAsciiNameGet,
   roomsByLocationRoomsUrlLanguagePlaceLocationGet
@@ -203,6 +220,7 @@ const citySlug = computed(() => route.params.slug || route.path.split("/").pop()
 
 const rooms = ref()
 const nearbyRooms = ref()
+const nearbyCities = ref()
 const roomsCounter = ref(0)
 const cityDetails = ref<CityDetailsResponse | null>(null)
 const isLoading = ref(true)
@@ -216,9 +234,9 @@ const getTranslation = (room: any) => {
 // API Calls
 const fetchCityDetails = async () => {
   try {
-    const response = await detailsPlacesCityAsciiNameGet({
-      path: { city_ascii_name: citySlug.value },
-      query: { language: "pl", country: "PL" },
+    const response = await getCityDetailsPlacesCityAsciiNameGet({
+      path: {city_ascii_name: citySlug.value},
+      query: {language: "pl", country: "PL"},
     })
     cityDetails.value = response.data ?? null
 
@@ -234,7 +252,7 @@ const fetchCityDetails = async () => {
 const fetchRooms = async () => {
   try {
     const response = await roomsByLocationRoomsUrlLanguagePlaceLocationGet({
-      path: { language: "pl", location: citySlug.value },
+      path: {language: "pl", location: citySlug.value},
     })
     rooms.value = response.data.data
 
@@ -251,7 +269,7 @@ const fetchRooms = async () => {
 const fetchNearbyRooms = async () => {
   try {
     const response = await getRoomsNearbyRoomsNearbyCityAsciiNameGet({
-      path: { city_ascii_name: citySlug.value }
+      path: {city_ascii_name: citySlug.value}
     })
     nearbyRooms.value = response.data
   } catch (err) {
@@ -268,6 +286,17 @@ const fetchRoomsCount = async () => {
   }
 }
 
+const fetchNearbyCities = async () => {
+  try {
+    const response = await getNearbyCitiesPlacesNearbyCityCityAsciiNameGet({
+      path: {city_ascii_name: citySlug.value}
+    })
+    nearbyCities.value = response.data
+  } catch (err) {
+    console.error("Failed to fetch rooms count:", err)
+  }
+}
+
 // Initialize data
 const initializeData = async () => {
   isLoading.value = true
@@ -277,7 +306,8 @@ const initializeData = async () => {
     await Promise.all([
       fetchCityDetails(),
       fetchRooms(),
-      fetchRoomsCount()
+      fetchRoomsCount(),
+      fetchNearbyCities()
     ])
   } finally {
     isLoading.value = false

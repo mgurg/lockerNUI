@@ -477,7 +477,7 @@ export type AddRoomPlacesPostResponses = {
 
 export type AddRoomPlacesPostResponse = AddRoomPlacesPostResponses[keyof AddRoomPlacesPostResponses];
 
-export type DetailsPlacesCityAsciiNameGetData = {
+export type GetCityDetailsPlacesCityAsciiNameGetData = {
     body?: never;
     path: {
         city_ascii_name: string;
@@ -489,23 +489,48 @@ export type DetailsPlacesCityAsciiNameGetData = {
     url: '/places/{city_ascii_name}';
 };
 
-export type DetailsPlacesCityAsciiNameGetErrors = {
+export type GetCityDetailsPlacesCityAsciiNameGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type DetailsPlacesCityAsciiNameGetError = DetailsPlacesCityAsciiNameGetErrors[keyof DetailsPlacesCityAsciiNameGetErrors];
+export type GetCityDetailsPlacesCityAsciiNameGetError = GetCityDetailsPlacesCityAsciiNameGetErrors[keyof GetCityDetailsPlacesCityAsciiNameGetErrors];
 
-export type DetailsPlacesCityAsciiNameGetResponses = {
+export type GetCityDetailsPlacesCityAsciiNameGetResponses = {
     /**
      * Successful Response
      */
     200: CityDetailsResponse;
 };
 
-export type DetailsPlacesCityAsciiNameGetResponse = DetailsPlacesCityAsciiNameGetResponses[keyof DetailsPlacesCityAsciiNameGetResponses];
+export type GetCityDetailsPlacesCityAsciiNameGetResponse = GetCityDetailsPlacesCityAsciiNameGetResponses[keyof GetCityDetailsPlacesCityAsciiNameGetResponses];
+
+export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetData = {
+    body?: never;
+    path: {
+        city_ascii_name: string;
+    };
+    query?: never;
+    url: '/places/nearby_city/{city_ascii_name}';
+};
+
+export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetError = GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors[keyof GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors];
+
+export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetRoomsByLocationPlacesRoomsLocationNameGetData = {
     body?: never;
