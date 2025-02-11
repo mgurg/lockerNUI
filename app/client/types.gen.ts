@@ -252,6 +252,45 @@ export type WrongFeedback = {
     feedback: string;
 };
 
+export type GetRoomsCountRoomsCountGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/rooms/count';
+};
+
+export type GetRoomsCountRoomsCountGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetData = {
+    body?: never;
+    path: {
+        city_ascii_name: string;
+    };
+    query?: never;
+    url: '/rooms/nearby/{city_ascii_name}';
+};
+
+export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetError = GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors[keyof GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors];
+
+export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type DeleteRoomRoomsRoomUuidDeleteData = {
     body?: never;
     path: {

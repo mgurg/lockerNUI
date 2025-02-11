@@ -63,12 +63,16 @@
     </span></p>
 
         <p class="text-gray-500 dark:text-gray-400">Na tą chwilę mamy w bazie <span
-            class="font-bold">0 pokoi zagadek</span> pokoi zagadek w tym mieście. Dlaczego?
+            class="font-bold"> 0 pokoi zagadek</span> pokoi zagadek w tym mieście. Dlaczego?
           Ponieważ dopiero zaczynam budować bazę pokoi. Łącznie (we wszystkich miastach) mamy dodanych na razie <span
-              class="font-bold">0 pokoi</span>, więć jak widzisz ciężko
+              class="font-bold">{{ roomsCounter }} pokoi</span>, więć jak widzisz ciężko
           jest coś z tego dopasować dla Twojego miasta 😮‍💨
 
           Ale nic się nie martw, nie zostawię cie bez rozwiązania!</p>
+
+        <h2 class="my-4 text-2xl">Najbliższe pokoje escape room</h2>
+        <p>Sprawdź co jest w pobliżu Ciebie, może krótka wycieczka wystarczy żeby odkryć nowy ER?</p>
+
 
         <h2 class="my-4 text-2xl">Wirtualny escape room</h2>
         <p class="text-gray-500 dark:text-gray-400">Zachęcam Cię do wirtualnego escape room generowanego przez ChatGPT.
@@ -80,11 +84,6 @@
               class="font-bold">nie trzeba podawać maila, a całość jes za darmo</span></p>
 
         <UButton class="my-4" :to="localePath('/er_game')">Rozpocznij grę 🕹</UButton>
-
-        <!--        <h2 class="my-4 text-xl">Escape room w pobliżu {{ cityDetails.city_name }}</h2>-->
-        <!--        <p class="text-gray-500 dark:text-gray-400">W naszej bazie (pamiętaj mamy na razie 0 rekordów) najbliższe miasto-->
-        <!--          gdzie jest Escape Room to Kraków. Odległość do niego to około 300 km. Trochę sporo więć może warto rozważyć-->
-        <!--          ten wirtualny ER o którym mówiłem Ci wcześniej?</p>-->
 
         <h2 class="my-4 text-2xl">Escape room dla x osób w {{ cityDetails.city_name_inflect }} dla dzieci, na kawalerski
           itd.</h2>
@@ -117,7 +116,9 @@ import type {Ref} from 'vue';
 import {ref} from 'vue';
 import {
   detailsPlacesCityAsciiNameGet,
-  roomsByLocationRoomsUrlLanguagePlaceLocationGet,
+  getRoomsCountRoomsCountGet,
+  getRoomsNearbyRoomsNearbyCityAsciiNameGet,
+  roomsByLocationRoomsUrlLanguagePlaceLocationGet
 } from "~/client";
 import type {CityDetailsResponse} from '~/client/types.gen';
 
@@ -127,6 +128,9 @@ const runtimeConfig = useRuntimeConfig()
 
 const citySlug = route.params.slug || route.path.split("/").pop();
 const rooms = ref();
+const nearbyRooms = ref();
+
+const roomsCounter = ref(0);
 const cityDetails: Ref<CityDetailsResponse | null> = ref(null);
 
 const mapLink = computed(() => {
@@ -147,7 +151,7 @@ const fetchCityDetails = async () => {
     if (response?.status === 404) {
       console.error("City not found. Redirecting to the main page.");
       // Redirect to the main page
-      await redirectToRoomDetailsPage('escape-room/near-me', );
+      await redirectToRoomDetailsPage('escape-room/near-me',);
     }
   } catch (error) {
     console.error("Failed to fetch city details:", error);
@@ -166,10 +170,26 @@ const fetchRooms = async () => {
   }
 };
 
+const fetchRoomsCount = async () => {
+  const response = await getRoomsCountRoomsCountGet()
+  console.log(response.data)
+  roomsCounter.value = response.data;
+}
+
+const fetchNearbyRooms = async () => {
+  const response = await getRoomsNearbyRoomsNearbyCityAsciiNameGet({path: {city_ascii_name: citySlug}});
+  console.log(response.data)
+  nearbyRooms.value = response.data;
+
+}
+
+
 fetchCityDetails();
 fetchRooms();
+fetchRoomsCount();
+fetchNearbyRooms();
 
-const redirectToRoomDetailsPage = async (url:string, query: any) => {
+const redirectToRoomDetailsPage = async (url: string, query: any) => {
   await navigateTo({
     path: localePath(`/${url}`),
     query,

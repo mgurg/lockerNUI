@@ -2,7 +2,7 @@
   <div v-if="isLoaded" class="p-4">
     <UCard>
       <template #header>
-        <h3 class="text-xl font-bold">Edit Escape Room</h3>
+        <h3 class="text-xl font-bold"><UButton size ="sm" icon="i-lucide-arrow-left" @click="$router.back()"></UButton> Edit Escape Room</h3>
       </template>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Basic Information Column -->
@@ -108,19 +108,19 @@
 
           <h4 class="font-semibold text-lg mt-6">Translations</h4>
 
-          <UAccordion :items="translations" :multiple="true">
-            <template #default="{ item }">
+          <UAccordion :items="translations">
+            <template #body="{ item }"">
               <div class="space-y-4 p-4">
                 <UFormField :label="'Title (' + item.lang + ')'" :name="'title_' + item.lang">
-                  <UInput v-model="item.title" />
+                  <UInput v-model="item.title" class="w-full" />
                 </UFormField>
 
                 <UFormField :label="'Lead (' + item.lang + ')'" :name="'lead_' + item.lang">
-                  <UTextarea v-model="item.lead" :rows="3" />
+                  <UTextarea v-model="item.lead" :rows="3" class="w-full" />
                 </UFormField>
 
                 <UFormField :label="'Description (' + item.lang + ')'" :name="'description_' + item.lang">
-                  <UTextarea v-model="item.description" :rows="6" />
+                  <UTextarea v-model="item.description" :rows="6" class="w-full" />
                 </UFormField>
               </div>
             </template>
@@ -132,6 +132,7 @@
         <div class="flex justify-end gap-4">
           <UButton color="gray" variant="ghost">Cancel</UButton>
           <UButton color="primary" @click="saveRoom">Save Changes</UButton>
+          <UButton color="warning" @click="deleteRoom">Delete</UButton>
         </div>
       </template>
     </UCard>
@@ -140,7 +141,7 @@
 
 <script setup>
 import { useRoute } from "#vue-router";
-import { getRoomByUuidRoomsRoomUuidGet, getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet } from '@/client/index.ts';
+import { getRoomByUuidRoomsRoomUuidGet, getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet , deleteRoomRoomsRoomUuidDelete} from '@/client/index.ts';
 import { ref } from "vue";
 
 const route = useRoute();
@@ -228,7 +229,12 @@ async function fetchRoom() {
         country: data.location.country
       };
 
-      translations.value = data.translations;
+      // translations.value = data.translations;
+
+      translations.value = response.data.translations.map(item => ({
+        ...item,
+        label: item.lang
+      }));
       isLoaded.value = true;
     }
   } catch (error) {
@@ -272,11 +278,28 @@ async function saveRoom() {
     };
 
     console.log('Saving room:', roomData);
+
+    await useToast().add({
+      title: 'Update',
+      description: 'Room updated successfully',
+      color: 'green'
+    })
     // Implement your save API call here
   } catch (error) {
     console.error('Error saving room:', error);
   }
 }
 
+async function deleteRoom() {
+  // const response = await deleteRoomRoomsRoomUuidDelete({
+  //   path: { room_uuid: uuid.value }});
+
+    await useToast().add({
+      title: 'Delete',
+      description: 'Room deleted successfully',
+      color: 'red'
+    })
+
+}
 fetchRoom();
 </script>

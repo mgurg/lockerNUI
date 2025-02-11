@@ -7,11 +7,12 @@
           <UBadge color="gray" variant="soft">
             Total: {{ count }}
           </UBadge>
+          <UInput v-model="search" @update:model-value="fetchCompanies()"></UInput>
         </div>
       </template>
 
       <div v-if="!isLoaded" class="flex justify-center items-center py-10">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8" />
+        <UIcon name="i-lucide-rotate-cw" class="animate-spin h-8 w-8"/>
       </div>
 
       <div v-else-if="companies.length === 0" class="text-center py-10 text-gray-500">
@@ -28,10 +29,12 @@
             <div>
               <h3 class="text-lg font-semibold">
                 {{ company.name }}
-                <UButton :color="company.validated_at ? 'success' : 'warning'"  @click="redirectToExternalPage(company.uuid, '/cc/company')">GO</UButton>
+                <UButton :color="company.validated_at ? 'success' : 'warning'"
+                         @click="redirectToExternalPage(company.uuid, '/cc/company')">GO
+                </UButton>
               </h3>
               <div class="mt-2 flex items-center space-x-2">
-                <UIcon name="i-heroicons-map-pin" class="h-5 w-5 text-gray-500" />
+                <UIcon name="i-lucide-map-pin" class="h-5 w-5 text-gray-500"/>
                 <span class="text-gray-600">
                   {{ company.location?.city || 'No Location' }}
                 </span>
@@ -43,7 +46,7 @@
                 <UButton
                     v-for="dept in company.departments"
                     :key="dept.uuid"
-                    icon="i-lucide-rocket"
+                    icon="i-lucide-map-pin-house"
                     color="blue"
                     variant="solid"
                     size="sm"
@@ -58,11 +61,10 @@
                     v-for="room in company.rooms"
                     @click="redirectToExternalPage(room.uuid, '/cc/room')"
                     :key="room.uuid"
-                    icon="i-lucide-rocket"
+                    icon="i-lucide-joystick"
                     color="green"
-                    variant="outline"
+                    variant="soft"
                     size="md"
-                    class="max-w-[200px] truncate mb-1"
                 >
                   {{ room.name }}
                 </UButton>
@@ -90,8 +92,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { getCompaniesCompaniesGet } from '@/client/index.ts'
+import {ref} from 'vue'
+import {getCompaniesCompaniesGet} from '@/client/index.ts'
 
 const localePath = useLocalePath()
 
@@ -100,17 +102,23 @@ const isLoaded = ref(false)
 const count = ref(0)
 const limit = ref(10)
 const page = ref(1)
+const search = ref(null)
 
 async function fetchCompanies(newPage = 1) {
   try {
     isLoaded.value = false
     page.value = newPage
 
-    const response = await getCompaniesCompaniesGet({ query: {
-        offset: (newPage - 1) * limit.value,
-        limit: limit.value
-      }
-    })
+    const query = {
+      offset: (newPage - 1) * limit.value,
+      limit: limit.value
+    }
+
+    if (search.value) {
+      query.search = search.value
+    }
+
+    const response = await getCompaniesCompaniesGet({query})
 
     if (response.data) {
       companies.value = response.data.data
@@ -120,7 +128,7 @@ async function fetchCompanies(newPage = 1) {
     }
   } catch (error) {
     console.error('Error fetching company data:', error)
-    useToast().add({
+    await useToast().add({
       title: 'Error',
       description: 'Failed to fetch companies',
       color: 'red'

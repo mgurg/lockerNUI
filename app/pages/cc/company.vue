@@ -2,7 +2,12 @@
   <div v-if="isLoaded">
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <h2 class="text-xl font-semibold">Company Details   <UBadge :color="companyState.validated_at ? 'success' : 'warning'" size="lg" icon="i-lucide-badge-check"></UBadge></h2>
+        <h2 class="text-xl font-semibold">
+          <UButton size="sm" icon="i-lucide-arrow-left" @click="$router.back()"></UButton>
+          Company Details
+          <UBadge :color="companyState.validated_at ? 'success' : 'warning'" size="md"
+                  icon="i-lucide-badge-check"></UBadge>
+        </h2>
         <UForm :schema="schema" :state="companyState" @submit="onSubmit" class="space-y-4">
           <UFormField label="UUID" name="uuid">
             <UInput v-model="companyState.uuid" readonly class="w-full"/>
@@ -144,20 +149,11 @@
         <UButton
             v-for="room in rooms"
             :key="room.uuid"
-            @click="fetchRoomDetails(room.uuid)"
+            @click="redirectToExternalPage(room.uuid, '/cc/room')"
             variant="outline"
         >
           {{ room.name }}
         </UButton>
-      </div>
-
-      <div v-if="selectedRoom" class="mt-4">
-        <h3 class="text-lg font-medium">Room Details</h3>
-        <UForm :schema="roomSchema" :state="selectedRoom" @submit="onSubmit" class="space-y-4">
-          <UFormField label="Room Name" name="name">
-            <UInput v-model="selectedRoom.name" class="w-full"/>
-          </UFormField>
-        </UForm>
       </div>
     </div>
 
@@ -173,12 +169,12 @@ import {
   deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getCompanyByUuidCompaniesCompanyUuidGet,
   getDepartmentCompaniesDepartmentsDepartmentUuidGet,
-  getRoomByUuidRoomsRoomUuidGet,
   updateCompanyCompaniesCompanyUuidPatch,
   updateDepartmentCompaniesDepartmentsDepartmentUuidPatch
 } from '@/client/index.ts';
 import {useRoute} from "#vue-router";
 
+const localePath = useLocalePath()
 const route = useRoute();
 
 const uuid = ref(route.query.uuid);
@@ -249,7 +245,6 @@ const locationDepartmentState = reactive({
 const departments = ref([]);
 const rooms = ref([]);
 const selectedDepartment = ref(null);
-const selectedRoom = ref(null);
 const isLoaded = ref(false);
 
 // Methods
@@ -270,7 +265,7 @@ async function onSubmit() {
   }
 }
 
-async function fetchUnverifiedCompanies() {
+async function fetchCompany() {
   try {
     const response = await getCompanyByUuidCompaniesCompanyUuidGet({path: {company_uuid: uuid.value}});
     if (response.data) {
@@ -295,8 +290,6 @@ async function fetchUnverifiedCompanies() {
 
 async function fetchDepartmentDetails(departmentUuid) {
   try {
-    // TODO: Implement actual API call
-    // const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: {company_uuid: companyState.uuid}});
     const response = await getDepartmentCompaniesDepartmentsDepartmentUuidGet({path: {department_uuid: departmentUuid}});
     Object.assign(departmentState, response.data);
     if (response.data.location) {
@@ -309,19 +302,6 @@ async function fetchDepartmentDetails(departmentUuid) {
   }
 }
 
-async function fetchRoomDetails(roomUuid) {
-  try {
-    // TODO: Implement actual API call
-    const response = await getRoomByUuidRoomsRoomUuidGet({
-      path: {room_uuid: roomUuid},
-    })
-    console.log(`Fetching room details for ${roomUuid}`);
-    selectedRoom.value = {name: "Fetched Room", uuid: roomUuid};
-  } catch (error) {
-    console.error('Error fetching room:', error);
-  }
-}
-
 async function createDepartment() {
   const data = {
     company_uuid: companyState.uuid,
@@ -331,6 +311,12 @@ async function createDepartment() {
   console.log(data)
   const response = await createDepartmentCompaniesDepartmentsPost({
     body: data,
+  })
+
+  await useToast().add({
+    title: 'Create',
+    description: 'Department created successfully',
+    color: 'green'
   })
 
 }
@@ -346,6 +332,14 @@ async function updateDepartment(departmentUuid) {
     path: {department_uuid: departmentUuid},
   })
 
+  await fetchDepartmentDetails(departmentUuid)
+
+  await useToast().add({
+    title: 'Update',
+    description: 'Department updated successfully',
+    color: 'red'
+  })
+
 }
 
 async function deleteDepartment(departmentUuid) {
@@ -356,6 +350,13 @@ async function deleteDepartment(departmentUuid) {
       }
   )
 }
+
+const redirectToExternalPage = async (uuid, path) => {
+  await navigateTo({
+    path: localePath(path),
+    query: {uuid: uuid}
+  });
+};
 
 async function updateCompany(companyUuid) {
   console.log(companyUuid)
@@ -375,8 +376,14 @@ async function updateCompany(companyUuid) {
     body: data,
     path: {company_uuid: companyUuid},
   })
+  await useToast().add({
+    title: 'Update',
+    description: 'Company updated successfully',
+    color: 'green'
+  })
+  await fetchCompany()
 }
 
 // Initialize data
-fetchUnverifiedCompanies();
+fetchCompany();
 </script>
