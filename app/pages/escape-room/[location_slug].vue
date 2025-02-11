@@ -1,203 +1,307 @@
 <template>
   <UContainer>
-    <div>
-      <div v-if="rooms && rooms.length > 0 && cityDetails">
-        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          Escape room-y w Kraków
-        </h1>
-        <div v-for="room in rooms" :key="room.uuid"
-             class="p-4 text-md cursor-pointer border-2 border-slate-700 text-gray-600 dark:text-gray-300"
-             @click="redirectToRoomDetailsPage(room.url_slug)">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3 font-semibold py-2 text-lg">
-              {{ room.translation.title }}
-              <UChip/>
-            </div>
-          </div>
-          <p class="text-gray-400 dark:text-gray-500 line-clamp-2">
-            {{ room.translation.lead }}
-          </p>
-          <div class="text-gray-400 dark:text-gray-500 line-clamp-1 space-x-4 pt-2">
-            <UBadge
-                :label="`${room.game_duration} min`"
-                :trailing="false"
-                color="primary"
-                icon="i-lucide-clock"
-                size="lg"
-                variant="solid"
-            />
-            <UBadge
-                :label="`${room.players_min}-${room.players_max}`"
-                :trailing="false"
-                color="primary"
-                icon="i-lucide-users"
-                size="lg"
-                variant="solid"
-            />
-            <UBadge
-                :label="`od ${room.price_from} PLN`"
-                :trailing="false"
-                color="primary"
-                icon="i-lucide-circle-dollar-sign"
-                size="lg"
-                variant="solid"
-            />
-          </div>
-        </div>
-      </div>
-      <div v-else-if="cityDetails">
-        <h1
-            class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          Escape room w {{ cityDetails.city_name_inflect }}
-        </h1>
-        <p class="text-gray-500 dark:text-gray-400">Szukasz <span
-            class="font-bold">escape room w mieście {{ cityDetails.city_name }}?</span>
-          <span v-if="cityDetails.importance >= 0.60">
-      To jedno z najważniejszych miast w Polsce, oferujące bogatą historię i niezapomniane atrakcje.
-    </span>
-          <span v-else-if="cityDetails.importance >= 0.50">
-      To piękne miasto z interesującą historią i miejscami wartymi odwiedzenia.
-    </span>
-          <span v-else>
-      To urokliwe miasteczko, które kryje w sobie wiele ciekawych zakątków do odkrycia.
-    </span></p>
-
-        <p class="text-gray-500 dark:text-gray-400">Na tą chwilę mamy w bazie <span
-            class="font-bold"> 0 pokoi zagadek</span> pokoi zagadek w tym mieście. Dlaczego?
-          Ponieważ dopiero zaczynam budować bazę pokoi. Łącznie (we wszystkich miastach) mamy dodanych na razie <span
-              class="font-bold">{{ roomsCounter }} pokoi</span>, więć jak widzisz ciężko
-          jest coś z tego dopasować dla Twojego miasta 😮‍💨
-
-          Ale nic się nie martw, nie zostawię cie bez rozwiązania!</p>
-
-        <h2 class="my-4 text-2xl">Najbliższe pokoje escape room</h2>
-        <p>Sprawdź co jest w pobliżu Ciebie, może krótka wycieczka wystarczy żeby odkryć nowy ER?</p>
-
-
-        <h2 class="my-4 text-2xl">Wirtualny escape room</h2>
-        <p class="text-gray-500 dark:text-gray-400">Zachęcam Cię do wirtualnego escape room generowanego przez ChatGPT.
-          Każda gra jest unikatowa i tworzona tylko i wyłącznie dla Ciebie.</p>
-
-        <p class="text-gray-500 dark:text-gray-400">Wpisujesz dowolną tematykę, podajesz kilka szczegółów i możesz
-          spróbować się
-          wydostać z rzeczywistości wykreowanej przez sztuczną inteligencję. Spróbuj, <span
-              class="font-bold">nie trzeba podawać maila, a całość jes za darmo</span></p>
-
-        <UButton class="my-4" :to="localePath('/er_game')">Rozpocznij grę 🕹</UButton>
-
-        <h2 class="my-4 text-2xl">Escape room dla x osób w {{ cityDetails.city_name_inflect }} dla dzieci, na kawalerski
-          itd.</h2>
-        <p class="text-gray-500 dark:text-gray-400">Rozumiem, potrzebujesz wybrać się gdzieś ze swoimi znajomymi lub z
-          rodziną więć w grę wchodzi tylko stacjonarny escape room w {{ cityDetails.city_name_inflect }}</p>
-
-        <p class="text-gray-500 dark:text-gray-400">Ponieważ pewnie już zapamiętałeś, że <span class="line-through">prawie</span>
-          nie mamy jeszcze nic
-          dodane do naszej bazy. Odeślę Cię na razie do mapy Google. kliknij w link poniżej a zostaniesz przeniesiony
-          do mapy miasta {{ cityDetails.city_name }} 🗺️</p>
-
-        <UButton class="my-4" :to="mapLink">Eksploruj mapę escape room-ów w {{
-            cityDetails.city_name_inflect
-          }}
-        </UButton>
-
-
-      </div>
-      <!--    <div v-else>-->
-      <!--      Loading... -->
-      <!--    </div>-->
-
-
+    <div v-if="isLoading">
+      <USkeleton class="h-32 w-full" />
     </div>
+
+    <div v-else-if="error">
+      <UAlert
+          title="Error loading data"
+          description="Unable to load escape room data. Please try again later."
+          color="warning"
+      />
+    </div>
+
+    <template v-else>
+      <!-- Rooms listing section -->
+      <section v-if="rooms?.length">
+        <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl mb-8">
+          Escape room-y w {{ cityDetails?.city_name }}
+        </h1>
+
+        <TransitionGroup name="list" tag="div" class="space-y-4">
+          <UCard
+              v-for="room in rooms"
+              :key="room.uuid"
+              @click="navigateToRoom(room.url_slug)"
+          >
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold">
+                  {{ room.translation.title }}
+                </h2>
+                <UChip />
+              </div>
+            </template>
+
+            <p class="text-gray-500 dark:text-gray-400 line-clamp-2">
+              {{ room.translation.lead }}
+            </p>
+
+            <template #footer>
+              <div class="flex gap-4">
+                <UBadge
+                    :label="`${room.game_duration} min`"
+                    icon="i-lucide-clock"
+                    color="primary"
+                    variant="solid"
+                />
+                <UBadge
+                    :label="`${room.players_min}-${room.players_max} graczy`"
+                    icon="i-lucide-users"
+                    color="primary"
+                    variant="solid"
+                />
+                <UBadge
+                    :label="`od ${room.price_from} PLN`"
+                    icon="i-lucide-circle-dollar-sign"
+                    color="primary"
+                    variant="solid"
+                />
+              </div>
+            </template>
+          </UCard>
+        </TransitionGroup>
+      </section>
+
+      <!-- No rooms in city section -->
+      <section v-else-if="cityDetails" class="space-y-8">
+        <div>
+          <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl mb-4">
+            Escape room w {{ cityDetails.city_name_inflect }}
+          </h1>
+
+          <p class="text-gray-500 dark:text-gray-400">
+            Szukasz <span class="font-bold">escape room w mieście {{ cityDetails.city_name }}?</span>
+            <span v-if="cityDetails.importance >= 0.60">
+              To jedno z najważniejszych miast w Polsce, oferujące bogatą historię i niezapomniane atrakcje.
+            </span>
+            <span v-else-if="cityDetails.importance >= 0.50">
+              To piękne miasto z interesującą historią i miejscami wartymi odwiedzenia.
+            </span>
+            <span v-else>
+              To urokliwe miasteczko, które kryje w sobie wiele ciekawych zakątków do odkrycia.
+            </span>
+          </p>
+        </div>
+
+        <UAlert
+            title="Brak pokoi w bazie"
+            :description="`Na tą chwilę mamy w bazie ${roomsCounter} pokoi zagadek w innych miastach. Sprawdź dostępne pokoje w okolicy!`"
+            color="warning"
+        />
+
+        <!-- Virtual escape room section -->
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold">Wirtualny escape room</h2>
+          <p class="text-gray-500 dark:text-gray-400">
+            Wypróbuj wirtualny escape room generowany przez ChatGPT.
+            Każda gra jest unikatowa i tworzona specjalnie dla Ciebie.
+          </p>
+          <UButton
+              to="/er_game"
+              icon="i-lucide-gamepad-2"
+              size="lg"
+          >
+            Rozpocznij grę
+          </UButton>
+        </div>
+
+        <!-- Nearby rooms section -->
+        <div v-if="nearbyRooms?.length" class="space-y-4">
+          <h2 class="text-2xl font-bold">Najbliższe escape room-y</h2>
+          <p class="text-gray-500 dark:text-gray-400 mb-4">
+            Sprawdź dostępne pokoje w pobliskich miastach:
+          </p>
+
+          <TransitionGroup name="list" tag="div" class="space-y-4">
+            <UCard
+                v-for="room in nearbyRooms"
+                :key="room.uuid"
+                @click="navigateToRoom(room.url_slug)"
+            >
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-xl font-semibold">
+                    {{ getTranslation(room).title }}
+                  </h3>
+                  <UBadge
+                      v-if="room.location?.city"
+                      color="gray"
+                      variant="solid"
+                      :label="room.location.city"
+                  />
+                </div>
+              </template>
+
+              <p class="text-gray-500 dark:text-gray-400 line-clamp-2">
+                {{ getTranslation(room).lead }}
+              </p>
+
+              <template #footer>
+                <div class="flex gap-4">
+                  <UBadge
+                      :label="`${room.game_duration} min`"
+                      icon="i-lucide-clock"
+                      color="primary"
+                      variant="solid"
+                  />
+                  <UBadge
+                      :label="`${room.players_min}-${room.players_max} graczy`"
+                      icon="i-lucide-users"
+                      color="primary"
+                      variant="solid"
+                  />
+                  <UBadge
+                      :label="`od ${room.price_from} PLN`"
+                      icon="i-lucide-circle-dollar-sign"
+                      color="primary"
+                      variant="solid"
+                  />
+                </div>
+              </template>
+            </UCard>
+          </TransitionGroup>
+        </div>
+
+
+
+        <!-- Google Maps section -->
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold">Znajdź escape room na mapie</h2>
+          <p class="text-gray-500 dark:text-gray-400">
+            Sprawdź dostępne escape room-y w {{ cityDetails.city_name_inflect }} na Google Maps
+          </p>
+          <UButton
+              :to="mapLink"
+              icon="i-lucide-map"
+              size="lg"
+              target="_blank"
+          >
+            Otwórz mapę
+          </UButton>
+        </div>
+      </section>
+    </template>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import type {Ref} from 'vue';
-import {ref} from 'vue';
+import { ref, computed } from 'vue'
+import type { CityDetailsResponse } from '~/client/types.gen'
 import {
   detailsPlacesCityAsciiNameGet,
   getRoomsCountRoomsCountGet,
   getRoomsNearbyRoomsNearbyCityAsciiNameGet,
   roomsByLocationRoomsUrlLanguagePlaceLocationGet
-} from "~/client";
-import type {CityDetailsResponse} from '~/client/types.gen';
+} from "~/client"
 
-const localePath = useLocalePath()
+// State
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
+const citySlug = computed(() => route.params.slug || route.path.split("/").pop())
 
-const citySlug = route.params.slug || route.path.split("/").pop();
-const rooms = ref();
-const nearbyRooms = ref();
+const rooms = ref()
+const nearbyRooms = ref()
+const roomsCounter = ref(0)
+const cityDetails = ref<CityDetailsResponse | null>(null)
+const isLoading = ref(true)
+const error = ref(false)
 
-const roomsCounter = ref(0);
-const cityDetails: Ref<CityDetailsResponse | null> = ref(null);
+// Helper functions
+const getTranslation = (room: any) => {
+  return room.translations?.[0] || room.translation
+}
 
-const mapLink = computed(() => {
-  if (cityDetails.value?.lat && cityDetails.value?.lon) {
-    return `https://www.google.com/maps/search/escape+room/@${cityDetails.value.lat},${cityDetails.value.lon},13z`;
-  }
-  return "https://www.google.com/maps/search/escape+room?zoom=13"; // Fallback link
-});
-
+// API Calls
 const fetchCityDetails = async () => {
   try {
     const response = await detailsPlacesCityAsciiNameGet({
-      path: {city_ascii_name: citySlug},
-      query: {language: "pl", country: "PL"},
-    });
-    cityDetails.value = response.data ?? null;
-    console.log(response.status);
+      path: { city_ascii_name: citySlug.value },
+      query: { language: "pl", country: "PL" },
+    })
+    cityDetails.value = response.data ?? null
+
     if (response?.status === 404) {
-      console.error("City not found. Redirecting to the main page.");
-      // Redirect to the main page
-      await redirectToRoomDetailsPage('escape-room/near-me',);
+      navigateToRoom('escape-room/near-me')
     }
-  } catch (error) {
-    console.error("Failed to fetch city details:", error);
+  } catch (err) {
+    error.value = true
+    console.error("Failed to fetch city details:", err)
   }
-};
+}
 
 const fetchRooms = async () => {
   try {
     const response = await roomsByLocationRoomsUrlLanguagePlaceLocationGet({
-      path: {language: "pl", location: citySlug},
-    });
-    console.log(response.data)
-    rooms.value = response.data.data;
-  } catch (error) {
-    console.error("Failed to fetch escape rooms:", error);
-  }
-};
+      path: { language: "pl", location: citySlug.value },
+    })
+    rooms.value = response.data.data
 
-const fetchRoomsCount = async () => {
-  const response = await getRoomsCountRoomsCountGet()
-  console.log(response.data)
-  roomsCounter.value = response.data;
+    // If no rooms found, fetch nearby rooms
+    if (!rooms.value?.length) {
+      await fetchNearbyRooms()
+    }
+  } catch (err) {
+    error.value = true
+    console.error("Failed to fetch escape rooms:", err)
+  }
 }
 
 const fetchNearbyRooms = async () => {
-  const response = await getRoomsNearbyRoomsNearbyCityAsciiNameGet({path: {city_ascii_name: citySlug}});
-  console.log(response.data)
-  nearbyRooms.value = response.data;
-
+  try {
+    const response = await getRoomsNearbyRoomsNearbyCityAsciiNameGet({
+      path: { city_ascii_name: citySlug.value }
+    })
+    nearbyRooms.value = response.data
+  } catch (err) {
+    console.error("Failed to fetch nearby rooms:", err)
+  }
 }
 
+const fetchRoomsCount = async () => {
+  try {
+    const response = await getRoomsCountRoomsCountGet()
+    roomsCounter.value = response.data
+  } catch (err) {
+    console.error("Failed to fetch rooms count:", err)
+  }
+}
 
-fetchCityDetails();
-fetchRooms();
-fetchRoomsCount();
-fetchNearbyRooms();
+// Initialize data
+const initializeData = async () => {
+  isLoading.value = true
+  error.value = false
 
-const redirectToRoomDetailsPage = async (url: string, query: any) => {
-  await navigateTo({
-    path: localePath(`/${url}`),
-    query,
-  });
-};
+  try {
+    await Promise.all([
+      fetchCityDetails(),
+      fetchRooms(),
+      fetchRoomsCount()
+    ])
+  } finally {
+    isLoading.value = false
+  }
+}
 
+// Computed
+const mapLink = computed(() => {
+  if (cityDetails.value?.lat && cityDetails.value?.lon) {
+    return `https://www.google.com/maps/search/escape+room/@${cityDetails.value.lat},${cityDetails.value.lon},13z`
+  }
+  return 'https://www.google.com/maps/search/escape+room?zoom=13'
+})
 
-const cityName = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
+// Navigation
+const navigateToRoom = (urlSlug: string) => {
+  navigateTo(`/room/${urlSlug}`)
+}
+
+// Initialize
+initializeData()
+
+// SEO
+const city = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
   {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
@@ -213,10 +317,10 @@ useHead({
   },
 });
 useSeoMeta({
-  title: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
-  ogTitle: computed(() => `Escape Room ${cityName.value} - Katalog i Analizy Najlepszych Escape Roomów`),
-  description: computed(() => `Znajdź najlepsze escape roomy w ${cityName.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
-  ogDescription: computed(() => `Znajdź najlepsze escape roomy w ${cityName.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
+  title: computed(() => `Escape Room ${city.value} - Katalog i Analizy Najlepszych Escape Roomów`),
+  ogTitle: computed(() => `Escape Room ${city.value} - Katalog i Analizy Najlepszych Escape Roomów`),
+  description: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
+  ogDescription: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
 });
 </script>
 

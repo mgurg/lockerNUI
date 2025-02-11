@@ -263,8 +263,10 @@ export type GetRoomsCountRoomsCountGetResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: number;
 };
+
+export type GetRoomsCountRoomsCountGetResponse = GetRoomsCountRoomsCountGetResponses[keyof GetRoomsCountRoomsCountGetResponses];
 
 export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetData = {
     body?: never;
