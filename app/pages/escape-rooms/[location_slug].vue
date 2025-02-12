@@ -23,7 +23,8 @@
           <UCard
               v-for="room in rooms"
               :key="room.uuid"
-              @click="navigateToRoom(room.url_slug)"
+              @click="redirectToExternalPage(`/escape-room/${room.url_slug}`)"
+              class="cursor-pointer"
           >
             <template #header>
               <div class="flex items-center justify-between">
@@ -118,7 +119,7 @@
             <UCard
                 v-for="room in nearbyRooms"
                 :key="room.uuid"
-                @click="navigateToRoom(room.url_slug)"
+                @click="redirectToExternalPage(`/escape-room/${room.url_slug}`)"
             >
               <template #header>
                 <div class="flex items-center justify-between">
@@ -210,13 +211,18 @@ import {
   getNearbyCitiesPlacesNearbyCityCityAsciiNameGet,
   getRoomsCountRoomsCountGet,
   getRoomsNearbyRoomsNearbyCityAsciiNameGet,
-  roomsByLocationRoomsUrlLanguagePlaceLocationGet
+  roomsByLocationRoomsUrlLanguagePlaceLocationGet,
+    getRoomsByLocationPlacesRoomsLocationNameGet
 } from "~/client"
 
 // State
+const localePath = useLocalePath()
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
-const citySlug = computed(() => route.params.slug || route.path.split("/").pop())
+const citySlug = computed(() => {
+  const slug = route.params.slug || route.path.split("/").pop();
+  return decodeURIComponent(decodeURIComponent(slug));
+});
 
 const rooms = ref()
 const nearbyRooms = ref()
@@ -241,7 +247,7 @@ const fetchCityDetails = async () => {
     cityDetails.value = response.data ?? null
 
     if (response?.status === 404) {
-      navigateToRoom('escape-room/near-me')
+      await redirectToExternalPage('escape-rooms/near-me')
     }
   } catch (err) {
     error.value = true
@@ -251,10 +257,13 @@ const fetchCityDetails = async () => {
 
 const fetchRooms = async () => {
   try {
-    const response = await roomsByLocationRoomsUrlLanguagePlaceLocationGet({
-      path: {language: "pl", location: citySlug.value},
+    // const response = await roomsByLocationRoomsUrlLanguagePlaceLocationGet({
+    //   path: {language: "pl", location: citySlug.value},
+    // })
+    const response = await getRoomsByLocationPlacesRoomsLocationNameGet({
+      path: {location_name: citySlug.value}, query :{language: "pl"},
     })
-    rooms.value = response.data.data
+    rooms.value = response.data
 
     // If no rooms found, fetch nearby rooms
     if (!rooms.value?.length) {
@@ -322,11 +331,14 @@ const mapLink = computed(() => {
   return 'https://www.google.com/maps/search/escape+room?zoom=13'
 })
 
-// Navigation
-const navigateToRoom = (urlSlug: string) => {
-  navigateTo(`/room/${urlSlug}`)
-}
+const redirectToExternalPage = async (path: string, uuid?: string) => {
+  const query = uuid ? { uuid } : {};
 
+  await navigateTo({
+    path: localePath(path),
+    query
+  });
+};
 // Initialize
 initializeData()
 

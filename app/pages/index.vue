@@ -23,26 +23,27 @@
       </template>
     </UCard>
 
-        <UCard class="mt-5">
-          <template #header>
-            <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
-          </template>
+    <UCard class="mt-5" v-if="cities">
+      <template #header>
+        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
+      </template>
 
-          Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
-          króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
-          <div class="my-4 py-4 flex flex-wrap gap-2">
-            <UButton
-                v-for="(city, index) in cities"
-                :key="index"
-                :to="localePath(`/escape-room/${city.ascii_name}`)"
-            >{{ city.city }}
-            </UButton>
-          </div>
-        </UCard>
+      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
+      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
+      <div class="my-4 py-4 flex flex-wrap gap-2">
+        <UButton
+            v-for="(city, index) in cities"
+            :key="index"
+            :to="localePath(`/escape-rooms/${city.ascii_name}`)"
+        >{{ city.city }}
+        </UButton>
+      </div>
+    </UCard>
   </UContainer>
 </template>
 
 <script setup>
+
 const runtimeConfig = useRuntimeConfig()
 const localePath = useLocalePath()
 
@@ -54,7 +55,10 @@ const fetchCities = async () => {
   const response = await getPlacesWithRoomsPlacesGet({
     query: {country: "pl"},
   });
-  cities.value = response.data;  // Access the data field of the response
+
+  if (response.data) {
+    cities.value = response.data;  // Access the data field of the response
+  }
 }
 
 fetchCities()
