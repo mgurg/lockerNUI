@@ -80,7 +80,7 @@ export type CompanyIndexResponse = {
     uuid: string;
     name: string;
     verified_at: string | null;
-    location: BasicLocation | null;
+    locations: Array<BasicLocation> | null;
     departments: Array<BasicDepartment> | null;
     rooms: Array<BasicRoom> | null;
 };
@@ -158,7 +158,6 @@ export type LocationAdd = {
     postal_code?: string | null;
     country: string;
     located_in?: string | null;
-    type?: ('company' | 'department' | 'room') | null;
     lat?: number | null;
     lon?: number | null;
 };
@@ -712,6 +711,31 @@ export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors = {
 export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetError = GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors[keyof GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetErrors];
 
 export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetData = {
+    body?: never;
+    path: {
+        company_uuid: string;
+    };
+    query?: never;
+    url: '/companies/{company_uuid}/locations';
+};
+
+export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetError = GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors[keyof GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors];
+
+export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetResponses = {
     /**
      * Successful Response
      */

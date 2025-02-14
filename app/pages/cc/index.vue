@@ -8,6 +8,7 @@
             Total: {{ count }}
           </UBadge>
           <UInput v-model="search" @update:model-value="fetchCompanies()"></UInput>
+          <UButton @click="redirectToExternalPage('/cc/company')">New company</UButton>
         </div>
       </template>
 
@@ -30,7 +31,7 @@
               <h3 class="text-lg font-semibold">
                 {{ company.name }}
                 <UButton :color="company.validated_at ? 'success' : 'warning'"
-                         @click="redirectToExternalPage(company.uuid, '/cc/company')">GO
+                         @click="redirectToExternalPage('/cc/company', company.uuid)">GO
                 </UButton>
               </h3>
               <div class="mt-2 flex items-center space-x-2">
@@ -42,15 +43,17 @@
             </div>
 
             <div class="flex flex-col items-end">
+              <UButton size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/department', company.uuid)"></UButton>
               <div class="flex items-center gap-2 mb-2 flex-wrap justify-end">
                 <UButton
                     v-for="dept in company.departments"
                     :key="dept.uuid"
                     icon="i-lucide-map-pin-house"
-                    color="blue"
+                    color="info"
                     variant="solid"
                     size="sm"
                     class="mb-1"
+                    @click="redirectToExternalPage('/cc/department', dept.uuid)"
                 >
                   {{ dept.name }}
                 </UButton>
@@ -137,10 +140,12 @@ async function fetchCompanies(newPage = 1) {
   }
 }
 
-const redirectToExternalPage = async (uuid, path) => {
+const redirectToExternalPage = async (path, uuid) => {
+  const query = uuid ? {uuid} : {};
+
   await navigateTo({
     path: localePath(path),
-    query: {uuid: uuid}
+    query
   });
 };
 
