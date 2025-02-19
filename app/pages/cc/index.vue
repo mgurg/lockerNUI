@@ -43,7 +43,7 @@
             </div>
 
             <div class="flex flex-col items-end">
-              <UButton size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/department', company.uuid)"></UButton>
+              <UButton class="mb-2" size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/room', company.uuid)"></UButton>
               <div class="flex items-center gap-2 mb-2 flex-wrap justify-end">
                 <UButton
                     v-for="dept in company.departments"
@@ -140,8 +140,16 @@ async function fetchCompanies(newPage = 1) {
   }
 }
 
-const redirectToExternalPage = async (path, uuid) => {
-  const query = uuid ? {uuid} : {};
+const redirectToExternalPage = async (path, company_uuid, uuid) => {
+  const query = {};
+
+  if (uuid) {
+    query.uuid = uuid;
+  }
+
+  if (company_uuid) {
+    query.company_uuid = company_uuid;
+  }
 
   await navigateTo({
     path: localePath(path),

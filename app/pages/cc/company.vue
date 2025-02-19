@@ -1,5 +1,4 @@
 <template>
-  {{selectedDepartment}}
   <div class="py-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <UCard v-for="location in locations" :key="location.uuid" class="hover:shadow-lg transition-shadow">
@@ -152,10 +151,14 @@
 
         <div class="mt-6 flex justify-between items-center">
           <USwitch v-model="companyState.isVerified" description="Zweryfikowana firma"/>
+          <UButton color="warning" icon="i-lucide-pencil" @click="deleteCompany(companyState.uuid)" v-if="uuid">
+            Usuń
+          </UButton>
           <UButton color="info" icon="i-lucide-pencil" @click="updateCompany(companyState.uuid)" v-if="uuid">
             Aktualizuj
           </UButton>
           <UButton color="success" icon="i-lucide-circle-plus" @click="handleSubmit" v-else>Dodaj</UButton>
+
         </div>
       </div>
     </div>
@@ -253,18 +256,21 @@
 import {reactive, ref} from 'vue';
 import {number, object, string} from 'yup';
 import {
-  addCompanyCompaniesPost,
-  createDepartmentCompaniesDepartmentsPost,
-  deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getCompanyByUuidCompaniesCompanyUuidGet,
   getCompanyLocationsCompaniesCompanyUuidLocationsGet,
-  getDepartmentCompaniesDepartmentsDepartmentUuidGet,
+  addCompanyCompaniesPost,
   updateCompanyCompaniesCompanyUuidPatch,
+    deleteCompanyCompaniesCompanyUuidDelete,
+  createDepartmentCompaniesDepartmentsPost,
+  deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
+  getDepartmentCompaniesDepartmentsDepartmentUuidGet,
   updateDepartmentCompaniesDepartmentsDepartmentUuidPatch
 } from '@/client/index.ts';
 import {useRoute} from "#vue-router";
+import { ModalExample } from '#components'
 
 const localePath = useLocalePath()
+const modal = useModal()
 const route = useRoute();
 
 const uuid = ref(route.query.uuid);
@@ -542,6 +548,22 @@ async function updateCompany(companyUuid) {
     color: 'success'
   })
   await fetchCompany()
+}
+
+async function deleteCompany(companyUuid) {
+
+
+  modal.open(ModalExample, {
+    description: 'NAZWA FIRMY',
+    message: 'Czy na pewno chcesz usunąć firmę?',
+    onSuccess() {
+      console.log("DELETE COMPANY")
+    }
+  })
+
+ const response = deleteCompanyCompaniesCompanyUuidDelete({
+   path: {company_uuid: companyUuid},
+ })
 }
 
 const errors = ref({});

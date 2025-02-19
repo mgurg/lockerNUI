@@ -1,5 +1,6 @@
 <template>
-  <div v-if="isLoaded" class="p-4">
+
+  <div v-if="isLoaded || !uuid" class="p-4">
     <UCard>
       <template #header>
         <h3 class="text-xl font-bold"><UButton size ="sm" icon="i-lucide-arrow-left" @click="$router.back()"></UButton> Edit Escape Room</h3>
@@ -109,7 +110,7 @@
           <h4 class="font-semibold text-lg mt-6">Translations</h4>
 
           <UAccordion :items="translations">
-            <template #body="{ item }"">
+            <template #body="{ item }">
               <div class="space-y-4 p-4">
                 <UFormField :label="'Title (' + item.lang + ')'" :name="'title_' + item.lang">
                   <UInput v-model="item.title" class="w-full" />
@@ -146,6 +147,7 @@ import { ref } from "vue";
 
 const route = useRoute();
 const uuid = ref(route.query.uuid);
+const companyUuid = ref(route.query.company_uuid);
 const isLoaded = ref(false);
 
 // Split reactive state
@@ -187,6 +189,9 @@ const department = ref({
 const translations = ref([]);
 
 async function fetchRoom() {
+  if (!uuid.value) {
+    return;
+  }
   try {
     const response = await getRoomByUuidRoomsRoomUuidGet({
       path: { room_uuid: uuid.value }
@@ -247,7 +252,7 @@ const selectedDepartment = ref('') // Holds the selected department UUID
 const loading = ref(true)
 
 async function fetchCompanyDepartments() {
-  const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: { company_uuid: company.value.uuid }})
+  const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: { company_uuid: companyUuid.value }})
   companyDepartments.value = response.data.map(department => ({
     label: department.name, // Display name of the department
     value: department.uuid // Use UUID as the value for selection

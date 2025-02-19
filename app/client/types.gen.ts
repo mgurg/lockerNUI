@@ -55,9 +55,8 @@ export type CompaniesPaginated = {
 export type CompanyAdd = {
     name: string;
     brand?: string | null;
-    gov_id?: string | null;
+    gov_id: string;
     gov_id_type?: string | null;
-    place_id?: string | null;
     website?: string | null;
     email?: string | null;
     phone?: string | null;
@@ -80,7 +79,7 @@ export type CompanyIndexResponse = {
     uuid: string;
     name: string;
     verified_at: string | null;
-    locations: Array<BasicLocation> | null;
+    location: BasicLocation | null;
     departments: Array<BasicDepartment> | null;
     rooms: Array<BasicRoom> | null;
 };
@@ -98,7 +97,7 @@ export type CurrentPuzzleResponse = {
 export type DepartmentAdd = {
     company_uuid: string;
     name: string;
-    location: LocationAdd;
+    location?: LocationAdd | null;
 };
 
 export type DepartmentEdit = {
@@ -152,7 +151,8 @@ export type Location = {
 };
 
 export type LocationAdd = {
-    street_address: string;
+    street_name?: string | null;
+    street_number?: string | null;
     city: string;
     state_province?: string | null;
     postal_code?: string | null;
@@ -163,6 +163,7 @@ export type LocationAdd = {
 };
 
 export type LocationEdit = {
+    uuid?: string | null;
     street_address?: string | null;
     city?: string | null;
     state_province?: string | null;
@@ -635,10 +636,37 @@ export type AddCompanyCompaniesPostResponses = {
     /**
      * Successful Response
      */
-    200: BaseUuid;
+    201: BaseUuid;
 };
 
 export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
+
+export type DeleteCompanyCompaniesCompanyUuidDeleteData = {
+    body?: never;
+    path: {
+        company_uuid: string;
+    };
+    query?: never;
+    url: '/companies/{company_uuid}';
+};
+
+export type DeleteCompanyCompaniesCompanyUuidDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteCompanyCompaniesCompanyUuidDeleteError = DeleteCompanyCompaniesCompanyUuidDeleteErrors[keyof DeleteCompanyCompaniesCompanyUuidDeleteErrors];
+
+export type DeleteCompanyCompaniesCompanyUuidDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteCompanyCompaniesCompanyUuidDeleteResponse = DeleteCompanyCompaniesCompanyUuidDeleteResponses[keyof DeleteCompanyCompaniesCompanyUuidDeleteResponses];
 
 export type GetCompanyByUuidCompaniesCompanyUuidGetData = {
     body?: never;
