@@ -43,7 +43,6 @@
             </div>
 
             <div class="flex flex-col items-end">
-              <UButton class="mb-2" size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/room', company.uuid)"></UButton>
               <div class="flex items-center gap-2 mb-2 flex-wrap justify-end">
                 <UButton
                     v-for="dept in company.departments"
@@ -71,6 +70,8 @@
                 >
                   {{ room.name }}
                 </UButton>
+                <UButton class="mb-2" size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/room', company.uuid)"></UButton>
+
               </div>
             </div>
 

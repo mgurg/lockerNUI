@@ -1,253 +1,439 @@
 <template>
   <div v-if="isLoaded || !uuid" class="p-4">
     <UCard>
+      <!-- Header Section -->
       <template #header>
-        <h3 class="text-xl font-bold">
-          <UButton size="sm" icon="i-lucide-arrow-left" @click="$router.back()"></UButton>
-          Edit Escape Room
-        </h3>
+        <header class="flex items-center gap-3">
+          <UButton
+              size="sm"
+              icon="i-lucide-arrow-left"
+              @click="$router.back()"
+              aria-label="Go back"
+          />
+          <h3 class="text-xl font-bold">{{ uuid ? 'Edit' : 'Create' }} Escape Room</h3>
+        </header>
       </template>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Basic Information Column -->
-        <div class="space-y-4">
+        <!-- Basic Information Section -->
+        <section class="space-y-4">
           <h4 class="font-semibold text-lg">Basic Information</h4>
 
-          <UFormField label="Name" name="name">
-            <UInput v-model="basicInfo.name" class="w-full"/>
-          </UFormField>
-
-          <UFormField label="URL Slug" name="urlSlug">
-            <UInput v-model="basicInfo.urlSlug" class="w-full"/>
-          </UFormField>
-          <UFormField label="Reservation URL" name="reservation_url">
-            <UInput v-model="basicInfo.reservation_url" class="w-full" trailing-icon="i-lucide-link"/>
-          </UFormField>
-
-          <UFormField label="YT URL" name="url_yt">
-            <UInput v-model="basicInfo.url_yt" class="w-full" trailing-icon="i-lucide-youtube"/>
+          <UFormField
+              v-for="field in basicInfoFields"
+              :key="field.name"
+              :label="field.label"
+              :name="field.name"
+          >
+            <UInput
+                v-model="basicInfo[field.name]"
+                :type="field.type || 'text'"
+                :class="field.class"
+                :trailing-icon="field.icon"
+                v-bind="field.props"
+            />
           </UFormField>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormField label="Min Players" name="playersMin">
-              <UInput v-model="basicInfo.playersMin" type="number"/>
-            </UFormField>
-
-            <UFormField label="Max Players" name="playersMax">
-              <UInput v-model="basicInfo.playersMax" type="number"/>
-            </UFormField>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField label="Duration (min)" name="duration">
-              <UInput v-model="basicInfo.duration" type="number" step="1"/>
-            </UFormField>
-
-            <UFormField label="Price From" name="priceFrom">
-              <UInput v-model="basicInfo.priceFrom" type="number" step="1"/>
-            </UFormField>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField label="Fear Index" name="game_fear_index">
-              <UInput v-model="basicInfo.game_fear_index"/>
-            </UFormField>
-
-            <UFormField label="Difficulty" name="game_difficulty">
-              <UInput v-model="basicInfo.game_difficulty"/>
-            </UFormField>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField label="LM ID" name="lm_id">
-              <UInput v-model="basicInfo.lm_id"/>
-            </UFormField>
-
-            <UFormField label="MT ID" name="mt_id">
-              <UInput v-model="basicInfo.mt_id"/>
+            <UFormField
+                v-for="field in numericFields"
+                :key="field.name"
+                :label="field.label"
+                :name="field.name"
+            >
+              <UInput
+                  v-model="basicInfo[field.name]"
+                  type="number"
+                  :min="field.min"
+                  :step="field.step"
+              />
             </UFormField>
           </div>
 
           <UFormField label="Status" name="active">
             <USwitch v-model="basicInfo.active"/>
           </UFormField>
-        </div>
+        </section>
 
-        <!-- Location & Additional Info Column -->
-        <div class="space-y-4">
-          <h4 class="font-semibold text-lg">Location</h4>
+        <!-- Location & Translations Section -->
+        <section class="space-y-6">
+          <div class="space-y-4">
+            <h4 class="font-semibold text-lg">Location</h4>
 
-          <div v-if="!loading">
-            <UFormField label="Department" name="department">
-              <USelect v-model="department.uuid" :items="companyDepartments" class="w-48" label="Select Department"/>
-            </UFormField>
+            <!-- Department Selection -->
+            <div v-if="!loading">
+              <UFormField label="Department" name="department">
+                <USelect
+                    v-model="department.uuid"
+                    :items="companyDepartments"
+                    class="w-full"
+                    placeholder="Select Department"
+                />
+              </UFormField>
+            </div>
+            <UButton
+                v-else
+                @click="fetchCompanyDepartments"
+                :loading="loading"
+            >
+              Fetch departments
+            </UButton>
+
+            <!-- Location Fields -->
+            <!--            <div class="space-y-4">-->
+            <!--              <UFormField-->
+            <!--                  v-for="field in locationFields"-->
+            <!--                  :key="field.name"-->
+            <!--                  :label="field.label"-->
+            <!--                  :name="field.name"-->
+            <!--              >-->
+            <!--                <UInput-->
+            <!--                    v-model="location[field.name]"-->
+            <!--                    :type="field.type || 'text'"-->
+            <!--                    :class="field.class"-->
+            <!--                    v-bind="field.props"-->
+            <!--                />-->
+            <!--              </UFormField>-->
+            <!--            </div>-->
           </div>
-          <div v-else>
-            <UButton @click="fetchCompanyDepartments()">Fetch departments</UButton>
-          </div>
 
-          <UFormField label="Street Address" name="streetAddress">
-            <UInput v-model="location.streetAddress" class="w-full"/>
-          </UFormField>
+          <!-- Translations Section -->
+          <div class="space-y-4">
+            <h4 class="font-semibold text-lg">Translations</h4>
 
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField label="City" name="city">
-              <UInput v-model="location.city"/>
-            </UFormField>
-
-            <UFormField label="Postal Code" name="postalCode">
-              <UInput v-model="location.postalCode"/>
-            </UFormField>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <UFormField label="Latitude" name="lat">
-              <UInput v-model="location.lat" type="number" step="0.0000001"/>
-            </UFormField>
-
-            <UFormField label="Longitude" name="lon">
-              <UInput v-model="location.lon" type="number" step="0.0000001"/>
-            </UFormField>
-          </div>
-
-          <h4 class="font-semibold text-lg mt-6">Translations</h4>
-
-          <div class="flex space-x-2 mb-4">
-            <UButton v-for="lang in supportedLanguages" :key="lang" @click="loadTranslation(lang)">{{ lang }}</UButton>
-          </div>
-
-          <div class="space-y-4 p-4 border rounded-lg">
-            <UFormField label="Language" name="lang">
-              <UInput v-model="currentTranslation.lang" class="w-full" placeholder="Enter language code (e.g., 'fr')"/>
-            </UFormField>
-
-            <UFormField label="Title" name="title">
-              <UInput v-model="currentTranslation.title" class="w-full" placeholder="Enter title"/>
-            </UFormField>
-
-            <UFormField label="Lead" name="lead">
-              <UTextarea v-model="currentTranslation.lead" rows=3 class="w-full" placeholder="Enter lead text"/>
-            </UFormField>
-
-            <UFormField label="Description" name="description">
-              <UTextarea v-model="currentTranslation.description" rows=6 class="w-full"
-                         placeholder="Enter description"/>
-            </UFormField>
-
-            <div class="flex space-x-2">
-              <UButton @click="addOrUpdateTranslation" class="w-full">Save Translation</UButton>
-              <UButton v-if="currentTranslation.lang" @click="deleteTranslation" class="w-full bg-red-500 text-white">
-                Delete
+            <div class="flex flex-wrap gap-2 mb-4">
+              <UButton
+                  v-for="lang in supportedLanguages"
+                  :key="lang"
+                  @click="loadTranslation(lang)"
+                  :variant="currentTranslation.lang === lang ? 'solid' : 'outline'"
+              >
+                {{ lang.toUpperCase() }}
+              </UButton>
+              <UButton
+                  icon="i-lucide-plus"
+                  @click="createNewTranslation"
+                  variant="outline"
+              >
+                Add New
               </UButton>
             </div>
+
+            <!-- Translation Form -->
+            <div class="space-y-4 p-4 border rounded-lg">
+              <UFormField label="Language" name="lang">
+                <UInput
+                    v-model="currentTranslation.lang"
+                    class="w-full"
+                    placeholder="Enter language code (e.g., 'en')"
+                    :disabled="!!translations.find(t => t.lang === currentTranslation.lang)"
+                />
+              </UFormField>
+
+              <UFormField label="Title" name="title">
+                <UInput
+                    v-model="currentTranslation.title"
+                    class="w-full"
+                    placeholder="Enter title"
+                />
+              </UFormField>
+
+              <UFormField label="Lead" name="lead">
+                <UTextarea
+                    v-model="currentTranslation.lead"
+                    :rows="3"
+                    class="w-full"
+                    placeholder="Enter lead text"
+                />
+              </UFormField>
+
+              <UFormField label="Description" name="description">
+                <UTextarea
+                    v-model="currentTranslation.description"
+                    :rows="6"
+                    class="w-full"
+                    placeholder="Enter description"
+                />
+              </UFormField>
+
+              <div class="flex gap-4">
+                <UButton
+                    class="flex-1"
+                    color="primary"
+                    :disabled="!isTranslationValid"
+                    @click="addOrUpdateTranslation"
+                >
+                  Save Translation
+                </UButton>
+                <UButton
+                    v-if="translations.find(t => t.lang === currentTranslation.lang)"
+                    class="flex-1"
+                    color="error"
+                    variant="soft"
+                    @click="deleteTranslation"
+                >
+                  Delete
+                </UButton>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
 
+      <!-- Footer Actions -->
       <template #footer>
-        <div class="flex justify-end gap-4">
-          <UButton color="gray" variant="ghost">Cancel</UButton>
-          <UButton color="primary" @click="saveRoom">Save Changes</UButton>
-          <UButton color="warning" @click="deleteRoom">Delete</UButton>
-        </div>
+        <footer class="flex justify-end gap-4">
+          <UButton
+              color="gray"
+              variant="ghost"
+              @click="$router.back()"
+          >
+            Cancel
+          </UButton>
+          <UButton
+              color="primary"
+              @click="saveRoom"
+              :loading="isSaving"
+              :disabled="!isFormValid"
+          >
+            Save Changes
+          </UButton>
+          <UButton
+              v-if="uuid"
+              color="red"
+              variant="soft"
+              @click="confirmDelete"
+          >
+            Delete
+          </UButton>
+        </footer>
       </template>
     </UCard>
+
+    <!-- Confirmation Dialog -->
+    <!--    <UModal v-model="showDeleteConfirm">-->
+    <!--      <UCard>-->
+    <!--        <template #header>-->
+    <!--          <h3 class="text-lg font-bold">Confirm Deletion</h3>-->
+    <!--        </template>-->
+    <!--        <p>Are you sure you want to delete this escape room? This action cannot be undone.</p>-->
+    <!--        <template #footer>-->
+    <!--          <div class="flex justify-end gap-4">-->
+    <!--            <UButton @click="showDeleteConfirm = false">Cancel</UButton>-->
+    <!--            <UButton-->
+    <!--                color="red"-->
+    <!--                @click="handleDelete"-->
+    <!--                :loading="isDeleting"-->
+    <!--            >-->
+    <!--              Delete-->
+    <!--            </UButton>-->
+    <!--          </div>-->
+    <!--        </template>-->
+    <!--      </UCard>-->
+    <!--    </UModal>-->
   </div>
 </template>
 
-<script setup>
-import {useRoute} from "#vue-router";
+<script setup lang="ts">
+import {computed, ref} from 'vue'
+import {useRoute, useRouter} from '#vue-router'
 import {
   createRoomRoomsPost,
   getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
   getRoomByUuidRoomsRoomUuidGet
-} from '@/client/index.ts';
-import {ref} from "vue";
+} from '@/client/index.js'
+import type {LocationQueryRaw} from 'vue-router'
 
-const route = useRoute();
-const uuid = ref(route.query.uuid);
-const companyUuid = ref(route.query.company_uuid);
-const isLoaded = ref(false);
+// Types
+interface BasicInfo {
+  name: string
+  urlSlug: string
+  playersMin: number
+  playersMax: number
+  duration: number
+  priceFrom: number
+  active: boolean
+  lm_id: string
+  mt_id: string
+  game_fear_index: number
+  game_difficulty: string
+  url_yt: string
+  reservation_url: string
+}
 
-// Split reactive state
-const basicInfo = ref({
+interface Location {
+  streetAddress: string
+  city: string
+  postalCode: string
+  lat: number
+  lon: number
+  country: string
+}
+
+interface Translation {
+  lang: string
+  title: string
+  lead: string
+  description: string
+}
+
+// State
+const route = useRoute()
+const router = useRouter()
+const uuid = ref(route.query.uuid as string)
+const companyUuid = ref(route.query.company_uuid as string)
+const isLoaded = ref(false)
+const isSaving = ref(false)
+const isDeleting = ref(false)
+const showDeleteConfirm = ref(false)
+const loading = ref(true)
+const companyDepartments = ref([])
+
+// Form Data
+const basicInfo = ref<BasicInfo>({
   name: '',
   urlSlug: '',
-  playersMin: 0,
-  playersMax: 0,
-  duration: 0,
+  playersMin: 2,
+  playersMax: 6,
+  duration: 60,
   priceFrom: 0,
-  active: false,
+  active: true,
   lm_id: '',
   mt_id: '',
   game_fear_index: 0,
   game_difficulty: '',
   url_yt: '',
-  reservation_url: '',
-});
+  reservation_url: ''
+})
 
-const location = ref({
+const location = ref<Location>({
   streetAddress: '',
   city: '',
   postalCode: '',
   lat: 0,
   lon: 0,
   country: 'PL'
-});
-
-const company = ref({
-  uuid: '',
-  name: ''
-});
+})
 
 const department = ref({
   uuid: '',
   name: ''
-});
+})
 
-const translations = ref([]);
+const translations = ref<Translation[]>([])
+const currentTranslation = ref<Translation>({
+  lang: '',
+  title: '',
+  lead: '',
+  description: ''
+})
 
-const currentTranslation = ref({lang: '', title: '', lead: '', description: ''});
+// Field Configurations
+const basicInfoFields = [
+  {name: 'name', label: 'Name', class: 'w-full'},
+  {name: 'urlSlug', label: 'URL Slug', class: 'w-full'},
+  {name: 'reservation_url', label: 'Reservation URL', class: 'w-full', icon: 'i-lucide-link'},
+  {name: 'url_yt', label: 'YouTube URL', class: 'w-full', icon: 'i-lucide-youtube'}
+]
 
-const loadTranslation = (lang) => {
-  const translation = translations.value.find(t => t.lang === lang);
+const numericFields = [
+  {name: 'playersMin', label: 'Min Players', min: 1, step: 1},
+  {name: 'playersMax', label: 'Max Players', min: 1, step: 1},
+  {name: 'duration', label: 'Duration (min)', min: 0, step: 5},
+  {name: 'priceFrom', label: 'Price From', min: 0, step: 1},
+  {name: 'game_fear_index', label: 'Fear Index', min: 0, max: 5, step: 1},
+  {name: 'game_difficulty', label: 'Difficulty', min: 1, max: 5, step: 1}
+]
+
+const locationFields = [
+  {name: 'streetAddress', label: 'Street Address', class: 'w-full'},
+  {name: 'city', label: 'City', class: 'w-full'},
+  {name: 'postalCode', label: 'Postal Code'},
+  {name: 'lat', label: 'Latitude', type: 'number', step: '0.0000001'},
+  {name: 'lon', label: 'Longitude', type: 'number', step: '0.0000001'}
+]
+
+// Computed
+const supportedLanguages = computed(() => translations.value.map(t => t.lang))
+const isFormValid = computed(() => {
+  return basicInfo.value.name &&
+      basicInfo.value.urlSlug &&
+      department.value.uuid &&
+      translations.value.length > 0
+})
+
+const isTranslationValid = computed(() => {
+  return currentTranslation.value.lang &&
+      currentTranslation.value.title
+})
+
+// Methods
+const loadTranslation = (lang: string) => {
+  const translation = translations.value.find(t => t.lang === lang)
   if (translation) {
-    currentTranslation.value = {...translation};
+    currentTranslation.value = {...translation}
   }
-};
+}
 
 const createNewTranslation = () => {
-  currentTranslation.value = {lang: '', title: '', lead: '', description: ''};
-};
+  currentTranslation.value = {lang: '', title: '', lead: '', description: ''}
+}
 
 const deleteTranslation = () => {
-  translations.value = translations.value.filter(t => t.lang !== currentTranslation.value.lang);
-  currentTranslation.value = {lang: '', title: '', lead: '', description: ''};
-};
+  translations.value = translations.value.filter(t => t.lang !== currentTranslation.value.lang)
+  createNewTranslation()
+}
 
 const addOrUpdateTranslation = () => {
-  const index = translations.value.findIndex(t => t.lang === currentTranslation.value.lang);
+  if (!isTranslationValid.value) {
+    useToast().add({
+      title: 'Error',
+      description: 'Language and title are required',
+      color: 'red'
+    })
+    return
+  }
+
+  const index = translations.value.findIndex(t => t.lang === currentTranslation.value.lang)
   if (index > -1) {
-    translations.value[index] = {...currentTranslation.value};
+    translations.value[index] = {...currentTranslation.value}
   } else {
-    translations.value.push({...currentTranslation.value});
+    translations.value.push({...currentTranslation.value})
   }
-  currentTranslation.value = {lang: '', title: '', lead: '', description: ''};
-};
+  createNewTranslation()
+}
 
-const supportedLanguages = computed(() => translations.value.map(t => t.lang));
+const fetchCompanyDepartments = async () => {
+  try {
+    const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: {company_uuid: companyUuid.value}})
+    companyDepartments.value = response.data.map(dept => ({
+      label: dept.name,
+      value: dept.uuid
+    }))
+  } catch (error) {
+    useToast().add({
+      title: 'Error',
+      description: 'Failed to fetch departments',
+      color: 'red'
+    })
+  } finally {
+    loading.value = false
+  }
+}
 
-
-async function fetchRoom() {
+const fetchRoom = async () => {
   if (!uuid.value) {
-    return;
+    isLoaded.value = true
+    return
   }
+
   try {
     const response = await getRoomByUuidRoomsRoomUuidGet({
       path: {room_uuid: uuid.value}
-    });
+    })
+
     if (response.data) {
-      // Map API data to our reactive refs
-      const data = response.data;
+      const data = response.data
       basicInfo.value = {
         name: data.name,
         urlSlug: data.url_slug,
@@ -256,22 +442,12 @@ async function fetchRoom() {
         duration: data.game_duration,
         priceFrom: data.price_from,
         active: data.active,
-        fear_index: data.game_fear_index,
-        game_difficulty: data.game_difficulty,
         lm_id: data.lm_id,
         mt_id: data.mt_id,
-        url: data.url_yt,
-        reservation_url: data.reservation_url,
-      };
-
-      company.value = {
-        uuid: data.company.uuid,
-        name: data.company.name,
-      }
-
-      department.value = {
-        uuid: data.department.uuid,
-        name: data.department.name,
+        game_fear_index: data.game_fear_index,
+        game_difficulty: data.game_difficulty,
+        url_yt: data.url_yt,
+        reservation_url: data.reservation_url
       }
 
       location.value = {
@@ -281,37 +457,29 @@ async function fetchRoom() {
         lat: data.location.lat,
         lon: data.location.lon,
         country: data.location.country
-      };
+      }
 
-      // translations.value = data.translations;
+      department.value = {
+        uuid: data.department.uuid,
+        name: data.department.name
+      }
 
-      translations.value = response.data.translations.map(item => ({
-        ...item,
-        label: item.lang
-      }));
-      isLoaded.value = true;
+      translations.value = data.translations
     }
   } catch (error) {
-    console.error('Error fetching room data:', error);
+    useToast().add({
+      title: 'Error',
+      description: 'Failed to fetch room data',
+      color: 'red'
+    })
+  } finally {
+    isLoaded.value = true
   }
 }
 
-const companyDepartments = ref([]) // Holds the list of departments
-const selectedDepartment = ref('') // Holds the selected department UUID
-const loading = ref(true)
-
-async function fetchCompanyDepartments() {
-  const response = await getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet({path: {company_uuid: companyUuid.value}})
-  companyDepartments.value = response.data.map(department => ({
-    label: department.name, // Display name of the department
-    value: department.uuid // Use UUID as the value for selection
-  }))
-  loading.value = false // Set loading to false once data is fetched
-}
-
-async function saveRoom() {
+const saveRoom = async () => {
   try {
-    // Map our reactive refs back to API format
+    isSaving.value = true
     const roomData = {
       name: basicInfo.value.name,
       company_uuid: companyUuid.value,
@@ -322,39 +490,75 @@ async function saveRoom() {
       game_duration: basicInfo.value.duration,
       price_from: basicInfo.value.priceFrom,
       active: basicInfo.value.active,
-
       translation: translations.value,
       supported_languages: supportedLanguages.value,
-    };
+    }
 
-    console.log('Saving room:', roomData);
+    await createRoomRoomsPost({body: roomData})
 
-    const response = await createRoomRoomsPost({
-      body: roomData
-    });
-
-    await useToast().add({
-      title: 'Update',
-      description: 'Room updated successfully',
-      color: 'green'
+    useToast().add({
+      title: 'Success',
+      description: 'Room saved successfully',
+      color: 'success'
     })
-    // Implement your save API call here
+
+
   } catch (error) {
-    console.error('Error saving room:', error);
+    useToast().add({
+      title: 'Error',
+      description: 'Failed to save room',
+      color: 'error'
+    })
+  } finally {
+    isSaving.value = false
   }
 }
 
-async function deleteRoom() {
-  // const response = await deleteRoomRoomsRoomUuidDelete({
-  //   path: { room_uuid: uuid.value }});
-
-  await useToast().add({
-    title: 'Delete',
-    description: 'Room deleted successfully',
-    color: 'red'
-  })
-
+const confirmDelete = () => {
+  showDeleteConfirm.value = true
 }
 
-fetchRoom();
+const handleDelete = async () => {
+  try {
+    isDeleting.value = true
+    // Implement delete API call
+    await redirectToExternalPage('/cc')
+  } catch (error) {
+    useToast().add({
+      title: 'Error',
+      description: 'Failed to delete room',
+      color: 'warning'
+    })
+  } finally {
+    isDeleting.value = false
+    showDeleteConfirm.value = false
+  }
+}
+
+const localePath = useLocalePath()
+const redirectToExternalPage = async (
+    path: string,
+    company_uuid?: string,
+    uuid?: string
+): Promise<void> => {
+  const query: LocationQueryRaw = {};
+
+  if (uuid) {
+    query.uuid = uuid;
+  }
+
+  if (company_uuid) {
+    query.company_uuid = company_uuid;
+  }
+
+  await navigateTo({
+    path: localePath(path),
+    query
+  });
+};
+// Initialize
+onMounted(() => {
+  fetchRoom()
+  fetchCompanyDepartments()
+})
 </script>

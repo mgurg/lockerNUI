@@ -240,7 +240,7 @@
         <UButton
             v-for="room in rooms"
             :key="room.uuid"
-            @click="redirectToExternalPage( '/cc/room',room.uuid)"
+            @click="redirectToExternalPage( '/cc/room',uuid, room.uuid)"
             variant="outline"
         >
           {{ room.name }}
@@ -515,8 +515,16 @@ async function deleteDepartment(departmentUuid) {
   await fetchCompany();
 }
 
-const redirectToExternalPage = async (path, uuid) => {
-  const query = uuid ? {uuid} : {};
+const redirectToExternalPage = async (path, company_uuid, uuid) => {
+  const query = {};
+
+  if (uuid) {
+    query.uuid = uuid;
+  }
+
+  if (company_uuid) {
+    query.company_uuid = company_uuid;
+  }
 
   await navigateTo({
     path: localePath(path),
