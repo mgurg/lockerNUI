@@ -292,7 +292,7 @@ const redirectToExternalPage = async (path ,uuid) => {
 const pros = ref([
   {
     label: 'What We Love',
-    icon: 'i-heroicons-hand-thumb-up',
+    icon: 'i-lucideicons-thumbs-up',
     content: [
       "✅ Immersive atmosphere with stunning visual effects and authentic Dune-inspired props",
       "✅ Unique puzzles that blend sci-fi elements with logical thinking",
@@ -304,7 +304,7 @@ const pros = ref([
 const cons = ref([
   {
     label: 'Keep in Mind',
-    icon: 'i-heroicons-hand-thumb-down',
+    icon: 'i-lucideicons-thumbs-down',
     content: [
       "⚠️ Challenging difficulty level - not recommended for beginners",
       "⚠️ Some puzzles require physical activity and crawling",

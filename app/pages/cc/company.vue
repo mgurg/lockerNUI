@@ -9,7 +9,7 @@
             <UButton
                 variant="ghost"
                 color="primary"
-                icon="i-heroicons-map"
+                icon="i-lucideicons-map"
                 size="sm"
                 :to="`https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lon}`"
                 target="_blank"
@@ -25,7 +25,7 @@
 
 
           <div v-if="location.lat && location.lon" class="flex items-center text-sm text-gray-500 mt-2">
-            <UIcon name="i-heroicons-globe-alt" class="mr-1"/>
+            <UIcon name="i-lucideicons-globe" class="mr-1"/>
             <span>{{ location.lat.toFixed(4) }}, {{ location.lon.toFixed(4) }}</span>
           </div>
         </div>
@@ -38,7 +38,7 @@
                 color="blue"
                 class="flex items-center gap-1"
             >
-              <UIcon name="i-heroicons-building-office" class="text-sm"/>
+              <UIcon name="i-lucideicons-building" class="text-sm"/>
               Company
             </UBadge>
 
@@ -47,7 +47,7 @@
                 color="green"
                 class="flex items-center gap-1"
             >
-              <UIcon name="i-heroicons-users" class="text-sm"/>
+              <UIcon name="i-lucideicons-users" class="text-sm"/>
               Department
             </UBadge>
 
@@ -56,7 +56,7 @@
                 color="amber"
                 class="flex items-center gap-1"
             >
-              <UIcon name="i-heroicons-home" class="text-sm"/>
+              <UIcon name="i-lucideicons-house" class="text-sm"/>
               {{ countEntityType(location.entities, 'rooms') }}
               Room{{ countEntityType(location.entities, 'rooms') > 1 ? 's' : '' }}
             </UBadge>
@@ -258,7 +258,7 @@ import {number, object, string} from 'yup';
 import {
   getCompanyByUuidCompaniesCompanyUuidGet,
   getCompanyLocationsCompaniesCompanyUuidLocationsGet,
-  addCompanyCompaniesPost,
+    createCompanyCompaniesPost,
   updateCompanyCompaniesCompanyUuidPatch,
     deleteCompanyCompaniesCompanyUuidDelete,
   createDepartmentCompaniesDepartmentsPost,
@@ -273,7 +273,7 @@ const localePath = useLocalePath()
 const modal = useModal()
 const route = useRoute();
 
-const uuid = ref(route.query.uuid);
+const uuid = ref(route.query.company_uuid);
 const locations = ref([])
 const copyLocation = ref(true)
 
@@ -360,7 +360,7 @@ const handleSubmit = async (event) => {
     if (uuid.value) {
       await updateCompany(companyState.uuid);
     } else {
-      await addCompany();
+      await createCompany();
     }
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -589,7 +589,7 @@ async function validateForm(data) {
   }
 }
 
-async function addCompany() {
+async function createCompany() {
   if (companyState.isVerified === true) {
     companyState.verified_at = new Date().toISOString();
   } else {
@@ -604,7 +604,7 @@ async function addCompany() {
   const isValid = await validateForm(data);
 
   console.log(data)
-  const response = await addCompanyCompaniesPost({
+  const response = await createCompanyCompaniesPost({
     body: data
   })
   await useToast().add({

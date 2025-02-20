@@ -404,23 +404,23 @@ export type RoomsByLocationRoomsUrlLanguagePlaceLocationGetResponses = {
     200: unknown;
 };
 
-export type AddRoomRoomsPostData = {
+export type CreateRoomRoomsPostData = {
     body: RoomAdd;
     path?: never;
     query?: never;
     url: '/rooms';
 };
 
-export type AddRoomRoomsPostErrors = {
+export type CreateRoomRoomsPostErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type AddRoomRoomsPostError = AddRoomRoomsPostErrors[keyof AddRoomRoomsPostErrors];
+export type CreateRoomRoomsPostError = CreateRoomRoomsPostErrors[keyof CreateRoomRoomsPostErrors];
 
-export type AddRoomRoomsPostResponses = {
+export type CreateRoomRoomsPostResponses = {
     /**
      * Successful Response
      */
@@ -616,30 +616,30 @@ export type GetCompaniesCompaniesGetResponses = {
 
 export type GetCompaniesCompaniesGetResponse = GetCompaniesCompaniesGetResponses[keyof GetCompaniesCompaniesGetResponses];
 
-export type AddCompanyCompaniesPostData = {
+export type CreateCompanyCompaniesPostData = {
     body: CompanyAdd;
     path?: never;
     query?: never;
     url: '/companies';
 };
 
-export type AddCompanyCompaniesPostErrors = {
+export type CreateCompanyCompaniesPostErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type AddCompanyCompaniesPostError = AddCompanyCompaniesPostErrors[keyof AddCompanyCompaniesPostErrors];
+export type CreateCompanyCompaniesPostError = CreateCompanyCompaniesPostErrors[keyof CreateCompanyCompaniesPostErrors];
 
-export type AddCompanyCompaniesPostResponses = {
+export type CreateCompanyCompaniesPostResponses = {
     /**
      * Successful Response
      */
     201: BaseUuid;
 };
 
-export type AddCompanyCompaniesPostResponse = AddCompanyCompaniesPostResponses[keyof AddCompanyCompaniesPostResponses];
+export type CreateCompanyCompaniesPostResponse = CreateCompanyCompaniesPostResponses[keyof CreateCompanyCompaniesPostResponses];
 
 export type DeleteCompanyCompaniesCompanyUuidDeleteData = {
     body?: never;
