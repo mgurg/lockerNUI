@@ -1,96 +1,39 @@
 <template>
-  <div class="py-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <UCard v-for="location in locations" :key="location.uuid" class="hover:shadow-lg transition-shadow">
-        <template #header>
-          <div class="flex items-center space-x-2">
-
-            <h3 class="font-medium">{{ location.city }}, {{ location.country }}</h3>
-            <UButton
-                variant="ghost"
-                color="primary"
-                icon="i-lucideicons-map"
-                size="sm"
-                :to="`https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lon}`"
-                target="_blank"
-            >
-              View on Map
-            </UButton>
-          </div>
-        </template>
-
-        <div class="space-y-2">
-          <p>{{ location.street_name }}</p>
-          <p>{{ location.postal_code }} {{ location.city }}</p>
-
-
-          <div v-if="location.lat && location.lon" class="flex items-center text-sm text-gray-500 mt-2">
-            <UIcon name="i-lucideicons-globe" class="mr-1"/>
-            <span>{{ location.lat.toFixed(4) }}, {{ location.lon.toFixed(4) }}</span>
-          </div>
-        </div>
-        <!-- Entity Icons Section -->
-        <div v-if="location.entities && location.entities.length > 0" class="mt-3 pt-3 border-t border-gray-100">
-          <p class="text-sm text-gray-600 mb-2">Contains:</p>
-          <div class="flex flex-wrap gap-2">
-            <UBadge
-                v-if="hasEntityType(location.entities, 'company')"
-                color="blue"
-                class="flex items-center gap-1"
-            >
-              <UIcon name="i-lucideicons-building" class="text-sm"/>
-              Company
-            </UBadge>
-
-            <UBadge
-                v-if="hasEntityType(location.entities, 'department')"
-                color="green"
-                class="flex items-center gap-1"
-            >
-              <UIcon name="i-lucideicons-users" class="text-sm"/>
-              Department
-            </UBadge>
-
-            <UBadge
-                v-if="countEntityType(location.entities, 'rooms') > 0"
-                color="amber"
-                class="flex items-center gap-1"
-            >
-              <UIcon name="i-lucideicons-house" class="text-sm"/>
-              {{ countEntityType(location.entities, 'rooms') }}
-              Room{{ countEntityType(location.entities, 'rooms') > 1 ? 's' : '' }}
-            </UBadge>
-          </div>
-        </div>
-
-      </UCard>
-    </div>
-  </div>
-
-
   <div v-if="isLoaded || !uuid">
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <h2 class="text-xl font-semibold">
-          <UButton size="sm" icon="i-lucide-arrow-left" @click="$router.back()"></UButton>
-          Company Details
-          <UBadge :color="companyState.validated_at ? 'success' : 'warning'" size="md"
-                  icon="i-lucide-badge-check"></UBadge>
-        </h2>
+    <!-- Main content layout -->
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Company Information Section -->
+      <div class="p-4 bg-gray-50 rounded-lg">
+        <div class="flex items-center mb-4">
+          <UButton size="sm" icon="i-lucide-arrow-left" @click="$router.back()" class="mr-2"/>
+          <h2 class="text-xl font-semibold">Company Details</h2>
+          <UBadge
+              :color="companyState.validated_at ? 'success' : 'warning'"
+              size="md"
+              icon="i-lucide-badge-check"
+              class="ml-2"
+          />
+        </div>
+
         <UForm :schema="schema" :state="companyState" @submit.prevent="handleSubmit" class="space-y-4">
-          <UFormField label="UUID" name="uuid" v-if="uuid">
-            <UInput v-model="companyState.uuid" readonly class="w-full"/>
+          <!-- Company ID field -->
+          <UFormField v-if="uuid" label="UUID" name="uuid">
+            <UInput v-model="companyState.uuid" readonly class="w-full bg-gray-100"/>
           </UFormField>
 
-          <UFormField label="Name" name="name">
-            <UInput v-model="companyState.name" maxlength="100" size="xl" class="w-full"/>
-          </UFormField>
+          <!-- Basic company information -->
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="Name" name="name">
+              <UInput v-model="companyState.name" maxlength="100" size="xl" class="w-full"/>
+            </UFormField>
 
-          <UFormField label="Brand" name="brand">
-            <UInput v-model="companyState.brand" maxlength="100" size="xl" class="w-full"/>
-          </UFormField>
+            <UFormField label="Brand" name="brand">
+              <UInput v-model="companyState.brand" maxlength="100" size="xl" class="w-full"/>
+            </UFormField>
+          </div>
 
-          <div class="flex space-x-4 w-full">
+          <!-- Government ID fields -->
+          <div class="grid grid-cols-2 gap-4">
             <UFormField label="Government ID" name="gov_id">
               <UInput v-model="companyState.gov_id" class="w-full"/>
             </UFormField>
@@ -100,28 +43,38 @@
             </UFormField>
           </div>
 
+          <!-- Contact information -->
           <UFormField label="Website" name="website">
             <UInput v-model="companyState.website" class="w-full"/>
           </UFormField>
 
-          <UFormField label="Email" name="email">
-            <UInput v-model="companyState.email" class="w-full"/>
-          </UFormField>
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="Email" name="email">
+              <UInput v-model="companyState.email" class="w-full"/>
+            </UFormField>
 
-          <UFormField label="Phone" name="phone">
-            <UInput v-model="companyState.phone" class="w-full"/>
-          </UFormField>
+            <UFormField label="Phone" name="phone">
+              <UInput v-model="companyState.phone" class="w-full"/>
+            </UFormField>
+          </div>
         </UForm>
       </div>
 
-      <div>
-        <h2 class="text-xl font-semibold">Location Details</h2>
-        <UForm :schema="locationSchema" :state="locationState" @submit="onSubmit" class="space-y-4">
-          <UFormField label="City" name="city">
-            <UInput v-model="locationState.city" class="w-full"/>
-          </UFormField>
+      <!-- Location Details Section -->
+      <div class="p-4 bg-gray-50 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Location Details</h2>
+        <UForm :schema="locationSchema" :state="locationState" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <UFormField label="City" name="city">
+              <UInput v-model="locationState.city" class="w-full"/>
+            </UFormField>
 
-          <div class="flex space-x-4 w-full">
+            <UFormField label="Postal Code" name="postal_code">
+              <UInput v-model="locationState.postal_code" class="w-full"/>
+            </UFormField>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
             <UFormField label="Street Name" name="street_name">
               <UInput v-model="locationState.street_name" class="w-full"/>
             </UFormField>
@@ -130,15 +83,12 @@
               <UInput v-model="locationState.street_number" class="w-full"/>
             </UFormField>
           </div>
-          <UFormField label="Postal Code" name="postal_code">
-            <UInput v-model="locationState.postal_code" class="w-full"/>
-          </UFormField>
 
           <UFormField label="Country" name="country">
             <UInput v-model="locationState.country" class="w-full"/>
           </UFormField>
 
-          <div class="flex space-x-4 w-full">
+          <div class="grid grid-cols-2 gap-4">
             <UFormField label="Latitude" name="lat">
               <UInput v-model="locationState.lat" type="number" step="0.000001" class="w-full"/>
             </UFormField>
@@ -149,60 +99,123 @@
           </div>
         </UForm>
 
+        <!-- Action buttons -->
         <div class="mt-6 flex justify-between items-center">
-          <USwitch v-model="companyState.isVerified" description="Zweryfikowana firma"/>
-          <UButton color="warning" icon="i-lucide-pencil" @click="deleteCompany(companyState.uuid)" v-if="uuid">
-            Usuń
-          </UButton>
-          <UButton color="info" icon="i-lucide-pencil" @click="updateCompany(companyState.uuid)" v-if="uuid">
-            Aktualizuj
-          </UButton>
-          <UButton color="success" icon="i-lucide-circle-plus" @click="handleSubmit" v-else>Dodaj</UButton>
-
+          <USwitch v-model="companyState.isVerified" description="Verified company"/>
+          <div class="space-x-2">
+            <UButton
+                v-if="uuid"
+                color="warning"
+                icon="i-lucide-trash-2"
+                @click="confirmDeleteCompany(companyState.uuid)"
+            >
+              Delete
+            </UButton>
+            <UButton
+                v-if="uuid"
+                color="info"
+                icon="i-lucide-save"
+                @click="updateCompany(companyState.uuid)"
+            >
+              Update
+            </UButton>
+            <UButton
+                v-else
+                color="success"
+                icon="i-lucide-circle-plus"
+                @click="handleSubmit"
+            >
+              Add
+            </UButton>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold">Departments</h2>
-      <div v-if="departments.length >0" class="flex flex-wrap gap-2 mt-2">
+    <!-- Departments Section -->
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h2 class="text-xl font-semibold mb-2">Departments</h2>
+
+      <!-- Department List -->
+      <div v-if="departments.length > 0" class="flex flex-wrap gap-2 mt-4 mb-6">
         <UButton
             v-for="department in departments"
             :key="department.uuid"
             @click="fetchDepartmentDetails(department.uuid)"
+            :color="selectedDepartment?.uuid === department.uuid ? 'primary' : 'gray'"
             variant="outline"
         >
           {{ department.name }}
         </UButton>
-        <UButton color="error" @click="selectedDepartment = null">X</UButton>
-
+        <UButton
+            v-if="selectedDepartment"
+            color="error"
+            size="sm"
+            icon="i-lucide-x"
+            @click="clearDepartmentSelection"
+        />
       </div>
+      <p v-else class="text-gray-500 italic mb-4">No departments available</p>
 
-      <div class="mt-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <h3 class="text-lg font-medium">Department Details</h3>
-            <UForm :schema="departmentSchema" :state="departmentState" @submit="onSubmit" class="space-y-4">
-              <UFormField label="Department Name" name="name">
-                <UInput v-model="departmentState.name" class="w-full"/>
-              </UFormField>
-              <USwitch v-model="copyLocation" description="Adres taki sam jak siedziba"/>
-            </UForm>
-            <div class="my-4 py-4 flex flex-wrap gap-2">
-              <UButton color="success" icon="i-lucide-plus" @click="createDepartment()">Dodaj</UButton>
-              <UButton color="info" icon="i-lucide-pencil" @click="updateDepartment(departmentState.uuid)">Edytuj
-              </UButton>
-              <UButton color="error" icon="i-lucide-eraser" @click="deleteDepartment(departmentState.uuid)">Usuń
-              </UButton>
-            </div>
+      <!-- Department Details Form -->
+      <div class="grid grid-cols-2 gap-6">
+        <div class="p-4 bg-white rounded-lg shadow-sm">
+          <h3 class="text-lg font-medium mb-4">Department Details</h3>
+          <UForm :schema="departmentSchema" :state="departmentState" class="space-y-4">
+            <UFormField label="Department Name" name="name">
+              <UInput v-model="departmentState.name" class="w-full"/>
+            </UFormField>
+            <USwitch
+                v-model="copyLocation"
+                description="Same address as headquarters"
+                class="mt-4"
+            />
+          </UForm>
+
+          <!-- Department action buttons -->
+          <div class="mt-6 flex flex-wrap gap-2">
+            <UButton
+                color="success"
+                icon="i-lucide-plus"
+                @click="createDepartment()"
+                :disabled="!companyState.uuid || !departmentState.name"
+            >
+              Add
+            </UButton>
+            <UButton
+                color="info"
+                icon="i-lucide-save"
+                @click="updateDepartment(departmentState.uuid)"
+                :disabled="!departmentState.uuid"
+            >
+              Edit
+            </UButton>
+            <UButton
+                color="error"
+                icon="i-lucide-trash-2"
+                @click="confirmDeleteDepartment(departmentState.uuid)"
+                :disabled="!departmentState.uuid"
+            >
+              Delete
+            </UButton>
           </div>
-          <div v-if='!copyLocation || selectedDepartment!==null'>
-            <h2 class="text-xl font-semibold">Location Department Details</h2>
-            <UForm :schema="locationSchema" :state="locationDepartmentState" @submit="onSubmit" class="space-y-4">
+        </div>
+
+        <!-- Department Location Form -->
+        <div v-if="!copyLocation || selectedDepartment" class="p-4 bg-white rounded-lg shadow-sm">
+          <h3 class="text-lg font-medium mb-4">Department Location</h3>
+          <UForm :schema="locationSchema" :state="locationDepartmentState" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
               <UFormField label="City" name="city">
                 <UInput v-model="locationDepartmentState.city" class="w-full"/>
               </UFormField>
 
+              <UFormField label="Postal Code" name="postal_code">
+                <UInput v-model="locationDepartmentState.postal_code" class="w-full"/>
+              </UFormField>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
               <UFormField label="Street Name" name="street_name">
                 <UInput v-model="locationDepartmentState.street_name" class="w-full"/>
               </UFormField>
@@ -210,15 +223,13 @@
               <UFormField label="Street Number" name="street_number">
                 <UInput v-model="locationDepartmentState.street_number" class="w-full"/>
               </UFormField>
+            </div>
 
-              <UFormField label="Postal Code" name="postal_code">
-                <UInput v-model="locationDepartmentState.postal_code" class="w-full"/>
-              </UFormField>
+            <UFormField label="Country" name="country">
+              <UInput v-model="locationDepartmentState.country" class="w-full"/>
+            </UFormField>
 
-              <UFormField label="Country" name="country">
-                <UInput v-model="locationDepartmentState.country" class="w-full"/>
-              </UFormField>
-
+            <div class="grid grid-cols-2 gap-4">
               <UFormField label="Latitude" name="lat">
                 <UInput v-model="locationDepartmentState.lat" type="number" step="0.000001" class="w-full"/>
               </UFormField>
@@ -226,29 +237,31 @@
               <UFormField label="Longitude" name="lon">
                 <UInput v-model="locationDepartmentState.lon" type="number" step="0.000001" class="w-full"/>
               </UFormField>
-            </UForm>
-
-          </div>
+            </div>
+          </UForm>
         </div>
-
       </div>
     </div>
 
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold">Rooms</h2>
-      <div v-if="rooms.length" class="flex flex-wrap gap-2 mt-2">
+    <!-- Rooms Section -->
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h2 class="text-xl font-semibold mb-2">Rooms</h2>
+      <div v-if="rooms.length" class="flex flex-wrap gap-2 mt-4">
         <UButton
             v-for="room in rooms"
             :key="room.uuid"
-            @click="redirectToExternalPage( '/cc/room',uuid, room.uuid)"
+            @click="redirectToExternalPage('/cc/room', uuid, room.uuid)"
             variant="outline"
+            color="gray"
         >
           {{ room.name }}
         </UButton>
       </div>
+      <p v-else class="text-gray-500 italic mt-2">No rooms available</p>
     </div>
-
-
+  </div>
+  <div v-else class="flex justify-center items-center h-64">
+    <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8 text-gray-400"/>
   </div>
 </template>
 
@@ -258,55 +271,60 @@ import {number, object, string} from 'yup';
 import {
   getCompanyByUuidCompaniesCompanyUuidGet,
   getCompanyLocationsCompaniesCompanyUuidLocationsGet,
-    createCompanyCompaniesPost,
+  createCompanyCompaniesPost,
   updateCompanyCompaniesCompanyUuidPatch,
-    deleteCompanyCompaniesCompanyUuidDelete,
+  deleteCompanyCompaniesCompanyUuidDelete,
   createDepartmentCompaniesDepartmentsPost,
   deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getDepartmentCompaniesDepartmentsDepartmentUuidGet,
   updateDepartmentCompaniesDepartmentsDepartmentUuidPatch
 } from '@/client/index.ts';
 import {useRoute} from "#vue-router";
-import { ModalExample } from '#components'
+import {ModalExample} from '#components'
 
-const localePath = useLocalePath()
-const modal = useModal()
+
+// Composables
+const localePath = useLocalePath();
+const modal = useModal();
+const toast = useToast();
 const route = useRoute();
 
+// State variables
 const uuid = ref(route.query.company_uuid);
-const locations = ref([])
-const copyLocation = ref(true)
+const locations = ref([]);
+const copyLocation = ref(true);
+const departments = ref([]);
+const rooms = ref([]);
+const selectedDepartment = ref(null);
+const isLoaded = ref(false);
+const errors = ref({});
 
 // Validation schemas
 const schema = object({
-  name: string().required('Required'),
+  name: string().required('Company name is required'),
   brand: string(),
-  gov_id: string().required('Required'),
-  gov_id_type: string().required('Required'),
+  gov_id: string().required('Government ID is required'),
+  gov_id_type: string().required('Government ID type is required'),
   website: string().url('Must be a valid URL'),
   email: string().email('Must be a valid email'),
   phone: string(),
 });
 
 const locationSchema = object({
-  city: string().required('Required'),
-  street_name: string().required('Required'),
-  street_number: string().required('Required'),
-  postal_code: string().required('Required'),
-  country: string().required('Required'),
+  city: string().required('City is required'),
+  street_name: string().required('Street name is required'),
+  street_number: string().required('Street number is required'),
+  postal_code: string().required('Postal code is required'),
+  country: string().required('Country is required'),
   lat: number().typeError('Must be a number'),
   lon: number().typeError('Must be a number'),
 });
 
 const departmentSchema = object({
-  name: string().required('Required'),
+  name: string().required('Department name is required'),
 });
 
-const roomSchema = object({
-  name: string().required('Required'),
-});
-
-// State management
+// Form state objects
 const companyState = reactive({
   name: '',
   brand: '',
@@ -345,18 +363,14 @@ const locationDepartmentState = reactive({
   lon: '',
 });
 
-const departments = ref([]);
-const rooms = ref([]);
-const selectedDepartment = ref(null);
-const isLoaded = ref(false);
-
-const handleSubmit = async (event) => {
+// Form validation and submission
+const handleSubmit = async () => {
   try {
-    // Validate form
+    // Validate form data
     await schema.validate(companyState, {abortEarly: false});
     await locationSchema.validate(locationState, {abortEarly: false});
 
-    // If validation passes, call appropriate method
+    // Call appropriate method based on whether we're editing or creating
     if (uuid.value) {
       await updateCompany(companyState.uuid);
     } else {
@@ -364,7 +378,7 @@ const handleSubmit = async (event) => {
     }
   } catch (error) {
     if (error.name === 'ValidationError') {
-      await useToast().add({
+      toast.add({
         title: 'Validation Error',
         description: error.message,
         color: 'error'
@@ -374,33 +388,38 @@ const handleSubmit = async (event) => {
   }
 };
 
-// Methods
-async function onSubmit() {
+async function validateForm(data) {
   try {
-    // Combine states for API submission
-    const submitData = {
-      ...companyState,
-      location: locationState,
-      departments: departments.value,
-      rooms: rooms.value,
-    };
-
-    // TODO: Implement API call to update company data
-    console.log('Submitting data:', submitData);
-  } catch (error) {
-    console.error('Error submitting form:', error);
+    // Validate company and location data
+    await schema.validate(data, {abortEarly: false});
+    await locationSchema.validate(data.location, {abortEarly: false});
+    return true;
+  } catch (validationError) {
+    // Transform validation errors into usable format
+    errors.value = validationError.inner.reduce((acc, error) => {
+      acc[error.path] = error.message;
+      return acc;
+    }, {});
+    return false;
   }
 }
 
+// Data fetching methods
 async function fetchCompany() {
   if (!uuid.value) {
+    isLoaded.value = true;
     return;
   }
+
   try {
-    const response = await getCompanyByUuidCompaniesCompanyUuidGet({path: {company_uuid: uuid.value}});
+    const response = await getCompanyByUuidCompaniesCompanyUuidGet({
+      path: {company_uuid: uuid.value}
+    });
+
     if (response.data) {
       // Update company state
       Object.assign(companyState, response.data);
+      companyState.isVerified = !!response.data.verified_at;
 
       // Update location state
       if (response.data.location) {
@@ -410,111 +429,321 @@ async function fetchCompany() {
       // Update departments and rooms
       departments.value = response.data.departments || [];
       rooms.value = response.data.rooms || [];
-
-      isLoaded.value = true;
     }
   } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to load company data',
+      color: 'error'
+    });
     console.error('Error fetching company data:', error);
+  } finally {
+    isLoaded.value = true;
   }
 }
 
 async function fetchLocations() {
-  if (!uuid.value) {
-    return;
-  }
+  if (!uuid.value) return;
+
   try {
     const response = await getCompanyLocationsCompaniesCompanyUuidLocationsGet({
       path: {company_uuid: uuid.value}
-    })
-
-    locations.value = response.data || []
+    });
+    locations.value = response.data || [];
   } catch (err) {
-    console.error('Failed to fetch locations:', err)
+    console.error('Failed to fetch locations:', err);
   }
-
 }
 
-// Function to check if entities array has a specific type
-function hasEntityType(entities, type) {
-  return entities.some(entity => entity.type === type)
-}
-
-// Function to count occurrences of a specific entity type
-function countEntityType(entities, type) {
-  return entities.filter(entity => entity.type === type).length
-}
-
-await fetchLocations()
-
-
-// DEPARTMENTS
+// Department management methods
 async function fetchDepartmentDetails(departmentUuid) {
   try {
-    const response = await getDepartmentCompaniesDepartmentsDepartmentUuidGet({path: {department_uuid: departmentUuid}});
+    const response = await getDepartmentCompaniesDepartmentsDepartmentUuidGet({
+      path: {department_uuid: departmentUuid}
+    });
+
     Object.assign(departmentState, response.data);
     if (response.data.location) {
       Object.assign(locationDepartmentState, response.data.location);
+    } else {
+      // Reset location fields if no location data
+      Object.assign(locationDepartmentState, {
+        city: '',
+        street_name: '',
+        street_number: '',
+        postal_code: '',
+        country: '',
+        lat: '',
+        lon: '',
+      });
     }
-    selectedDepartment.value = {name: response.data.name, uuid: departmentUuid};
-    console.log(`Fetching department details for ${departmentUuid}`);
+
+    selectedDepartment.value = {
+      name: response.data.name,
+      uuid: departmentUuid
+    };
   } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to load department details',
+      color: 'error'
+    });
     console.error('Error fetching department:', error);
   }
 }
 
+function clearDepartmentSelection() {
+  selectedDepartment.value = null;
+  Object.assign(departmentState, {
+    name: '',
+    uuid: '',
+  });
+  Object.assign(locationDepartmentState, {
+    city: '',
+    street_name: '',
+    street_number: '',
+    postal_code: '',
+    country: '',
+    lat: '',
+    lon: '',
+  });
+}
+
 async function createDepartment() {
+  if (!departmentState.name || !companyState.uuid) {
+    toast.add({
+      title: 'Validation Error',
+      description: 'Department name is required',
+      color: 'error'
+    });
+    return;
+  }
+
   const data = {
     company_uuid: companyState.uuid,
     name: departmentState.name,
     location: copyLocation.value ? locationState : locationDepartmentState,
   };
 
-  console.log(data)
-  const response = await createDepartmentCompaniesDepartmentsPost({
-    body: data,
-  })
+  try {
+    await createDepartmentCompaniesDepartmentsPost({
+      body: data,
+    });
 
-  await useToast().add({
-    title: 'Create',
-    description: 'Department created successfully',
-    color: 'success'
-  })
+    toast.add({
+      title: 'Success',
+      description: 'Department created successfully',
+      color: 'success'
+    });
 
-  await fetchCompany();
+    await fetchCompany();
+    clearDepartmentSelection();
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to create department',
+      color: 'error'
+    });
+    console.error('Error creating department:', error);
+  }
 }
 
 async function updateDepartment(departmentUuid) {
+  if (!departmentUuid) {
+    toast.add({
+      title: 'Error',
+      description: 'No department selected',
+      color: 'error'
+    });
+    return;
+  }
+
   const data = {
     name: departmentState.name,
     location: locationDepartmentState,
   };
-  console.log(data)
-  const response = await updateDepartmentCompaniesDepartmentsDepartmentUuidPatch({
-    body: data,
-    path: {department_uuid: departmentUuid},
+
+  try {
+    await updateDepartmentCompaniesDepartmentsDepartmentUuidPatch({
+      body: data,
+      path: {department_uuid: departmentUuid},
+    });
+
+    toast.add({
+      title: 'Success',
+      description: 'Department updated successfully',
+      color: 'success'
+    });
+
+    await fetchDepartmentDetails(departmentUuid);
+    await fetchCompany();
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to update department',
+      color: 'error'
+    });
+    console.error('Error updating department:', error);
+  }
+}
+
+function confirmDeleteDepartment(departmentUuid) {
+  if (!departmentUuid) return;
+
+  modal.open(ModalExample, {
+    description: 'Confirm Deletion',
+    message: `Are you sure you want to delete department "${departmentState.name}"?`,
+    onSuccess() {
+      console.log("DELETE COMPANY")
+      deleteDepartment(departmentUuid)
+    }
   })
-
-  await fetchDepartmentDetails(departmentUuid)
-
-  await useToast().add({
-    title: 'Update',
-    description: 'Department updated successfully',
-    color: 'error'
-  })
-
 }
 
 async function deleteDepartment(departmentUuid) {
-  console.log(departmentUuid)
-  const response = await deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete(
-      {
-        path: {department_uuid: departmentUuid},
-      }
-  )
+  try {
+    await deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete({
+      path: {department_uuid: departmentUuid},
+    });
 
-  await fetchCompany();
+    toast.add({
+      title: 'Success',
+      description: 'Department deleted successfully',
+      color: 'success'
+    });
+
+    await fetchCompany();
+    clearDepartmentSelection();
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to delete department',
+      color: 'error'
+    });
+    console.error('Error deleting department:', error);
+  }
 }
 
+// Company management methods
+async function updateCompany(companyUuid) {
+  if (!companyUuid) return;
+
+  try {
+    // Update verified_at timestamp based on isVerified state
+    if (companyState.isVerified) {
+      companyState.verified_at = companyState.verified_at || new Date().toISOString();
+    } else {
+      companyState.verified_at = null;
+    }
+
+    const data = {
+      ...companyState,
+      location: locationState,
+    };
+
+    await updateCompanyCompaniesCompanyUuidPatch({
+      body: data,
+      path: {company_uuid: companyUuid},
+    });
+
+    toast.add({
+      title: 'Success',
+      description: 'Company updated successfully',
+      color: 'success'
+    });
+
+    await fetchCompany();
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to update company',
+      color: 'error'
+    });
+    console.error('Error updating company:', error);
+  }
+}
+
+function confirmDeleteCompany(companyUuid) {
+  if (!companyUuid) return;
+
+  modal.open(ModalExample, {
+    description: 'Confirm Company Deletion',
+    message: `Are you sure you want to delete company "${companyState.name}"? This action cannot be undone.`,
+    onSuccess() {
+      console.log("DELETE COMPANY")
+      deleteCompany(companyUuid)
+    }
+  })
+}
+
+async function deleteCompany(companyUuid) {
+  try {
+    await deleteCompanyCompaniesCompanyUuidDelete({
+      path: {company_uuid: companyUuid},
+    });
+
+    toast.add({
+      title: 'Success',
+      description: 'Company deleted successfully',
+      color: 'success'
+    });
+
+    await redirectToExternalPage('/cc');
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to delete company',
+      color: 'error'
+    });
+    console.error('Error deleting company:', error);
+  }
+}
+
+async function createCompany() {
+  try {
+    if (companyState.isVerified) {
+      companyState.verified_at = new Date().toISOString();
+    } else {
+      companyState.verified_at = null;
+    }
+
+    const data = {
+      ...companyState,
+      location: locationState,
+    };
+
+    const isValid = await validateForm(data);
+    if (!isValid) {
+      toast.add({
+        title: 'Validation Error',
+        description: 'Please check the form for errors',
+        color: 'error'
+      });
+      return;
+    }
+
+    await createCompanyCompaniesPost({
+      body: data
+    });
+
+    toast.add({
+      title: 'Success',
+      description: 'Company added successfully',
+      color: 'success'
+    });
+
+    await redirectToExternalPage('/cc');
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to create company',
+      color: 'error'
+    });
+    console.error('Error creating company:', error);
+  }
+}
+
+// Navigation helper
 const redirectToExternalPage = async (path, company_uuid, uuid) => {
   const query = {};
 
@@ -532,97 +761,7 @@ const redirectToExternalPage = async (path, company_uuid, uuid) => {
   });
 };
 
-async function updateCompany(companyUuid) {
-  console.log(companyUuid)
-  if (companyState.isVerified === true) {
-    companyState.verified_at = new Date().toISOString();
-  } else {
-    companyState.verified_at = null;
-  }
-
-  const data = {
-    ...companyState,
-    location: locationState,
-  };
-
-  console.log(data)
-  const response = await updateCompanyCompaniesCompanyUuidPatch({
-    body: data,
-    path: {company_uuid: companyUuid},
-  })
-  await useToast().add({
-    title: 'Update',
-    description: 'Company updated successfully',
-    color: 'success'
-  })
-  await fetchCompany()
-}
-
-async function deleteCompany(companyUuid) {
-
-
-  modal.open(ModalExample, {
-    description: 'NAZWA FIRMY',
-    message: 'Czy na pewno chcesz usunąć firmę?',
-    onSuccess() {
-      console.log("DELETE COMPANY")
-    }
-  })
-
- const response = deleteCompanyCompaniesCompanyUuidDelete({
-   path: {company_uuid: companyUuid},
- })
-}
-
-const errors = ref({});
-
-
-async function validateForm(data) {
-  try {
-    // Validate company data
-    await schema.validate(data, {abortEarly: false});
-
-    // Validate location data
-    await locationSchema.validate(data.location, {abortEarly: false});
-
-    return true;
-  } catch (validationError) {
-    // Transform Yup errors into a more usable format
-    errors.value = validationError.inner.reduce((acc, error) => {
-      acc[error.path] = error.message;
-      return acc;
-    }, {});
-
-    return false;
-  }
-}
-
-async function createCompany() {
-  if (companyState.isVerified === true) {
-    companyState.verified_at = new Date().toISOString();
-  } else {
-    companyState.verified_at = null;
-  }
-
-  const data = {
-    ...companyState,
-    location: locationState,
-  };
-
-  const isValid = await validateForm(data);
-
-  console.log(data)
-  const response = await createCompanyCompaniesPost({
-    body: data
-  })
-  await useToast().add({
-    title: 'Add',
-    description: 'Company added successfully',
-    color: 'success'
-  })
-  await redirectToExternalPage('/cc')
-}
-
-// Initialize data
+// Initialize data on component mount
+await fetchLocations();
 await fetchCompany();
 </script>
