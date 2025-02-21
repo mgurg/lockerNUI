@@ -7,19 +7,28 @@
           <UBadge color="gray" variant="soft">
             Total: {{ count }}
           </UBadge>
-          <UInput v-model="search" @update:model-value="fetchCompanies()"></UInput>
-          <UButton @click="redirectToExternalPage('/cc/company')">New company</UButton>
+          <UInput
+              v-model="search"
+              @update:model-value="handleSearchChange"
+              placeholder="Search companies"
+          />
+          <UButton @click="navigateToCompanyForm()">
+            New company
+          </UButton>
         </div>
       </template>
 
-      <div v-if="!isLoaded" class="flex justify-center items-center py-10">
+      <!-- Loading state -->
+      <div v-if="isLoading" class="flex justify-center items-center py-10">
         <UIcon name="i-lucide-rotate-cw" class="animate-spin h-8 w-8"/>
       </div>
 
+      <!-- Empty state -->
       <div v-else-if="companies.length === 0" class="text-center py-10 text-gray-500">
         No companies found
       </div>
 
+      <!-- Companies list -->
       <div v-else class="space-y-4">
         <UCard
             v-for="company in companies"
@@ -27,13 +36,17 @@
             class="hover:bg-gray-50 transition-colors"
         >
           <div class="flex justify-between items-start">
+            <!-- Company details -->
             <div>
-              <h3 class="text-lg font-semibold">
+              <UButton
+                  class="text-lg font-semibold"
+                  :color="company.validated_at ? 'success' : 'warning'"
+                  trailing-icon="i-lucide-chevron-right"
+                  @click="redirectToExternalPage('/cc/company', company.uuid)"
+              >
                 {{ company.name }}
-                <UButton :color="company.validated_at ? 'success' : 'warning'"
-                         @click="redirectToExternalPage('/cc/company', company.uuid)">GO
-                </UButton>
-              </h3>
+              </UButton>
+
               <div class="mt-2 flex items-center space-x-2">
                 <UIcon name="i-lucide-map-pin" class="h-5 w-5 text-gray-500"/>
                 <span class="text-gray-600">
@@ -42,7 +55,9 @@
               </div>
             </div>
 
+            <!-- Departments and rooms -->
             <div class="flex flex-col items-end">
+              <!-- Departments section -->
               <div class="flex items-center gap-2 mb-2 flex-wrap justify-end">
                 <UButton
                     v-for="dept in company.departments"
@@ -52,30 +67,32 @@
                     variant="solid"
                     size="sm"
                     class="mb-1"
-                    @click="redirectToExternalPage('/cc/department', dept.uuid)"
                 >
                   {{ dept.name }}
                 </UButton>
               </div>
 
+              <!-- Rooms section -->
               <div class="space-y-1 flex items-center gap-2 mb-2 flex-wrap justify-start">
                 <UButton
                     v-for="room in company.rooms"
-                    @click="redirectToExternalPage(room.uuid, '/cc/room')"
                     :key="room.uuid"
+                    @click="redirectToExternalPage('/cc/room',company.uuid, room.uuid, )"
                     icon="i-lucide-joystick"
-                    color="green"
+                    color="info"
                     variant="soft"
                     size="md"
                 >
                   {{ room.name }}
                 </UButton>
-                <UButton class="mb-2" size="sm" icon="i-lucide-house-plus" @click="redirectToExternalPage('/cc/room', company.uuid)"></UButton>
-
+                <UButton
+                    class="mb-2"
+                    size="sm"
+                    icon="i-lucide-house-plus"
+                    @click="redirectToExternalPage('/cc/room', company.uuid)"
+                />
               </div>
             </div>
-
-
           </div>
         </UCard>
       </div>
@@ -83,11 +100,11 @@
       <template #footer>
         <div class="flex justify-center mt-4">
           <UPagination
-              v-if="isLoaded"
+              v-if="!isLoading"
               :page-count="limit"
               :total="count"
-              v-model:page="page"
-              @update:page="fetchCompanies"
+              v-model:page="currentPage"
+              @update:page="handlePageChange"
           />
         </div>
       </template>
@@ -96,25 +113,31 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import {getCompaniesCompaniesGet} from '@/client/index.ts'
+import { ref, onMounted } from 'vue'
+import { getCompaniesCompaniesGet } from '@/client/index.ts'
+import { useToast } from '#imports'
 
+// Route and navigation
 const localePath = useLocalePath()
 
+// Data state
 const companies = ref([])
-const isLoaded = ref(false)
+const isLoading = ref(true)
 const count = ref(0)
 const limit = ref(10)
-const page = ref(1)
-const search = ref(null)
+const currentPage = ref(1)
+const search = ref('')
 
-async function fetchCompanies(newPage = 1) {
+/**
+ * Fetches companies with pagination and optional search filter
+ * @param {number} page - Page number to fetch
+ */
+async function fetchCompanies(page = 1) {
+  isLoading.value = true
+
   try {
-    isLoaded.value = false
-    page.value = newPage
-
     const query = {
-      offset: (newPage - 1) * limit.value,
+      offset: (page - 1) * limit.value,
       limit: limit.value
     }
 
@@ -122,23 +145,36 @@ async function fetchCompanies(newPage = 1) {
       query.search = search.value
     }
 
-    const response = await getCompaniesCompaniesGet({query})
+    const response = await getCompaniesCompaniesGet({ query })
 
     if (response.data) {
       companies.value = response.data.data
       count.value = response.data.count
       limit.value = response.data.limit
-      isLoaded.value = true
     }
   } catch (error) {
     console.error('Error fetching company data:', error)
-    await useToast().add({
-      title: 'Error',
-      description: 'Failed to fetch companies',
-      color: 'red'
-    })
-    isLoaded.value = true
+    showErrorToast('Failed to fetch companies')
+  } finally {
+    isLoading.value = false
   }
+}
+
+/**
+ * Handles page change in pagination
+ * @param {number} newPage - New page number
+ */
+function handlePageChange(newPage) {
+  currentPage.value = newPage
+  fetchCompanies(newPage)
+}
+
+/**
+ * Handles search input changes
+ */
+function handleSearchChange() {
+  currentPage.value = 1 // Reset to first page when searching
+  fetchCompanies(1)
 }
 
 const redirectToExternalPage = async (path, company_uuid, uuid) => {
@@ -158,6 +194,19 @@ const redirectToExternalPage = async (path, company_uuid, uuid) => {
   });
 };
 
+/**
+ * Display error toast notification
+ * @param {string} message - Error message to display
+ */
+function showErrorToast(message) {
+  useToast().add({
+    title: 'Error',
+    description: message,
+    color: 'red'
+  })
+}
+
+// Initialize data on component mount
 onMounted(() => {
   fetchCompanies()
 })
