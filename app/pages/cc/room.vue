@@ -59,8 +59,44 @@
         <section class="space-y-6">
           <div class="space-y-4">
             <h4 class="font-semibold text-lg">Location</h4>
-
             <!-- Department Selection -->
+            <div v-if="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <UCard
+                  v-for="dept in departments"
+                  :key="dept.uuid"
+                  class="cursor-pointer hover:shadow-md transition-all"
+                  :ui="{
+                        ring: department.uuid === dept.uuid ? 'ring-2 ring-primary-500' : '',
+                        background: department.uuid === dept.uuid ? 'bg-primary-50' : 'bg-primary-10'
+                      }"
+                  @click="department.uuid = dept.uuid"
+              >
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-building-2"/>
+                    <h5 class="font-medium">{{ dept.name }}</h5>
+                  </div>
+
+                  <div class="text-sm text-gray-600 space-y-1">
+                    <div class="flex items-start gap-2">
+                      <UIcon name="i-lucide-map-pin" class="mt-1 flex-shrink-0"/>
+                      <div>
+                        <p>{{ dept.location.street_name }} {{ dept.location.street_number }}</p>
+                        <p>{{ dept.location.postal_code }} {{ dept.location.city }}</p>
+                        <p>{{ dept.location.country }}</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <UIcon name="i-lucide-map"/>
+                      <span>{{ dept.location.lat }}, {{ dept.location.lon }}</span>
+                    </div>
+                  </div>
+                </div>
+              </UCard>
+            </div>
+            <!-- Department Selection -->
+
             <div v-if="!loading">
               <UFormField label="Department" name="department">
                 <USelect
@@ -78,23 +114,6 @@
             >
               Fetch departments
             </UButton>
-
-            <!-- Location Fields -->
-            <!--            <div class="space-y-4">-->
-            <!--              <UFormField-->
-            <!--                  v-for="field in locationFields"-->
-            <!--                  :key="field.name"-->
-            <!--                  :label="field.label"-->
-            <!--                  :name="field.name"-->
-            <!--              >-->
-            <!--                <UInput-->
-            <!--                    v-model="location[field.name]"-->
-            <!--                    :type="field.type || 'text'"-->
-            <!--                    :class="field.class"-->
-            <!--                    v-bind="field.props"-->
-            <!--                />-->
-            <!--              </UFormField>-->
-            <!--            </div>-->
           </div>
 
           <!-- Translations Section -->
@@ -288,6 +307,7 @@ const isDeleting = ref(false)
 const showDeleteConfirm = ref(false)
 const loading = ref(true)
 const companyDepartments = ref([])
+const departments = ref([])
 
 // Form Data
 const basicInfo = ref<BasicInfo>({
@@ -410,6 +430,8 @@ const fetchCompanyDepartments = async () => {
       label: dept.name,
       value: dept.uuid
     }))
+
+    departments.value = response.data
   } catch (error) {
     useToast().add({
       title: 'Error',
