@@ -74,7 +74,7 @@
                 <div class="space-y-2">
                   <div class="flex items-center gap-2">
                     <UIcon name="i-lucide-building-2"/>
-                    <h5 class="font-medium">{{ dept.name }}</h5>
+                    <h5 class="font-medium" :class="department.uuid === dept.uuid ? 'text-purple-700' :'text-current' ">{{ dept.name }}</h5>
                   </div>
 
                   <div class="text-sm text-gray-600 space-y-1">
@@ -210,20 +210,20 @@
             Cancel
           </UButton>
           <UButton
-              color="primary"
-              @click="saveRoom"
-              :loading="isSaving"
-              :disabled="!isFormValid"
-          >
-            Save Changes
-          </UButton>
-          <UButton
               v-if="uuid"
-              color="red"
+              color="error"
               variant="soft"
               @click="confirmDelete"
           >
             Delete
+          </UButton>
+          <UButton
+              color="primary"
+              @click="saveRoom"
+              :loading="isSaving"
+              :disabled="!isFormValid"
+              :label=" uuid ? 'Edit' : 'Create'"
+          >
           </UButton>
         </footer>
       </template>
@@ -258,6 +258,7 @@ import {computed, ref} from 'vue'
 import {useRoute, useRouter} from '#vue-router'
 import {
   createRoomRoomsPost,
+  updateRoomRoomsRoomUuidPatch,
   getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
   getRoomByUuidRoomsRoomUuidGet
 } from '@/client/index.js'
@@ -461,7 +462,7 @@ const fetchRoom = async () => {
         urlSlug: data.url_slug,
         playersMin: data.players_min,
         playersMax: data.players_max,
-        duration: data.game_duration,
+        duration: data.duration,
         priceFrom: data.price_from,
         active: data.active,
         lm_id: data.lm_id,
@@ -509,14 +510,22 @@ const saveRoom = async () => {
       url_slug: basicInfo.value.urlSlug,
       players_min: basicInfo.value.playersMin,
       players_max: basicInfo.value.playersMax,
-      game_duration: basicInfo.value.duration,
+      duration: basicInfo.value.duration,
       price_from: basicInfo.value.priceFrom,
       active: basicInfo.value.active,
       translation: translations.value,
       supported_languages: supportedLanguages.value,
     }
 
-    await createRoomRoomsPost({body: roomData})
+    if (uuid.value) {
+      await updateRoomRoomsRoomUuidPatch({
+        path: {room_uuid: uuid.value},
+        body: roomData
+      })
+    } else {
+      await createRoomRoomsPost({body: roomData})
+
+    }
 
     useToast().add({
       title: 'Success',

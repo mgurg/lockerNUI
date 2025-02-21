@@ -71,7 +71,7 @@
             <div>
               <UIcon name="i-lucide-clock-4" class="mb-2"/>
               <h3 class="font-medium">Duration</h3>
-              <p class="text-gray-500 dark:text-gray-400">{{ room.game_duration }} min.</p>
+              <p class="text-gray-500 dark:text-gray-400">{{ room.duration }} min.</p>
             </div>
             <div>
               <UIcon name="i-lucide-drama" class="mb-2"/>

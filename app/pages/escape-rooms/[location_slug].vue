@@ -42,7 +42,7 @@
             <template #footer>
               <div class="flex gap-4">
                 <UBadge
-                    :label="`${room.game_duration} min`"
+                    :label="`${room.duration} min`"
                     icon="i-lucide-clock"
                     color="primary"
                     variant="solid"
@@ -142,7 +142,7 @@
               <template #footer>
                 <div class="flex gap-4">
                   <UBadge
-                      :label="`${room.game_duration} min`"
+                      :label="`${room.duration} min`"
                       icon="i-lucide-clock"
                       color="primary"
                       variant="solid"

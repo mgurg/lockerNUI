@@ -210,9 +210,22 @@ export type RoomAdd = {
     reservation_url?: string | null;
     lm_id?: string | null;
     mt_id?: string | null;
-    location?: LocationAdd | null;
     translation: Array<TranslationAdd>;
     supported_languages: Array<string>;
+};
+
+export type RoomEdit = {
+    name: string | null;
+    department_uuid?: string | null;
+    price_from?: number | null;
+    game_duration?: number | null;
+    players_min?: number | null;
+    players_max?: number | null;
+    reservation_url?: string | null;
+    lm_id?: string | null;
+    mt_id?: string | null;
+    translation?: Array<TranslationAdd> | null;
+    supported_languages?: Array<string> | null;
 };
 
 export type RoomIndexResponse = {
@@ -344,6 +357,33 @@ export type GetRoomByUuidRoomsRoomUuidGetResponses = {
      */
     200: unknown;
 };
+
+export type UpdateRoomRoomsRoomUuidPatchData = {
+    body: RoomEdit;
+    path: {
+        room_uuid: string;
+    };
+    query?: never;
+    url: '/rooms/{room_uuid}';
+};
+
+export type UpdateRoomRoomsRoomUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateRoomRoomsRoomUuidPatchError = UpdateRoomRoomsRoomUuidPatchErrors[keyof UpdateRoomRoomsRoomUuidPatchErrors];
+
+export type UpdateRoomRoomsRoomUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UpdateRoomRoomsRoomUuidPatchResponse = UpdateRoomRoomsRoomUuidPatchResponses[keyof UpdateRoomRoomsRoomUuidPatchResponses];
 
 export type RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetData = {
     body?: never;
