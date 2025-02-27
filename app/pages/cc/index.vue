@@ -12,7 +12,7 @@
               @update:model-value="handleSearchChange"
               placeholder="Search companies"
           />
-          <UButton @click="navigateToCompanyForm()">
+          <UButton @click="redirectToExternalPage('cc/company')">
             New company
           </UButton>
         </div>
@@ -40,7 +40,7 @@
             <div>
               <UButton
                   class="text-lg font-semibold"
-                  :color="company.validated_at ? 'success' : 'warning'"
+                  :color="company.verified_at ? 'success' : 'warning'"
                   trailing-icon="i-lucide-chevron-right"
                   @click="redirectToExternalPage('/cc/company', company.uuid)"
               >

@@ -8,7 +8,7 @@
           <UButton size="sm" icon="i-lucide-arrow-left" @click="$router.back()" class="mr-2"/>
           <h2 class="text-xl font-semibold">Company Details</h2>
           <UBadge
-              :color="companyState.validated_at ? 'success' : 'warning'"
+              :color="companyState.verified_at ? 'success' : 'warning'"
               size="md"
               icon="i-lucide-badge-check"
               class="ml-2"
@@ -243,6 +243,83 @@
       </div>
     </div>
 
+
+    <!-- Contacts Section -->
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h2 class="text-xl font-semibold mb-2">Contacts</h2>
+
+      <!-- Contacts List -->
+      <div v-if="contacts.length > 0" class="flex flex-wrap gap-2 mt-4 mb-6">
+        <UButton
+            v-for="contact in contacts"
+            :key="contact.uuid"
+            @click="fetchDepartmentDetails(contact.uuid)"
+            :color="selectedContact?.uuid === contact.uuid ? 'primary' : 'gray'"
+            variant="outline"
+        >
+          {{ contact.name }}
+        </UButton>
+        <UButton
+            v-if="selectedContact"
+            color="error"
+            size="sm"
+            icon="i-lucide-x"
+            @click="clearContactSelection"
+        />
+      </div>
+      <p v-else class="text-gray-500 italic mb-4">No contacts available</p>
+
+      <!-- Contact Details Form -->
+      <div class="grid grid-cols-2 gap-6">
+        <div class="p-4 bg-white rounded-lg shadow-sm">
+          <h3 class="text-lg font-medium mb-4">Contacts Details</h3>
+          <UForm :schema="departmentSchema" :state="departmentState" class="space-y-4">
+            <UFormField label="Contact Type" name="type">
+              <UInput v-model="contactState.type" class="w-full"/>
+            </UFormField>
+            <UFormField label="Contact Value" name="value">
+              <UInput v-model="contactState.value" class="w-full"/>
+            </UFormField>
+            <UFormField label="Contact Description" name="description">
+              <UInput v-model="contactState.description" class="w-full"/>
+            </UFormField>
+            <USwitch v-model="contactState.isPrimary" description="Is primary"/>
+          </UForm>
+
+          <!-- Department action buttons -->
+          <div class="mt-6 flex flex-wrap gap-2">
+            <UButton
+                color="success"
+                icon="i-lucide-plus"
+                @click="createDepartment()"
+                :disabled="!companyState.uuid || !contactState.type"
+            >
+              Add
+            </UButton>
+            <UButton
+                color="info"
+                icon="i-lucide-save"
+                @click="updateDepartment(departmentState.uuid)"
+                :disabled="!departmentState.uuid"
+            >
+              Edit
+            </UButton>
+            <UButton
+                color="error"
+                icon="i-lucide-trash-2"
+                @click="confirmDeleteDepartment(departmentState.uuid)"
+                :disabled="!departmentState.uuid"
+            >
+              Delete
+            </UButton>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
     <!-- Rooms Section -->
     <div class="mt-8 p-4 bg-gray-50 rounded-lg">
       <h2 class="text-xl font-semibold mb-2">Rooms</h2>
@@ -295,7 +372,9 @@ const locations = ref([]);
 const copyLocation = ref(true);
 const departments = ref([]);
 const rooms = ref([]);
+const contacts = ref([]);
 const selectedDepartment = ref(null);
+const selectedContact = ref(null);
 const isLoaded = ref(false);
 const errors = ref({});
 
@@ -323,6 +402,19 @@ const locationSchema = object({
 const departmentSchema = object({
   name: string().required('Department name is required'),
 });
+
+const contactSchema = object({
+  type: string().required('Contact type is required'),
+});
+
+const contactState = reactive({
+  type: '',
+  value: '',
+  country_code: '',
+  description: '',
+  isPrimary: false
+});
+
 
 // Form state objects
 const companyState = reactive({
@@ -508,6 +600,23 @@ function clearDepartmentSelection() {
     lon: '',
   });
 }
+
+function clearContactSelection() {
+  selectedContact.value = null;
+}
+
+async function createContact() {
+
+}
+
+async function updateContact() {
+
+}
+
+async function deleteContact() {
+
+}
+
 
 async function createDepartment() {
   if (!departmentState.name || !companyState.uuid) {
@@ -762,6 +871,6 @@ const redirectToExternalPage = async (path, company_uuid, uuid) => {
 };
 
 // Initialize data on component mount
-await fetchLocations();
+// await fetchLocations();
 await fetchCompany();
 </script>
