@@ -44,7 +44,7 @@
           <template #header>
             <h2 class="text-xl font-semibold">About This Room</h2>
           </template>
-          <p>{{ room.translation.description }}</p>
+          <p class="description-text">{{ room.translation.description }}</p>
         </UCard>
 
         <!-- Key Information -->
@@ -313,3 +313,9 @@ const cons = ref([
   }
 ]);
 </script>
+
+<style scoped>
+.description-text {
+  white-space: pre-line;
+}
+</style>

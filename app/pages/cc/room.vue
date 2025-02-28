@@ -11,6 +11,7 @@
               aria-label="Go back"
           />
           <h3 class="text-xl font-bold">{{ uuid ? 'Edit' : 'Create' }} Escape Room</h3>
+          <UButton color="info" trailing-icon="i-lucide-external-link" v-if="uuid" @click="redirectToExternalPage('/escape-room/'+basicInfo.urlSlug)"></UButton>
         </header>
       </template>
 
