@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     modules: ['@nuxt/ui', 'nuxt-umami', '@nuxtjs/i18n'],
+    css: ['~/assets/css/main.css'],
     umami: {
         id: 'my-w3b517e-id',
         host: 'https://cloud.umami.is',
