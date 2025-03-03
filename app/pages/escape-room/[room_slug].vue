@@ -87,7 +87,7 @@
         </UCard>
 
         <!-- Pros & Cons Section -->
-        <UCard class="mb-8">
+        <UCard class="mb-8" v-if="false">
           <template #header>
             <h2 class="text-xl font-semibold">Room Overview</h2>
           </template>

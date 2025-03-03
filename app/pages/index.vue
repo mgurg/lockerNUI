@@ -23,7 +23,7 @@
       </template>
     </UCard>
 
-    <UCard class="mt-5" v-if="cities">
+    <UCard class="mt-5" v-if="cities && cities.length">
       <template #header>
         <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
       </template>
