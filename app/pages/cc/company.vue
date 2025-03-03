@@ -362,7 +362,13 @@ import {ModalExample} from '#components'
 
 // Composables
 const localePath = useLocalePath();
-const modal = useModal();
+const overlay = useOverlay();
+const modal = overlay.create(ModalExample,{
+  props: {
+    description: 'Confirm Deletion',
+    message: `Are you sure you want to delete department"?`,
+  }
+})
 const toast = useToast();
 const route = useRoute();
 
@@ -704,9 +710,11 @@ function confirmDeleteDepartment(departmentUuid) {
     message: `Are you sure you want to delete department "${departmentState.name}"?`,
     onSuccess() {
       console.log("DELETE COMPANY")
-      deleteDepartment(departmentUuid)
+
     }
   })
+
+  deleteDepartment(departmentUuid)
 }
 
 async function deleteDepartment(departmentUuid) {
@@ -775,7 +783,7 @@ async function updateCompany(companyUuid) {
 function confirmDeleteCompany(companyUuid) {
   if (!companyUuid) return;
 
-  modal.open(ModalExample, {
+  overlay.open(ModalExample, {
     description: 'Confirm Company Deletion',
     message: `Are you sure you want to delete company "${companyState.name}"? This action cannot be undone.`,
     onSuccess() {
