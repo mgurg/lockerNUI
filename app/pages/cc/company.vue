@@ -1,5 +1,7 @@
 <template>
   <div v-if="isLoaded || !uuid">
+    {{ companyState.isVerified }}
+    A{{ companyState.verified_at }}A
     <!-- Main content layout -->
     <div class="grid grid-cols-2 gap-6">
       <!-- Company Information Section -->
@@ -101,7 +103,8 @@
 
         <!-- Action buttons -->
         <div class="mt-6 flex justify-between items-center">
-          <USwitch v-model="companyState.isVerified" description="Verified company"/>
+          <USwitch v-model="companyState.isVerified" @update:model-value="onCompanyValidationChange"
+                   description="Verified company"/>
           <div class="space-x-2">
             <UButton
                 v-if="uuid"
@@ -363,7 +366,7 @@ import {ModalExample} from '#components'
 // Composables
 const localePath = useLocalePath();
 const overlay = useOverlay();
-const modal = overlay.create(ModalExample,{
+const modal = overlay.create(ModalExample, {
   props: {
     description: 'Confirm Deletion',
     message: `Are you sure you want to delete department"?`,
@@ -432,8 +435,8 @@ const companyState = reactive({
   website: '',
   email: '',
   phone: '',
-  verified_at: '',
-  isVerified: false
+  verified_at: null,
+  isVerified: null
 });
 
 const locationState = reactive({
@@ -717,6 +720,13 @@ function confirmDeleteDepartment(departmentUuid) {
   deleteDepartment(departmentUuid)
 }
 
+async function onCompanyValidationChange() {
+
+  if (companyState.isVerified === true && companyState.verified_at === null) {
+    companyState.verified_at = new Date().toISOString();
+  }
+}
+
 async function deleteDepartment(departmentUuid) {
   try {
     await deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete({
@@ -747,9 +757,7 @@ async function updateCompany(companyUuid) {
 
   try {
     // Update verified_at timestamp based on isVerified state
-    if (companyState.isVerified) {
-      companyState.verified_at = companyState.verified_at || new Date().toISOString();
-    } else {
+    if (companyState.isVerified === false) {
       companyState.verified_at = null;
     }
 
@@ -818,11 +826,8 @@ async function deleteCompany(companyUuid) {
 
 async function createCompany() {
   try {
-    if (companyState.isVerified) {
-      companyState.verified_at = new Date().toISOString();
-    } else {
-      companyState.verified_at = null;
-    }
+
+    companyState.verified_at = null;
 
     const data = {
       ...companyState,
