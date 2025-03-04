@@ -11,7 +11,24 @@
               aria-label="Go back"
           />
           <h3 class="text-xl font-bold">{{ uuid ? 'Edit' : 'Create' }} Escape Room</h3>
-          <UButton color="info" trailing-icon="i-lucide-external-link" v-if="uuid" @click="redirectToExternalPage('/escape-room/'+basicInfo.urlSlug)"></UButton>
+          <UBadge
+              :color="basicInfo.verified_at ? 'success' : 'warning'"
+              size="md"
+              icon="i-lucide-badge-check"
+              class="ml-0"
+          />
+          <UBadge
+              :color="basicInfo.active ? 'success' : 'warning'"
+              size="md"
+              icon="i-lucide-circle-check-big"
+              class="ml-0"
+          />
+          <UButton v-if="uuid"
+                   size="sm"
+                   color="info"
+                   trailing-icon="i-lucide-external-link"
+                   @click="redirectToExternalPage('/escape-room/'+basicInfo.urlSlug)"
+          />
         </header>
       </template>
 
@@ -47,13 +64,24 @@
                   type="number"
                   :min="field.min"
                   :step="field.step"
+                  :class="field.class"
               />
             </UFormField>
           </div>
 
-          <UFormField label="Status" name="active">
-            <USwitch v-model="basicInfo.active"/>
+          <UFormField label="Status" name="active" class="mx-2">
+            <USwitch v-model="basicInfo.active"
+                     label="is active?"
+                     unchecked-icon="i-lucide-x"
+                     checked-icon="i-lucide-check"
+            />
+            <USwitch v-model="basicInfo.verified_at"
+                     label="is verified?"
+                     unchecked-icon="i-lucide-x"
+                     checked-icon="i-lucide-badge-check"
+            />
           </UFormField>
+
         </section>
 
         <!-- Location & Translations Section -->
@@ -75,7 +103,8 @@
                 <div class="space-y-2">
                   <div class="flex items-center gap-2">
                     <UIcon name="i-lucide-building-2"/>
-                    <h5 class="font-medium" :class="department.uuid === dept.uuid ? 'text-purple-700' :'text-current' ">{{ dept.name }}</h5>
+                    <h5 class="font-medium" :class="department.uuid === dept.uuid ? 'text-purple-700' :'text-current' ">
+                      {{ dept.name }}</h5>
                   </div>
 
                   <div class="text-sm text-gray-600 space-y-1">
@@ -213,44 +242,21 @@
           <UButton
               v-if="uuid"
               color="error"
-              variant="soft"
               @click="confirmDelete"
           >
             Delete
           </UButton>
           <UButton
-              color="primary"
+              color="info"
               @click="saveRoom"
               :loading="isSaving"
               :disabled="!isFormValid"
-              :label=" uuid ? 'Edit' : 'Create'"
+              :label=" uuid ? 'Update' : 'Create'"
           >
           </UButton>
         </footer>
       </template>
     </UCard>
-
-    <!-- Confirmation Dialog -->
-    <!--    <UModal v-model="showDeleteConfirm">-->
-    <!--      <UCard>-->
-    <!--        <template #header>-->
-    <!--          <h3 class="text-lg font-bold">Confirm Deletion</h3>-->
-    <!--        </template>-->
-    <!--        <p>Are you sure you want to delete this escape room? This action cannot be undone.</p>-->
-    <!--        <template #footer>-->
-    <!--          <div class="flex justify-end gap-4">-->
-    <!--            <UButton @click="showDeleteConfirm = false">Cancel</UButton>-->
-    <!--            <UButton-->
-    <!--                color="red"-->
-    <!--                @click="handleDelete"-->
-    <!--                :loading="isDeleting"-->
-    <!--            >-->
-    <!--              Delete-->
-    <!--            </UButton>-->
-    <!--          </div>-->
-    <!--        </template>-->
-    <!--      </UCard>-->
-    <!--    </UModal>-->
   </div>
 </template>
 
@@ -276,10 +282,11 @@ interface BasicInfo {
   active: boolean
   lm_id: string
   mt_id: string
-  game_fear_index: number
-  game_difficulty: string
+  fear_index: number
+  difficulty: string
   url_yt: string
-  reservation_url: string
+  booking_url: string
+  verified_at: string
 }
 
 interface Location {
@@ -300,7 +307,6 @@ interface Translation {
 
 // State
 const route = useRoute()
-const router = useRouter()
 const uuid = ref(route.query.uuid as string)
 const companyUuid = ref(route.query.company_uuid as string)
 const isLoaded = ref(false)
@@ -319,13 +325,14 @@ const basicInfo = ref<BasicInfo>({
   playersMax: 6,
   duration: 60,
   priceFrom: 0,
-  active: true,
+  active: false,
   lm_id: '',
   mt_id: '',
-  game_fear_index: 0,
-  game_difficulty: '',
+  fear_index: 0,
+  difficulty: '',
   url_yt: '',
-  reservation_url: ''
+  booking_url: '',
+  verified_at: ''
 })
 
 const location = ref<Location>({
@@ -354,17 +361,17 @@ const currentTranslation = ref<Translation>({
 const basicInfoFields = [
   {name: 'name', label: 'Name', class: 'w-full'},
   {name: 'urlSlug', label: 'URL Slug', class: 'w-full'},
-  {name: 'reservation_url', label: 'Reservation URL', class: 'w-full', icon: 'i-lucide-link'},
+  {name: 'booking_url', label: 'Reservation URL', class: 'w-full', icon: 'i-lucide-link'},
   {name: 'url_yt', label: 'YouTube URL', class: 'w-full', icon: 'i-lucide-youtube'}
 ]
 
 const numericFields = [
-  {name: 'playersMin', label: 'Min Players', min: 1, step: 1},
-  {name: 'playersMax', label: 'Max Players', min: 1, step: 1},
-  {name: 'duration', label: 'Duration (min)', min: 0, step: 5},
-  {name: 'priceFrom', label: 'Price From', min: 0, step: 1},
-  {name: 'game_fear_index', label: 'Fear Index', min: 0, max: 5, step: 1},
-  {name: 'game_difficulty', label: 'Difficulty', min: 1, max: 5, step: 1}
+  {name: 'playersMin', label: 'Min Players', min: 1, step: 1, class: 'w-full'},
+  {name: 'playersMax', label: 'Max Players', min: 1, step: 1, class: 'w-full'},
+  {name: 'duration', label: 'Duration (min)', min: 0, step: 5, class: 'w-full'},
+  {name: 'priceFrom', label: 'Price From', min: 0, step: 1, class: 'w-full'},
+  {name: 'fear_index', label: 'Fear Index', min: 0, max: 5, step: 1, class: 'w-full'},
+  {name: 'difficulty', label: 'Difficulty', min: 1, max: 5, step: 1, class: 'w-full'}
 ]
 
 const locationFields = [
@@ -438,7 +445,7 @@ const fetchCompanyDepartments = async () => {
     useToast().add({
       title: 'Error',
       description: 'Failed to fetch departments',
-      color: 'red'
+      color: 'error'
     })
   } finally {
     loading.value = false
@@ -468,10 +475,11 @@ const fetchRoom = async () => {
         active: data.active,
         lm_id: data.lm_id,
         mt_id: data.mt_id,
-        game_fear_index: data.game_fear_index,
-        game_difficulty: data.game_difficulty,
+        fear_index: data.fear_index,
+        difficulty: data.difficulty,
         url_yt: data.url_yt,
-        reservation_url: data.reservation_url
+        booking_url: data.booking_url,
+        verified_at: !!data.verified_at,
       }
 
       location.value = {
@@ -494,7 +502,7 @@ const fetchRoom = async () => {
     useToast().add({
       title: 'Error',
       description: 'Failed to fetch room data',
-      color: 'red'
+      color: 'error'
     })
   } finally {
     isLoaded.value = true
@@ -509,6 +517,8 @@ const saveRoom = async () => {
       company_uuid: companyUuid.value,
       department_uuid: department.value.uuid,
       url_slug: basicInfo.value.urlSlug,
+      booking_url: basicInfo.value.booking_url,
+      yt_url: basicInfo.value.url_yt,
       players_min: basicInfo.value.playersMin,
       players_max: basicInfo.value.playersMax,
       duration: basicInfo.value.duration,
@@ -516,6 +526,7 @@ const saveRoom = async () => {
       active: basicInfo.value.active,
       translation: translations.value,
       supported_languages: supportedLanguages.value,
+      verified_at: basicInfo.value.verified_at ? new Date().toISOString() : null
     }
 
     if (uuid.value) {
