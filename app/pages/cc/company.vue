@@ -1,7 +1,5 @@
 <template>
   <div v-if="isLoaded || !uuid">
-    {{ companyState.isVerified }}
-    A{{ companyState.verified_at }}A
     <!-- Main content layout -->
     <div class="grid grid-cols-2 gap-6">
       <!-- Company Information Section -->
@@ -64,15 +62,30 @@
 
       <!-- Location Details Section -->
       <div class="p-4 bg-gray-50 rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Location Details</h2>
+        <h2 class="text-xl font-semibold mb-4">Location Details
+          <UButton v-if="locationState.lat"
+                   size="sm"
+                   icon="i-lucide-map-pinned"
+                   @click="redirectToMap(locationState.lat, locationState.lon)"
+                   class="mr-2"
+          />
+          <UButton v-if="locationState.city"
+                   size="sm" icon="i-lucide-map-plus"
+                   @click="searchOnMap(locationState.city, locationState.street_name, locationState.street_number)"
+                   class="mr-2"/>
+        </h2>
         <UForm :schema="locationSchema" :state="locationState" class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-3 gap-4">
             <UFormField label="City" name="city">
               <UInput v-model="locationState.city" class="w-full"/>
             </UFormField>
 
             <UFormField label="Postal Code" name="postal_code">
               <UInput v-model="locationState.postal_code" class="w-full"/>
+            </UFormField>
+
+            <UFormField label="Country" name="country">
+              <UInput v-model="locationState.country" class="w-full"/>
             </UFormField>
           </div>
 
@@ -85,18 +98,13 @@
               <UInput v-model="locationState.street_number" class="w-full"/>
             </UFormField>
           </div>
-
-          <UFormField label="Country" name="country">
-            <UInput v-model="locationState.country" class="w-full"/>
-          </UFormField>
-
           <div class="grid grid-cols-2 gap-4">
             <UFormField label="Latitude" name="lat">
-              <UInput v-model="locationState.lat" type="number" step="0.000001" class="w-full"/>
+              <UInput v-model="locationState.lat" type="number" step="0.0000001" class="w-full"/>
             </UFormField>
 
             <UFormField label="Longitude" name="lon">
-              <UInput v-model="locationState.lon" type="number" step="0.000001" class="w-full"/>
+              <UInput v-model="locationState.lon" type="number" step="0.0000001" class="w-full"/>
             </UFormField>
           </div>
         </UForm>
@@ -108,7 +116,7 @@
           <div class="space-x-2">
             <UButton
                 v-if="uuid"
-                color="warning"
+                color="error"
                 icon="i-lucide-trash-2"
                 @click="confirmDeleteCompany(companyState.uuid)"
             >
@@ -169,6 +177,7 @@
               <UInput v-model="departmentState.name" class="w-full"/>
             </UFormField>
             <USwitch
+                v-if="!selectedDepartment"
                 v-model="copyLocation"
                 description="Same address as headquarters"
                 class="mt-4"
@@ -178,6 +187,7 @@
           <!-- Department action buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <UButton
+                v-if="!selectedDepartment"
                 color="success"
                 icon="i-lucide-plus"
                 @click="createDepartment()"
@@ -186,14 +196,7 @@
               Add
             </UButton>
             <UButton
-                color="info"
-                icon="i-lucide-save"
-                @click="updateDepartment(departmentState.uuid)"
-                :disabled="!departmentState.uuid"
-            >
-              Edit
-            </UButton>
-            <UButton
+                v-if="selectedDepartment"
                 color="error"
                 icon="i-lucide-trash-2"
                 @click="confirmDeleteDepartment(departmentState.uuid)"
@@ -201,20 +204,47 @@
             >
               Delete
             </UButton>
+            <UButton
+                v-if="selectedDepartment"
+                color="info"
+                icon="i-lucide-save"
+                @click="updateDepartment(departmentState.uuid)"
+                :disabled="!departmentState.uuid"
+            >
+              Update
+            </UButton>
+
           </div>
         </div>
 
         <!-- Department Location Form -->
         <div v-if="!copyLocation || selectedDepartment" class="p-4 bg-white rounded-lg shadow-sm">
-          <h3 class="text-lg font-medium mb-4">Department Location</h3>
+          <h3 class="text-lg font-medium mb-4">Department Location
+            <UButton v-if="locationDepartmentState.lat"
+                     size="sm"
+                     icon="i-lucide-map-pinned"
+                     @click="redirectToMap(locationDepartmentState.lat, locationDepartmentState.lon)"
+                     class="mr-2"
+            />
+            <UButton v-if="locationDepartmentState.city"
+                     size="sm" icon="i-lucide-map-plus"
+                     @click="searchOnMap(locationDepartmentState.city, locationDepartmentState.street_name, locationDepartmentState.street_number)"
+                     class="mr-2"/>
+
+          </h3>
+
           <UForm :schema="locationSchema" :state="locationDepartmentState" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-3 gap-4">
               <UFormField label="City" name="city">
                 <UInput v-model="locationDepartmentState.city" class="w-full"/>
               </UFormField>
 
               <UFormField label="Postal Code" name="postal_code">
                 <UInput v-model="locationDepartmentState.postal_code" class="w-full"/>
+              </UFormField>
+
+              <UFormField label="Country" name="country">
+                <UInput v-model="locationDepartmentState.country" class="w-full"/>
               </UFormField>
             </div>
 
@@ -228,17 +258,14 @@
               </UFormField>
             </div>
 
-            <UFormField label="Country" name="country">
-              <UInput v-model="locationDepartmentState.country" class="w-full"/>
-            </UFormField>
 
             <div class="grid grid-cols-2 gap-4">
               <UFormField label="Latitude" name="lat">
-                <UInput v-model="locationDepartmentState.lat" type="number" step="0.000001" class="w-full"/>
+                <UInput v-model="locationDepartmentState.lat" type="number" step="0.0000001" class="w-full"/>
               </UFormField>
 
               <UFormField label="Longitude" name="lon">
-                <UInput v-model="locationDepartmentState.lon" type="number" step="0.000001" class="w-full"/>
+                <UInput v-model="locationDepartmentState.lon" type="number" step="0.0000001" class="w-full"/>
               </UFormField>
             </div>
           </UForm>
@@ -349,14 +376,14 @@
 import {reactive, ref} from 'vue';
 import {number, object, string} from 'yup';
 import {
+  createCompanyCompaniesPost,
+  createDepartmentCompaniesDepartmentsPost,
+  deleteCompanyCompaniesCompanyUuidDelete,
+  deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getCompanyByUuidCompaniesCompanyUuidGet,
   getCompanyLocationsCompaniesCompanyUuidLocationsGet,
-  createCompanyCompaniesPost,
-  updateCompanyCompaniesCompanyUuidPatch,
-  deleteCompanyCompaniesCompanyUuidDelete,
-  createDepartmentCompaniesDepartmentsPost,
-  deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getDepartmentCompaniesDepartmentsDepartmentUuidGet,
+  updateCompanyCompaniesCompanyUuidPatch,
   updateDepartmentCompaniesDepartmentsDepartmentUuidPatch
 } from '@/client/index.ts';
 import {useRoute} from "#vue-router";
@@ -865,7 +892,19 @@ async function createCompany() {
   }
 }
 
+const searchOnMap = async (city, street, streetNumber = "") => {
+  const query = encodeURIComponent(`${street} ${streetNumber}, ${city}`.trim());
+  const url = `https://www.google.com/maps/search/?q=${query}`;
+  window.open(url, "_blank");
+};
+
+
 // Navigation helper
+const redirectToMap = async (lat, lon) => {
+  const url = `https://www.google.com/maps?q=${lat},${lon}`;
+  window.open(url, "_blank");
+}
+
 const redirectToExternalPage = async (path, company_uuid, uuid) => {
   const query = {};
 
