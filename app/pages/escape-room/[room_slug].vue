@@ -258,17 +258,20 @@
 
 
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 
 import {roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet} from "~/client/index.ts";
 import {useRoute} from "vue-router";
 
 const localePath = useLocalePath()
 const route = useRoute();
+const runtimeConfig = useRuntimeConfig()
 const roomSlug = route.params.slug || route.path.split("/").pop();
 
 
 const room = ref()
+const roomName = ref('')
+const roomDescription = ref('')
 
 const fetchRoom = async () => {
   try {
@@ -276,12 +279,36 @@ const fetchRoom = async () => {
       path: {language: "pl", room_url_slug: roomSlug},
     });
     room.value = response.data;
+    roomName.value = response.data.translation.title;
+    roomDescription.value = response.data.translation.lead;
   } catch (error) {
     console.error("Failed to fetch escape room details:", error);
   }
 };
 
 fetchRoom();
+
+const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
+const hreflangLinks = [
+  {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
+];
+
+useHead({
+  link: [
+    {rel: 'canonical', href: canonicalUrl},
+    ...hreflangLinks,
+  ],
+  htmlAttrs: {
+    lang: 'pl',
+  },
+});
+
+useSeoMeta({
+  title: computed(() => `Escape room ${roomName.value}`),
+  ogTitle: computed(() => `Escape room ${roomName.value}`),
+  description: computed(() => `${roomDescription.value}`),
+  ogDescription: computed(() => `${roomDescription.value}`),
+});
 
 const redirectToExternalPage = async (path, uuid) => {
   const query = uuid ? {uuid} : {};
