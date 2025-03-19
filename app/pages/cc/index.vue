@@ -79,7 +79,7 @@
                     :key="room.uuid"
                     @click="redirectToExternalPage('/cc/room',company.uuid, room.uuid, )"
                     icon="i-lucide-joystick"
-                    color="info"
+                    :color="room.active ? 'success' : 'warning'"
                     variant="soft"
                     size="md"
                 >
