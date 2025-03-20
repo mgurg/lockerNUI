@@ -194,6 +194,7 @@
             <UButton
                 v-for="(city, index) in nearbyCities"
                 :key="index"
+                @click="redirectToExternalPage(`/escape-rooms/${city.name}`)"
             >{{ city.name }}
             </UButton>
           </div>
