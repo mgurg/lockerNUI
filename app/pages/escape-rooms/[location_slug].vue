@@ -343,7 +343,7 @@ const redirectToExternalPage = async (path: string, uuid?: string) => {
 initializeData()
 
 // SEO
-const city = computed(() => cityDetails.value?.city_name || citySlug || 'Twoje Miasto');
+const city = computed(() => cityDetails.value?.city_name || citySlug.value || 'Twoje Miasto');
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
   {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
