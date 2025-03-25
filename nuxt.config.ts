@@ -22,6 +22,9 @@ export default defineNuxtConfig({
             // {code: 'en', iso: 'en-US', name: 'English'}
         ],
         defaultLocale: 'pl',
+        bundle: {
+            optimizeTranslationDirective: false,
+        },
     },
     router: {
         options: {
