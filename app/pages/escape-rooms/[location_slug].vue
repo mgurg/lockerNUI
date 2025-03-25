@@ -210,10 +210,9 @@ import type {CityDetailsResponse} from '~/client/types.gen'
 import {
   getCityDetailsPlacesCityAsciiNameGet,
   getNearbyCitiesPlacesNearbyCityCityAsciiNameGet,
+  getRoomsByLocationPlacesRoomsLocationNameGet,
   getRoomsCountRoomsCountGet,
-  getRoomsNearbyRoomsNearbyCityAsciiNameGet,
-  roomsByLocationRoomsUrlLanguagePlaceLocationGet,
-    getRoomsByLocationPlacesRoomsLocationNameGet
+  getRoomsNearbyRoomsNearbyCityAsciiNameGet
 } from "~/client"
 
 // State
@@ -235,7 +234,7 @@ const error = ref(false)
 
 // Helper functions
 const getTranslation = (room: any) => {
-  return room.translations?.[0] || room.translation
+  return room.translation || room.translations?.[0] || null;
 }
 
 // API Calls
@@ -262,7 +261,7 @@ const fetchRooms = async () => {
     //   path: {language: "pl", location: citySlug.value},
     // })
     const response = await getRoomsByLocationPlacesRoomsLocationNameGet({
-      path: {location_name: citySlug.value}, query :{language: "pl"},
+      path: {location_name: citySlug.value}, query: {language: "pl"},
     })
     rooms.value = response.data
 
@@ -333,7 +332,7 @@ const mapLink = computed(() => {
 })
 
 const redirectToExternalPage = async (path: string, uuid?: string) => {
-  const query = uuid ? { uuid } : {};
+  const query = uuid ? {uuid} : {};
 
   await navigateTo({
     path: localePath(path),
