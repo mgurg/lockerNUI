@@ -128,7 +128,7 @@
                   </h3>
                   <UBadge
                       v-if="room.location?.city"
-                      color="gray"
+                      color="neutral"
                       variant="solid"
                       :label="room.location.city"
                   />
@@ -343,7 +343,10 @@ const redirectToExternalPage = async (path: string, uuid?: string) => {
 initializeData()
 
 // SEO
-const city = computed(() => cityDetails.value?.city_name || citySlug.value || 'Twoje Miasto');
+const city = computed(() => {
+  const name = cityDetails.value?.city_name || citySlug.value || 'Twoje Miasto';
+  return name.replace(/\b\w/g, (char) => char.toUpperCase());
+});
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
   {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
@@ -359,8 +362,8 @@ useHead({
   },
 });
 useSeoMeta({
-  title: computed(() => `Escape Room ${city.value} - Katalog i Analizy Najlepszych Escape Roomów`),
-  ogTitle: computed(() => `Escape Room ${city.value} - Katalog i Analizy Najlepszych Escape Roomów`),
+  title: computed(() => `Escape Room w ${city.value} - katalog pokoi zagadek`),
+  ogTitle: computed(() => `Escape Room w ${city.value} - katalog pokoi zagadek`),
   description: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
   ogDescription: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
 });
