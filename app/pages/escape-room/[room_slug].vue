@@ -293,6 +293,18 @@ const hreflangLinks = [
   {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
 ];
 
+const excludedSlugs = [
+  "zostan-milionerem",
+  "lesne-trolle",
+  "seria-niefortunnych-zagadek",
+  "moriarty-sp-z-o-o",
+  "pieklo-hazardzisty",
+  "maly-ksiaze-sen-pilota",
+  "misja-cube"
+];
+
+const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
+
 useHead({
   link: [
     {rel: 'canonical', href: canonicalUrl},
@@ -308,6 +320,7 @@ useSeoMeta({
   ogTitle: computed(() => `Escape room ${roomName.value}`),
   description: computed(() => `${roomDescription.value}`),
   ogDescription: computed(() => `${roomDescription.value}`),
+  robots: computed(() => shouldNoIndex.value ? "noindex, nofollow" : "index, follow")
 });
 
 const redirectToExternalPage = async (path, uuid) => {
