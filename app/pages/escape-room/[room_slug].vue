@@ -290,7 +290,8 @@ fetchRoom();
 
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
+  { rel: 'alternate', hreflang: 'pl', href: canonicalUrl },
+  { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl }
 ];
 
 const excludedSlugs = [
@@ -320,7 +321,10 @@ useSeoMeta({
   ogTitle: computed(() => `Escape room ${roomName.value}`),
   description: computed(() => `${roomDescription.value}`),
   ogDescription: computed(() => `${roomDescription.value}`),
-  robots: computed(() => shouldNoIndex.value ? "noindex, nofollow" : "index, follow")
+  robots: computed(() => shouldNoIndex.value ? "noindex, nofollow" : "index, follow"),
+  ogImage: '/og/er_a.jpg',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/og/er_a.jpg',
 });
 
 const redirectToExternalPage = async (path, uuid) => {

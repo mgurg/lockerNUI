@@ -347,9 +347,11 @@ const city = computed(() => {
   const name = cityDetails.value?.city_name || citySlug.value || 'Twoje Miasto';
   return name.replace(/\b\w/g, (char) => char.toUpperCase());
 });
+
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  {rel: 'alternate', hreflang: 'pl', href: `${runtimeConfig.public.baseDomain}${route.fullPath}`},
+  { rel: 'alternate', hreflang: 'pl', href: canonicalUrl },
+  { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl }
 ];
 
 useHead({
@@ -366,6 +368,9 @@ useSeoMeta({
   ogTitle: computed(() => `Escape Room w ${city.value} - katalog pokoi zagadek`),
   description: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
   ogDescription: computed(() => `Znajdź najlepsze escape roomy w ${city.value}! Przeglądaj katalog, porównuj oferty, sprawdzaj poziom trudności, tematy i opinie graczy. Wybierz idealną przygodę w swoim mieście!`),
+  ogImage: '/og/er_a.jpg',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/og/er_a.jpg',
 });
 </script>
 

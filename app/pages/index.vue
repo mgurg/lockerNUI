@@ -68,6 +68,9 @@ useSeoMeta({
   ogTitle: 'Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI',
   description: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
   ogDescription: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
+  ogImage: '/og/er_a.jpg',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/og/er_a.jpg',
 })
 </script>
 
