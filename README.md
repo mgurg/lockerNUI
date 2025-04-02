@@ -76,7 +76,7 @@ bun install --frozen-lockfile
 
 Upgrading **Nuxt**
 ```bash
-bunx nuxi@latest upgrade --force
+bunx nuxi@latest upgrade --dedupe
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
