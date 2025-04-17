@@ -381,7 +381,6 @@ import {
   deleteCompanyCompaniesCompanyUuidDelete,
   deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete,
   getCompanyByUuidCompaniesCompanyUuidGet,
-  getCompanyLocationsCompaniesCompanyUuidLocationsGet,
   getDepartmentCompaniesDepartmentsDepartmentUuidGet,
   updateCompanyCompaniesCompanyUuidPatch,
   updateDepartmentCompaniesDepartmentsDepartmentUuidPatch
@@ -570,18 +569,6 @@ async function fetchCompany() {
   }
 }
 
-async function fetchLocations() {
-  if (!uuid.value) return;
-
-  try {
-    const response = await getCompanyLocationsCompaniesCompanyUuidLocationsGet({
-      path: {company_uuid: uuid.value}
-    });
-    locations.value = response.data || [];
-  } catch (err) {
-    console.error('Failed to fetch locations:', err);
-  }
-}
 
 // Department management methods
 async function fetchDepartmentDetails(departmentUuid) {
