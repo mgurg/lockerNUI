@@ -209,10 +209,10 @@ import {computed, ref} from 'vue'
 import type {CityDetailsResponse} from '~/client/types.gen'
 import {
   getCityDetailsPlacesCityAsciiNameGet,
-  getNearbyCitiesPlacesNearbyCityCityAsciiNameGet,
+  getNearbyCitiesPlacesNearbyCityCityNameGet,
   getRoomsByLocationPlacesRoomsLocationNameGet,
   getRoomsCountRoomsCountGet,
-  getRoomsNearbyRoomsNearbyCityAsciiNameGet
+  getRoomsNearbyRoomsNearbyCityNameGet,
 } from "~/client"
 
 // State
@@ -277,7 +277,7 @@ const fetchRooms = async () => {
 
 const fetchNearbyRooms = async () => {
   try {
-    const response = await getRoomsNearbyRoomsNearbyCityAsciiNameGet({
+    const response = await getRoomsNearbyRoomsNearbyCityNameGet({
       path: {city_ascii_name: citySlug.value}
     })
     nearbyRooms.value = response.data
@@ -297,7 +297,7 @@ const fetchRoomsCount = async () => {
 
 const fetchNearbyCities = async () => {
   try {
-    const response = await getNearbyCitiesPlacesNearbyCityCityAsciiNameGet({
+    const response = await getNearbyCitiesPlacesNearbyCityCityNameGet({
       path: {city_ascii_name: citySlug.value}
     })
     nearbyCities.value = response.data
@@ -350,8 +350,8 @@ const city = computed(() => {
 
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  { rel: 'alternate', hreflang: 'pl', href: canonicalUrl },
-  { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl }
+  {rel: 'alternate', hreflang: 'pl', href: canonicalUrl},
+  {rel: 'alternate', hreflang: 'x-default', href: canonicalUrl}
 ];
 
 useHead({
