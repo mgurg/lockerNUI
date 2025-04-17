@@ -279,7 +279,7 @@ import {useRoute} from '#vue-router'
 import {
   createRoomRoomsPost,
   getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
-  getRoomByUuidRoomsRoomUuidGet,
+  getRoomByUuidRoomsRoomUuidGet, type RoomIndexResponse,
   updateRoomRoomsRoomUuidPatch
 } from '@/client/index.js'
 import type {LocationQueryRaw} from 'vue-router'
@@ -288,10 +288,10 @@ import type {LocationQueryRaw} from 'vue-router'
 interface BasicInfo {
   name: string
   urlSlug: string
-  playersMin: number
-  playersMax: number
-  duration: number
-  priceFrom: number
+  playersMin: number | null
+  playersMax: number | null
+  duration: number | null
+  priceFrom: number | null
   active: boolean
   lm_id: string
   mt_id: string
@@ -496,7 +496,7 @@ const fetchRoom = async () => {
     })
 
     if (response.data) {
-      const data = response.data
+      const data = response.data as RoomIndexResponse
       basicInfo.value = {
         name: data.name,
         urlSlug: data.url_slug,
