@@ -69,6 +69,18 @@
             </UFormField>
           </div>
 
+          <UFormField label="Languages" name="languages" class="mx-2 mt-4">
+            <div class="flex gap-2">
+              <UButton
+                  v-for="lang in languageOptions"
+                  :key="lang.value"
+                  :label="lang.label"
+                  :variant="basicInfo.languages.includes(lang.value) ? 'solid' : 'outline'"
+                  @click="toggleLanguage(lang.value)"
+              />
+            </div>
+          </UFormField>
+
           <UFormField label="Status" name="active" class="mx-2">
             <USwitch v-model="basicInfo.active"
                      label="is active?"
@@ -81,6 +93,7 @@
                      checked-icon="i-lucide-badge-check"
             />
           </UFormField>
+
 
         </section>
 
@@ -233,7 +246,7 @@
       <template #footer>
         <footer class="flex justify-end gap-4">
           <UButton
-              color="gray"
+              color="info"
               variant="ghost"
               @click="$router.back()"
           >
@@ -270,6 +283,7 @@ import {
   getRoomByUuidRoomsRoomUuidGet
 } from '@/client/index.js'
 import type {LocationQueryRaw} from 'vue-router'
+import {array} from "yup";
 
 // Types
 interface BasicInfo {
@@ -287,6 +301,7 @@ interface BasicInfo {
   url_yt: string
   booking_url: string
   verified_at: string
+  languages: string[],
 }
 
 interface Location {
@@ -332,7 +347,8 @@ const basicInfo = ref<BasicInfo>({
   difficulty: '',
   url_yt: '',
   booking_url: '',
-  verified_at: ''
+  verified_at: '',
+  languages: ['pl'],
 })
 
 const location = ref<Location>({
@@ -382,8 +398,25 @@ const locationFields = [
   {name: 'lon', label: 'Longitude', type: 'number', step: '0.0000001'}
 ]
 
+const languageOptions = [
+  { label: 'PL', value: 'pl' },
+  { label: 'EN', value: 'en' },
+  { label: 'ES', value: 'es' },
+]
+
+
+function toggleLanguage(code: string) {
+  const index = basicInfo.value.languages.indexOf(code)
+  if (index === -1) {
+    basicInfo.value.languages.push(code)
+  } else {
+    basicInfo.value.languages.splice(index, 1)
+  }
+}
+
 // Computed
 const supportedLanguages = computed(() => translations.value.map(t => t.lang))
+
 const isFormValid = computed(() => {
   return basicInfo.value.name &&
       basicInfo.value.urlSlug &&
@@ -418,7 +451,7 @@ const addOrUpdateTranslation = () => {
     useToast().add({
       title: 'Error',
       description: 'Language and title are required',
-      color: 'red'
+      color: 'warning'
     })
     return
   }
@@ -480,6 +513,7 @@ const fetchRoom = async () => {
         url_yt: data.url_yt,
         booking_url: data.booking_url,
         verified_at: !!data.verified_at,
+        languages: data.languages.map(lang => lang.code),
       }
 
       location.value = {
@@ -525,7 +559,7 @@ const saveRoom = async () => {
       price_from: basicInfo.value.priceFrom,
       active: basicInfo.value.active,
       translation: translations.value,
-      supported_languages: supportedLanguages.value,
+      supported_languages: basicInfo.value.languages,
       verified_at: basicInfo.value.verified_at ? new Date().toISOString() : null
     }
 

@@ -32,8 +32,8 @@
 
           <!-- Actions -->
           <div class="mt-6 flex space-x-4">
-            <UButton color="primary" variant="solid" :to="room.booking_url"  target="_blank" >Rezerwuj</UButton>
-<!--            <UButton color="primary" variant="outline">Share</UButton>-->
+            <UButton color="primary" variant="solid" :to="room.booking_url" target="_blank">Rezerwuj</UButton>
+            <!--            <UButton color="primary" variant="outline">Share</UButton>-->
           </div>
         </div>
       </div>
@@ -69,23 +69,32 @@
             <div>
               <UIcon name="i-lucide-circle-dollar-sign" class="mb-2"/>
               <h3 class="font-medium">Cena od</h3>
-              <p class="text-gray-500 dark:text-gray-400">From {{ room.price_from }} PLN</p>
+              <p class="text-gray-500 dark:text-gray-400">Od {{ room.price_from }} PLN</p>
             </div>
-<!--            <div>-->
-<!--              <UIcon name="i-lucide-gauge" class="mb-2"/>-->
-<!--              <h3 class="font-medium">Difficulty</h3>-->
-<!--              <p class="text-gray-500 dark:text-gray-400">Advanced</p>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--              <UIcon name="i-lucide-drama" class="mb-2"/>-->
-<!--              <h3 class="font-medium">Success Rate</h3>-->
-<!--              <p class="text-gray-500 dark:text-gray-400">35%</p>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--              <UIcon name="i-lucide-languages" class="mb-2"/>-->
-<!--              <h3 class="font-medium">Languages</h3>-->
-<!--              <p class="text-gray-500 dark:text-gray-400">EN, ES</p>-->
-<!--            </div>-->
+            <div>
+              <!--              <UIcon name="i-lucide-gauge" class="mb-2"/>-->
+              <!--              <h3 class="font-medium">Difficulty</h3>-->
+              <!--              <p class="text-gray-500 dark:text-gray-400">Advanced</p>-->
+              <!--            </div>-->
+              <!--            <div>-->
+              <!--              <UIcon name="i-lucide-drama" class="mb-2"/>-->
+              <!--              <h3 class="font-medium">Success Rate</h3>-->
+              <!--              <p class="text-gray-500 dark:text-gray-400">35%</p>-->
+              <!--            </div>-->
+              <!--            <div>-->
+              <UIcon name="i-lucide-languages" class="mb-2"/>
+              <h3 class="font-medium">Języki</h3>
+              <p class="text-gray-500 dark:text-gray-400">
+                      <span
+                          v-for="(lang, index) in room.languages"
+                          :key="lang.code"
+                          class="mr-2"
+                      >
+        {{ emojiMap[lang.code] }} {{ lang.name }}
+        <span v-if="index < room.languages.length - 1">,</span>
+      </span>
+              </p>
+            </div>
           </div>
         </UCard>
 
@@ -133,20 +142,20 @@
                 </p>
               </div>
             </div>
-<!--            <div class="flex items-start gap-3">-->
-<!--              <UIcon name="i-lucide-phone" class="flex-shrink-0 mt-1"/>-->
-<!--              <div>-->
-<!--                <h3 class="font-medium">Phone</h3>-->
-<!--                <p class="text-gray-500 dark:text-gray-400">+1 (555) 123-4567</p>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="flex items-start gap-3">-->
-<!--              <UIcon name="i-lucide-at-sign" class="flex-shrink-0 mt-1"/>-->
-<!--              <div>-->
-<!--                <h3 class="font-medium">Email</h3>-->
-<!--                <p class="text-gray-500 dark:text-gray-400">info@duneescape.com</p>-->
-<!--              </div>-->
-<!--            </div>-->
+            <!--            <div class="flex items-start gap-3">-->
+            <!--              <UIcon name="i-lucide-phone" class="flex-shrink-0 mt-1"/>-->
+            <!--              <div>-->
+            <!--                <h3 class="font-medium">Phone</h3>-->
+            <!--                <p class="text-gray-500 dark:text-gray-400">+1 (555) 123-4567</p>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div class="flex items-start gap-3">-->
+            <!--              <UIcon name="i-lucide-at-sign" class="flex-shrink-0 mt-1"/>-->
+            <!--              <div>-->
+            <!--                <h3 class="font-medium">Email</h3>-->
+            <!--                <p class="text-gray-500 dark:text-gray-400">info@duneescape.com</p>-->
+            <!--              </div>-->
+            <!--            </div>-->
           </div>
         </UCard>
 
@@ -273,6 +282,14 @@ const room = ref()
 const roomName = ref('')
 const roomDescription = ref('')
 
+const emojiMap = {
+  en: "🇬🇧",
+  es: "🇪🇸",
+  pl: "🇵🇱",
+  fr: "🇫🇷",
+  de: "🇩🇪",
+}
+
 const fetchRoom = async () => {
   try {
     const response = await roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet({
@@ -290,8 +307,8 @@ fetchRoom();
 
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
-  { rel: 'alternate', hreflang: 'pl', href: canonicalUrl },
-  { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl }
+  {rel: 'alternate', hreflang: 'pl', href: canonicalUrl},
+  {rel: 'alternate', hreflang: 'x-default', href: canonicalUrl}
 ];
 
 const excludedSlugs = [
