@@ -275,15 +275,14 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue'
-import {useRoute, useRouter} from '#vue-router'
+import {useRoute} from '#vue-router'
 import {
   createRoomRoomsPost,
-  updateRoomRoomsRoomUuidPatch,
   getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
-  getRoomByUuidRoomsRoomUuidGet
+  getRoomByUuidRoomsRoomUuidGet,
+  updateRoomRoomsRoomUuidPatch
 } from '@/client/index.js'
 import type {LocationQueryRaw} from 'vue-router'
-import {array} from "yup";
 
 // Types
 interface BasicInfo {
@@ -399,9 +398,9 @@ const locationFields = [
 ]
 
 const languageOptions = [
-  { label: 'PL', value: 'pl' },
-  { label: 'EN', value: 'en' },
-  { label: 'ES', value: 'es' },
+  {label: 'PL', value: 'pl'},
+  {label: 'EN', value: 'en'},
+  {label: 'ES', value: 'es'},
 ]
 
 
