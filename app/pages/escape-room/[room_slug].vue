@@ -318,7 +318,10 @@ const excludedSlugs = [
   "moriarty-sp-z-o-o",
   "pieklo-hazardzisty",
   "maly-ksiaze-sen-pilota",
-  "misja-cube"
+  "misja-cube",
+  "the-final-show",
+  "the-moonshiner",
+  "tajemnica-61-kilometra",
 ];
 
 const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
