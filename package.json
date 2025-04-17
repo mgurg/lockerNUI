@@ -11,10 +11,10 @@
     "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios"
   },
   "dependencies": {
-    "@hey-api/client-axios": "^0.6.2",
-    "@hey-api/client-nuxt": "^0.3.0",
+    "@hey-api/client-axios": "^0.7.0",
+    "@hey-api/client-nuxt": "^0.4.0",
     "@nuxt/ui": "^3.0.2",
-    "@nuxtjs/i18n": "^9.4.0",
+    "@nuxtjs/i18n": "^9.5.3",
     "axios": "^1.8.4",
     "nuxt": "^3.16.2",
     "nuxt-umami": "^3.2.0",
@@ -23,6 +23,6 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.64.13"
+    "@hey-api/openapi-ts": "^0.66.4"
   }
 }

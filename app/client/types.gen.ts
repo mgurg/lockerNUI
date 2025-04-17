@@ -18,6 +18,11 @@ export type BasicDepartment = {
     name: string;
 };
 
+export type BasicLanguage = {
+    name: string;
+    code: string;
+};
+
 export type BasicLocation = {
     city: string | null;
 };
@@ -25,6 +30,7 @@ export type BasicLocation = {
 export type BasicRoom = {
     uuid: string;
     name: string;
+    active: boolean;
 };
 
 export type CityDetailsResponse = {
@@ -72,6 +78,7 @@ export type CompanyEdit = {
     website?: string | null;
     email?: string | null;
     phone?: string | null;
+    verified_at?: string | null;
     location?: LocationEdit | null;
 };
 
@@ -83,6 +90,18 @@ export type CompanyIndexResponse = {
     departments: Array<BasicDepartment> | null;
     rooms: Array<BasicRoom> | null;
 };
+
+export type ContactAdd = {
+    company_uuid: string;
+    department_uuid?: string | null;
+    type: ContactType;
+    value: string;
+    country_code?: string | null;
+    is_primary?: boolean;
+    description?: string | null;
+};
+
+export type ContactType = 'phone' | 'email' | 'telegram' | 'whatsapp' | 'viber' | 'facebook';
 
 export type CurrentPuzzleResponse = {
     scenario: string;
@@ -104,6 +123,10 @@ export type DepartmentEdit = {
     name?: string | null;
     location?: LocationEdit | null;
 };
+
+export type FearLevel = 'none' | 'spooky' | 'tense' | 'scary' | 'terrifying';
+
+export type GameDifficulty = 'intro' | 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
 export type GameOutro = {
     outro: string;
@@ -140,7 +163,8 @@ export type IntroResponse = {
 };
 
 export type Location = {
-    street_address: string;
+    street_name: string | null;
+    street_number: string | null;
     city: string;
     state_province?: string | null;
     postal_code?: string | null;
@@ -164,7 +188,8 @@ export type LocationAdd = {
 
 export type LocationEdit = {
     uuid?: string | null;
-    street_address?: string | null;
+    street_name?: string | null;
+    street_number?: string | null;
     city?: string | null;
     state_province?: string | null;
     postal_code?: string | null;
@@ -180,6 +205,7 @@ export type Option = {
 };
 
 export type PlaceAdd = {
+    name: string;
     lat: number | string | null;
     lon: number | string | null;
     lat_min: number | string | null;
@@ -191,7 +217,18 @@ export type PlaceAdd = {
     category: string;
     region: string | null;
     country: string | null;
+    language: string | null;
     geo_names: Array<GeoNameAdd>;
+};
+
+export type PlaceRoomIndexResponse = {
+    uuid: string;
+    url_slug: string;
+    players_min: number | null;
+    players_max: number | null;
+    price_from: number | null;
+    duration: number | null;
+    translation?: RoomTranslation | null;
 };
 
 export type ReviewRequest = {
@@ -204,10 +241,14 @@ export type RoomAdd = {
     company_uuid: string;
     department_uuid?: string | null;
     price_from?: number | null;
-    game_duration?: number | null;
+    duration?: number | null;
     players_min?: number | null;
     players_max?: number | null;
-    reservation_url?: string | null;
+    booking_url?: string | null;
+    difficulty?: GameDifficulty | null;
+    category?: string | null;
+    fear_level?: FearLevel | null;
+    url_yt?: string | null;
     lm_id?: string | null;
     mt_id?: string | null;
     translation: Array<TranslationAdd>;
@@ -221,9 +262,11 @@ export type RoomEdit = {
     game_duration?: number | null;
     players_min?: number | null;
     players_max?: number | null;
-    reservation_url?: string | null;
+    booking_url?: string | null;
     lm_id?: string | null;
     mt_id?: string | null;
+    active?: boolean | null;
+    verified_at?: string | null;
     translation?: Array<TranslationAdd> | null;
     supported_languages?: Array<string> | null;
 };
@@ -231,13 +274,19 @@ export type RoomEdit = {
 export type RoomIndexResponse = {
     uuid: string;
     url_slug: string;
-    reservation_url: string | null;
+    booking_url: string | null;
     players_min: number | null;
     players_max: number | null;
     price_from: number | null;
-    game_duration: number | null;
+    duration: number | null;
+    difficulty?: GameDifficulty | null;
+    category?: string | null;
+    fear_level?: FearLevel | null;
+    url_yt?: string | null;
     location: Location;
     translation?: RoomTranslation | null;
+    department?: BasicDepartment | null;
+    languages?: Array<BasicLanguage> | null;
 };
 
 export type RoomTranslation = {
@@ -245,6 +294,11 @@ export type RoomTranslation = {
     title: string;
     lead: string;
     description: string;
+};
+
+export type TagAdd = {
+    room_uuid: string;
+    name: string;
 };
 
 export type TranslationAdd = {
@@ -281,25 +335,25 @@ export type GetRoomsCountRoomsCountGetResponses = {
 
 export type GetRoomsCountRoomsCountGetResponse = GetRoomsCountRoomsCountGetResponses[keyof GetRoomsCountRoomsCountGetResponses];
 
-export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetData = {
+export type GetRoomsNearbyRoomsNearbyCityNameGetData = {
     body?: never;
     path: {
-        city_ascii_name: string;
+        city_name: string;
     };
     query?: never;
-    url: '/rooms/nearby/{city_ascii_name}';
+    url: '/rooms/nearby/{city_name}';
 };
 
-export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors = {
+export type GetRoomsNearbyRoomsNearbyCityNameGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetError = GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors[keyof GetRoomsNearbyRoomsNearbyCityAsciiNameGetErrors];
+export type GetRoomsNearbyRoomsNearbyCityNameGetError = GetRoomsNearbyRoomsNearbyCityNameGetErrors[keyof GetRoomsNearbyRoomsNearbyCityNameGetErrors];
 
-export type GetRoomsNearbyRoomsNearbyCityAsciiNameGetResponses = {
+export type GetRoomsNearbyRoomsNearbyCityNameGetResponses = {
     /**
      * Successful Response
      */
@@ -467,6 +521,29 @@ export type CreateRoomRoomsPostResponses = {
     200: unknown;
 };
 
+export type GetRoomsCountTagsPostData = {
+    body: TagAdd;
+    path?: never;
+    query?: never;
+    url: '/tags';
+};
+
+export type GetRoomsCountTagsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetRoomsCountTagsPostError = GetRoomsCountTagsPostErrors[keyof GetRoomsCountTagsPostErrors];
+
+export type GetRoomsCountTagsPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type GetPlacesWithRoomsPlacesGetData = {
     body?: never;
     path?: never;
@@ -547,25 +624,25 @@ export type GetCityDetailsPlacesCityAsciiNameGetResponses = {
 
 export type GetCityDetailsPlacesCityAsciiNameGetResponse = GetCityDetailsPlacesCityAsciiNameGetResponses[keyof GetCityDetailsPlacesCityAsciiNameGetResponses];
 
-export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetData = {
+export type GetNearbyCitiesPlacesNearbyCityCityNameGetData = {
     body?: never;
     path: {
-        city_ascii_name: string;
+        city_name: string;
     };
     query?: never;
-    url: '/places/nearby_city/{city_ascii_name}';
+    url: '/places/nearby_city/{city_name}';
 };
 
-export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors = {
+export type GetNearbyCitiesPlacesNearbyCityCityNameGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetError = GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors[keyof GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetErrors];
+export type GetNearbyCitiesPlacesNearbyCityCityNameGetError = GetNearbyCitiesPlacesNearbyCityCityNameGetErrors[keyof GetNearbyCitiesPlacesNearbyCityCityNameGetErrors];
 
-export type GetNearbyCitiesPlacesNearbyCityCityAsciiNameGetResponses = {
+export type GetNearbyCitiesPlacesNearbyCityCityNameGetResponses = {
     /**
      * Successful Response
      */
@@ -596,8 +673,10 @@ export type GetRoomsByLocationPlacesRoomsLocationNameGetResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: Array<PlaceRoomIndexResponse>;
 };
+
+export type GetRoomsByLocationPlacesRoomsLocationNameGetResponse = GetRoomsByLocationPlacesRoomsLocationNameGetResponses[keyof GetRoomsByLocationPlacesRoomsLocationNameGetResponses];
 
 export type GetRoomsByGeolocationPlacesRoomsGeoipGetData = {
     body?: never;
@@ -785,31 +864,6 @@ export type GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetResponses = {
     200: unknown;
 };
 
-export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetData = {
-    body?: never;
-    path: {
-        company_uuid: string;
-    };
-    query?: never;
-    url: '/companies/{company_uuid}/locations';
-};
-
-export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetError = GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors[keyof GetCompanyLocationsCompaniesCompanyUuidLocationsGetErrors];
-
-export type GetCompanyLocationsCompaniesCompanyUuidLocationsGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
 export type DeleteDepartmentCompaniesDepartmentsDepartmentUuidDeleteData = {
     body?: never;
     path: {
@@ -913,6 +967,56 @@ export type CreateDepartmentCompaniesDepartmentsPostResponses = {
 };
 
 export type CreateDepartmentCompaniesDepartmentsPostResponse = CreateDepartmentCompaniesDepartmentsPostResponses[keyof CreateDepartmentCompaniesDepartmentsPostResponses];
+
+export type GetCompanyContactsCompaniesCompanyUuidContactsGetData = {
+    body?: never;
+    path: {
+        company_uuid: string;
+    };
+    query?: never;
+    url: '/companies/{company_uuid}/contacts';
+};
+
+export type GetCompanyContactsCompaniesCompanyUuidContactsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCompanyContactsCompaniesCompanyUuidContactsGetError = GetCompanyContactsCompaniesCompanyUuidContactsGetErrors[keyof GetCompanyContactsCompaniesCompanyUuidContactsGetErrors];
+
+export type GetCompanyContactsCompaniesCompanyUuidContactsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type CreateContactCompaniesContactsPostData = {
+    body: ContactAdd;
+    path?: never;
+    query?: never;
+    url: '/companies/contacts';
+};
+
+export type CreateContactCompaniesContactsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateContactCompaniesContactsPostError = CreateContactCompaniesContactsPostErrors[keyof CreateContactCompaniesContactsPostErrors];
+
+export type CreateContactCompaniesContactsPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: BaseUuid;
+};
+
+export type CreateContactCompaniesContactsPostResponse = CreateContactCompaniesContactsPostResponses[keyof CreateContactCompaniesContactsPostResponses];
 
 export type StartGameGamesStartPostData = {
     body: GameStart;
@@ -1077,14 +1181,28 @@ export type AddReviewGamesReviewGameUuidPostResponses = {
 
 export type AddReviewGamesReviewGameUuidPostResponse = AddReviewGamesReviewGameUuidPostResponses[keyof AddReviewGamesReviewGameUuidPostResponses];
 
-export type LoactionsSitemapSeoSitemapGetData = {
+export type LocationsSitemapSeoSitemapGetData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/seo/sitemap';
 };
 
-export type LoactionsSitemapSeoSitemapGetResponses = {
+export type LocationsSitemapSeoSitemapGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type RoomsSitemapSeoRoomsSitemapGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/seo/rooms_sitemap';
+};
+
+export type RoomsSitemapSeoRoomsSitemapGetResponses = {
     /**
      * Successful Response
      */
