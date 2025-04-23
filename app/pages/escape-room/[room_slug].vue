@@ -312,16 +312,14 @@ const hreflangLinks = [
 ];
 
 const excludedSlugs = [
-  "zostan-milionerem",
-  "lesne-trolle",
-  "seria-niefortunnych-zagadek",
-  "moriarty-sp-z-o-o",
-  "pieklo-hazardzisty",
-  "maly-ksiaze-sen-pilota",
-  "misja-cube",
-  "the-final-show",
-  "the-moonshiner",
-  "tajemnica-61-kilometra",
+  'zamczysko-magikowo', 'misja-teleportacja', 'tlk-interstellar', 'harry-potter', 'komnata-alchemika-ambrozego',
+  'gabinet-detektywa-korneliusza-spryta', 'gabinet-archeolozki-iwony-was', 'bestie-peruna', 'alicja',
+  'powstanie-warszawskie', 'strefa-cienia', 'the-final-show', 'peron-9-i-3-4', 'noc-zywych-trupow',
+  'tajemnica-61-kilometra', 'wolfenstein', 'eksperyment', 'the-moonshiner', 'odeon', 'zbrodnia-na-plotnie', 'tupolew',
+  'james-bond', 'seksmisja', 'killer', 'prison-break', 'amber-gold', 'sex-room', 'dom-mordercy-remastered',
+  'zloto-nazistow', 'testament-radom', 'lesne-trolle', 'moriarty-sp-z-o-o', 'pieklo-hazardzisty',
+  'maly-ksiaze-sen-pilota', 'misja-cube', 'zbojnicka-kryjowka', 'uniwersytet-potworny', 'zostan-milionerem',
+  'seria-niefortunnych-zagadek', 'klatwa-czarnoksieznika',
 ];
 
 const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
