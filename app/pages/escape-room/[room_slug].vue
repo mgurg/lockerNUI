@@ -312,14 +312,12 @@ const hreflangLinks = [
 ];
 
 const excludedSlugs = [
-  'zamczysko-magikowo', 'misja-teleportacja', 'tlk-interstellar', 'harry-potter', 'komnata-alchemika-ambrozego',
-  'gabinet-detektywa-korneliusza-spryta', 'gabinet-archeolozki-iwony-was', 'bestie-peruna', 'alicja',
-  'powstanie-warszawskie', 'strefa-cienia', 'the-final-show', 'peron-9-i-3-4', 'noc-zywych-trupow',
-  'tajemnica-61-kilometra', 'wolfenstein', 'eksperyment', 'the-moonshiner', 'odeon', 'zbrodnia-na-plotnie', 'tupolew',
-  'james-bond', 'seksmisja', 'killer', 'prison-break', 'amber-gold', 'sex-room', 'dom-mordercy-remastered',
-  'zloto-nazistow', 'testament-radom', 'lesne-trolle', 'moriarty-sp-z-o-o', 'pieklo-hazardzisty',
-  'maly-ksiaze-sen-pilota', 'misja-cube', 'zbojnicka-kryjowka', 'uniwersytet-potworny', 'zostan-milionerem',
-  'seria-niefortunnych-zagadek', 'klatwa-czarnoksieznika',
+  'zamczysko-magikowo', 'misja-teleportacja', 'krypta-hrabiny-dabkov', 'tlk-interstellar', 'harry-potter', 'komnata-alchemika-ambrozego',
+  'gniazdo-feniksa', 'gabinet-detektywa-korneliusza-spryta', 'gabinet-archeolozki-iwony-was', 'bestie-peruna', 'alicja', 'powstanie-warszawskie',
+  'krasnoludy', 'in-da-club', 'strefa-cienia', 'golden-hajs', 'the-final-show', 'peron-9-i-3-4', 'noc-zywych-trupow', 'tajemnica-61-kilometra',
+  'wolfenstein', 'eksperyment', 'the-moonshiner', 'odeon', 'zbrodnia-na-plotnie', 'tupolew', 'james-bond', 'seksmisja', 'killer', 'prison-break',
+  'amber-gold', 'sex-room', 'dom-mordercy-remastered', 'zloto-nazistow', 'testament-radom', 'lesne-trolle', 'moriarty-sp-z-o-o', 'pieklo-hazardzisty',
+  'maly-ksiaze-sen-pilota', 'misja-cube', 'zbojnicka-kryjowka', 'uniwersytet-potworny', 'zostan-milionerem', 'seria-niefortunnych-zagadek', 'klatwa-czarnoksieznika'
 ];
 
 const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
