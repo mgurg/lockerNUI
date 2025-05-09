@@ -391,14 +391,14 @@ import {ModalExample} from '#components'
 
 // Composables
 const localePath = useLocalePath();
-const overlay = useOverlay();
+const overlay = useOverlay()
+const toast = useToast()
 const modal = overlay.create(ModalExample, {
   props: {
     description: 'Confirm Deletion',
     message: `Are you sure you want to delete department"?`,
   }
 })
-const toast = useToast();
 const route = useRoute();
 
 // State variables
@@ -805,13 +805,13 @@ async function updateCompany(companyUuid) {
 function confirmDeleteCompany(companyUuid) {
   if (!companyUuid) return;
 
-  overlay.open(ModalExample, {
+  const instance = modal.open({
     description: 'Confirm Company Deletion',
     message: `Are you sure you want to delete company "${companyState.name}"? This action cannot be undone.`,
     onSuccess() {
-      console.log("DELETE COMPANY")
-      deleteCompany(companyUuid)
-    }
+          console.log("DELETE COMPANY")
+          deleteCompany(companyUuid)
+        }
   })
 }
 
