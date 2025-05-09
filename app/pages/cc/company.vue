@@ -115,7 +115,7 @@
                    description="Verified company"/>
           <div class="space-x-2">
             <UButton
-                v-if="uuid"
+                v-if="uuid && showButton"
                 color="error"
                 icon="i-lucide-trash-2"
                 @click="confirmDeleteCompany(companyState.uuid)"
@@ -123,7 +123,7 @@
               Delete
             </UButton>
             <UButton
-                v-if="uuid"
+                v-if="uuid && showButton"
                 color="info"
                 icon="i-lucide-save"
                 @click="updateCompany(companyState.uuid)"
@@ -131,7 +131,7 @@
               Update
             </UButton>
             <UButton
-                v-else
+                v-if="!uuid && showButton"
                 color="success"
                 icon="i-lucide-circle-plus"
                 @click="handleSubmit"
@@ -187,7 +187,7 @@
           <!-- Department action buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <UButton
-                v-if="!selectedDepartment"
+                v-if="!selectedDepartment && showButton"
                 color="success"
                 icon="i-lucide-plus"
                 @click="createDepartment()"
@@ -196,7 +196,7 @@
               Add
             </UButton>
             <UButton
-                v-if="selectedDepartment"
+                v-if="selectedDepartment && showButton"
                 color="error"
                 icon="i-lucide-trash-2"
                 @click="confirmDeleteDepartment(departmentState.uuid)"
@@ -205,7 +205,7 @@
               Delete
             </UButton>
             <UButton
-                v-if="selectedDepartment"
+                v-if="selectedDepartment && showButton"
                 color="info"
                 icon="i-lucide-save"
                 @click="updateDepartment(departmentState.uuid)"
@@ -912,4 +912,12 @@ const redirectToExternalPage = async (path, company_uuid, uuid) => {
 // Initialize data on component mount
 // await fetchLocations();
 await fetchCompany();
+
+
+const showButton = ref(false)
+
+onMounted(() => {
+  const myKey = localStorage.getItem('my-custom-key')
+  showButton.value = myKey !== null
+})
 </script>

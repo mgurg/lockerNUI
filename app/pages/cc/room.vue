@@ -10,25 +10,20 @@
               @click="$router.back()"
               aria-label="Go back"
           />
+          <UButton
+              size="sm"
+              trailing-icon="i-lucide-building"
+              @click="redirectToExternalPage('/cc/company', companyUuid)"
+          >
+          </UButton>
           <h3 class="text-xl font-bold">{{ uuid ? 'Edit' : 'Create' }} Escape Room</h3>
-          <UBadge
-              :color="basicInfo.verified_at ? 'success' : 'warning'"
-              size="md"
-              icon="i-lucide-badge-check"
-              class="ml-0"
-          />
-          <UBadge
-              :color="basicInfo.active ? 'success' : 'warning'"
-              size="md"
-              icon="i-lucide-circle-check-big"
-              class="ml-0"
-          />
           <UButton v-if="uuid"
                    size="sm"
                    color="info"
                    trailing-icon="i-lucide-external-link"
                    @click="redirectToExternalPage('/escape-room/'+basicInfo.urlSlug)"
           />
+
         </header>
       </template>
 
@@ -253,13 +248,14 @@
             Cancel
           </UButton>
           <UButton
-              v-if="uuid"
+              v-if="uuid && showButton"
               color="error"
               @click="confirmDelete"
           >
             Delete
           </UButton>
           <UButton
+              v-if="showButton"
               color="info"
               @click="saveRoom"
               :loading="isSaving"
@@ -279,7 +275,8 @@ import {useRoute} from '#vue-router'
 import {
   createRoomRoomsPost,
   getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet,
-  getRoomByUuidRoomsRoomUuidGet, type RoomIndexResponse,
+  getRoomByUuidRoomsRoomUuidGet,
+  type RoomIndexResponse,
   updateRoomRoomsRoomUuidPatch
 } from '@/client/index.js'
 import type {LocationQueryRaw} from 'vue-router'
@@ -632,9 +629,14 @@ const redirectToExternalPage = async (
     query
   });
 };
-// Initialize
+
+
+const showButton = ref(false)
+
 onMounted(() => {
   fetchRoom()
   fetchCompanyDepartments()
+  const myKey = localStorage.getItem('my-custom-key')
+  showButton.value = myKey !== null
 })
 </script>
