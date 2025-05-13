@@ -358,8 +358,7 @@
             v-for="room in rooms"
             :key="room.uuid"
             @click="redirectToExternalPage('/cc/room', uuid, room.uuid)"
-            variant="outline"
-            color="gray"
+            :color="room.verified_at ? 'success' : 'warning'"
         >
           {{ room.name }}
         </UButton>

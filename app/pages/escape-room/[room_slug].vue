@@ -312,13 +312,14 @@ const hreflangLinks = [
 ];
 
 const excludedSlugs = [
-  'zamczysko-magikowo','panorama','misja-teleportacja','krypta-hrabiny-dabkov','tlk-interstellar','harry-potter','komnata-alchemika-ambrozego',
-  'gniazdo-feniksa','gabinet-detektywa-korneliusza-spryta','gabinet-archeolozki-iwony-was','bestie-peruna','chlopiec','alicja','powstanie-warszawskie',
-  'krasnoludy','in-da-club','testament','krematorium-sledztwo','strefa-cienia','psychopata','golden-hajs','the-final-show','peron-9-i-3-4','noc-zywych-trupow',
-  'tajemnica-61-kilometra','wolfenstein','eksperyment','swiatynia-majow','the-moonshiner','odeon','zbrodnia-na-plotnie','halloween','tupolew','james-bond',
-  'seksmisja','killer','prison-break','amber-gold','sex-room','dom-mordercy-remastered','zloto-nazistow','testament-radom','lesne-trolle','moriarty-sp-z-o-o',
-  'pieklo-hazardzisty','maly-ksiaze-sen-pilota','misja-cube','zbojnicka-kryjowka','uniwersytet-potworny','zostan-milionerem','seria-niefortunnych-zagadek',
-  'klatwa-czarnoksieznika',
+  'zamczysko-magikowo','panorama','misja-teleportacja','krypta-hrabiny-dabkov','tlk-interstellar','harry-potter',
+  'komnata-alchemika-ambrozego','gniazdo-feniksa','gabinet-detektywa-korneliusza-spryta','duch-wojownika','gabinet-archeolozki-iwony-was',
+  'bestie-peruna','chlopiec','alicja','expecto-patronum','powstanie-warszawskie','krasnoludy','nieznajomi','osobowosc',
+  'in-da-club','szum','testament','pachnidlo','krematorium-sledztwo','strefa-cienia','psychopata','golden-hajs','the-final-show',
+  'peron-9-i-3-4','noc-zywych-trupow','tajemnica-61-kilometra','wolfenstein','eksperyment','swiatynia-majow','the-moonshiner',
+  'murder-house','odeon','zbrodnia-na-plotnie','halloween','tupolew','james-bond','seksmisja','killer','prison-break','amber-gold',
+  'sex-room','dom-mordercy-remastered','zloto-nazistow','testament-radom','lesne-trolle','moriarty-sp-z-o-o','pieklo-hazardzisty',
+  'maly-ksiaze-sen-pilota','misja-cube','zbojnicka-kryjowka','uniwersytet-potworny','zostan-milionerem','seria-niefortunnych-zagadek','klatwa-czarnoksieznika',
 ];
 
 const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
