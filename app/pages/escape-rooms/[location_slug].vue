@@ -104,7 +104,7 @@
               icon="i-lucide-gamepad-2"
               size="lg"
           >
-            Rozpocznij grę
+            Escape room on-line - graj!
           </UButton>
         </div>
 
@@ -178,7 +178,7 @@
               size="lg"
               target="_blank"
           >
-            Otwórz mapę
+            Otwórz mapę escape room
           </UButton>
         </div>
 
@@ -195,7 +195,7 @@
                 v-for="(city, index) in nearbyCities"
                 :key="index"
                 @click="redirectToExternalPage(`/escape-rooms/${city.name}`)"
-            >{{ city.name }}
+            >Escape room w {{ city.name }}
             </UButton>
           </div>
         </div>
@@ -205,7 +205,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, nextTick, ref} from 'vue'
 import type {CityDetailsResponse} from '~/client/types.gen'
 import {
   getCityDetailsPlacesCityAsciiNameGet,
@@ -243,17 +243,18 @@ const fetchCityDetails = async () => {
     const response = await getCityDetailsPlacesCityAsciiNameGet({
       path: {city_ascii_name: citySlug.value},
       query: {language: "pl", country: "PL"},
-    })
-    cityDetails.value = response.data ?? null
-
-    if (response?.status === 404) {
-      await redirectToExternalPage('escape-rooms/near-me')
-    }
+    });
+    cityDetails.value = response.data ?? null;
+    // TODO: redirect to near-me page if city not found
+    // if (!cityDetails.value) {
+    // if (response?.status === 404) {
+    //   await redirectToExternalPage('escape-rooms/near-me');
+    // }
   } catch (err) {
-    error.value = true
-    console.error("Failed to fetch city details:", err)
+    error.value = true;
+    console.error("Failed to fetch city details:", err);
   }
-}
+};
 
 const fetchRooms = async () => {
   try {
@@ -278,7 +279,7 @@ const fetchRooms = async () => {
 const fetchNearbyRooms = async () => {
   try {
     const response = await getRoomsNearbyRoomsNearbyCityNameGet({
-      path: {city_ascii_name: citySlug.value}
+      path: {city_name: citySlug.value}
     })
     nearbyRooms.value = response.data
   } catch (err) {
@@ -298,7 +299,7 @@ const fetchRoomsCount = async () => {
 const fetchNearbyCities = async () => {
   try {
     const response = await getNearbyCitiesPlacesNearbyCityCityNameGet({
-      path: {city_ascii_name: citySlug.value}
+      path: {city_name: citySlug.value}
     })
     nearbyCities.value = response.data
   } catch (err) {
@@ -332,20 +333,25 @@ const mapLink = computed(() => {
 })
 
 const redirectToExternalPage = async (path: string, uuid?: string) => {
-  const query = uuid ? {uuid} : {};
+  const query = uuid ? {uuid} : {}
 
+  await nextTick()
   await navigateTo({
     path: localePath(path),
     query
-  });
-};
+  })
+}
+
 // Initialize
 initializeData()
 
 // SEO
 const city = computed(() => {
   const name = cityDetails.value?.city_name || citySlug.value || 'Twoje Miasto';
-  return name.replace(/\b\w/g, (char) => char.toUpperCase());
+  console.log(name)
+  return name.replace(/([^\s-])([^\s-]*)/gu, (_, first, rest) =>
+      first.toUpperCase() + rest.toLowerCase()
+  );
 });
 
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
