@@ -11,7 +11,18 @@
               v-model="search"
               @update:model-value="handleSearchChange"
               placeholder="Search companies"
-          />
+          >
+            <template v-if="search?.length" #trailing>
+              <UButton
+                  color="neutral"
+                  variant="link"
+                  size="sm"
+                  icon="i-lucide-circle-x"
+                  aria-label="Clear input"
+                  @click="handleSearchClear"
+              />
+            </template>
+          </UInput>
           <UButton @click="redirectToExternalPage('cc/company')">
             New company
           </UButton>
@@ -118,6 +129,8 @@ import { getCompaniesCompaniesGet } from '@/client/index.ts'
 import { useToast } from '#imports'
 
 // Route and navigation
+const route = useRoute()
+const router = useRouter()
 const localePath = useLocalePath()
 
 // Data state
@@ -166,6 +179,21 @@ async function fetchCompanies(page = 1) {
  */
 function handlePageChange(newPage) {
   currentPage.value = newPage
+
+  const newQuery = { ...route.query }
+
+  // Don't include page=1 in URL to keep it clean
+  if (newPage === 1) {
+    delete newQuery.page
+  } else {
+    newQuery.page = newPage
+  }
+
+  router.push({
+    path: route.path,
+    query: newQuery
+  })
+
   fetchCompanies(newPage)
 }
 
@@ -173,7 +201,36 @@ function handlePageChange(newPage) {
  * Handles search input changes
  */
 function handleSearchChange() {
-  currentPage.value = 1 // Reset to first page when searching
+  currentPage.value = 1
+
+  const newQuery = {
+    ...route.query,
+    search: search.value || undefined,
+  }
+
+  delete newQuery.page
+  console.log(newQuery)
+  router.push({
+    path: route.path,
+    query: newQuery
+  })
+
+  fetchCompanies(1)
+}
+
+function handleSearchClear() {
+  search.value='';
+  currentPage.value = 1
+
+  const newQuery = { ...route.query }
+  delete newQuery.search
+  delete newQuery.page // optional: reset to first page
+
+  router.push({
+    path: route.path,
+    query: newQuery
+  })
+
   fetchCompanies(1)
 }
 
@@ -207,7 +264,15 @@ function showErrorToast(message) {
 }
 
 // Initialize data on component mount
-onMounted(() => {
-  fetchCompanies()
+onBeforeMount(() => {
+  const pageFromQuery = parseInt(route.query.page || '1', 10)
+  currentPage.value = isNaN(pageFromQuery) ? 1 : pageFromQuery
+
+  if (route.query.search) {
+    search.value = route.query.search
+  }
+
+  fetchCompanies(currentPage.value)
 })
+
 </script>
