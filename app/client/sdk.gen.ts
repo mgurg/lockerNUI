@@ -23,6 +23,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  */
 export const getRoomsCountRoomsCountGet = <ThrowOnError extends boolean = false>(options?: Options<GetRoomsCountRoomsCountGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<GetRoomsCountRoomsCountGetResponse, unknown, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms/count',
         ...options
     });
@@ -33,6 +34,7 @@ export const getRoomsCountRoomsCountGet = <ThrowOnError extends boolean = false>
  */
 export const getRoomsNearbyRoomsNearbyCityNameGet = <ThrowOnError extends boolean = false>(options: Options<GetRoomsNearbyRoomsNearbyCityNameGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetRoomsNearbyRoomsNearbyCityNameGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms/nearby/{city_name}',
         ...options
     });
@@ -53,6 +55,7 @@ export const deleteRoomRoomsRoomUuidDelete = <ThrowOnError extends boolean = fal
  */
 export const getRoomByUuidRoomsRoomUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetRoomByUuidRoomsRoomUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetRoomByUuidRoomsRoomUuidGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms/{room_uuid}',
         ...options
     });
@@ -77,6 +80,7 @@ export const updateRoomRoomsRoomUuidPatch = <ThrowOnError extends boolean = fals
  */
 export const roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet = <ThrowOnError extends boolean = false>(options: Options<RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetResponse, RoomByUrlSlugRoomsUrlLanguageRoomUrlSlugGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms/url/{language}/{room_url_slug}',
         ...options
     });
@@ -87,6 +91,7 @@ export const roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet = <ThrowOnError extends
  */
 export const roomsByLocationRoomsUrlLanguagePlaceLocationGet = <ThrowOnError extends boolean = false>(options: Options<RoomsByLocationRoomsUrlLanguagePlaceLocationGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, RoomsByLocationRoomsUrlLanguagePlaceLocationGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms/url/{language}/place/{location}',
         ...options
     });
@@ -97,6 +102,7 @@ export const roomsByLocationRoomsUrlLanguagePlaceLocationGet = <ThrowOnError ext
  */
 export const createRoomRoomsPost = <ThrowOnError extends boolean = false>(options: Options<CreateRoomRoomsPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<unknown, CreateRoomRoomsPostError, ThrowOnError>({
+        responseType: 'json',
         url: '/rooms',
         ...options,
         headers: {
@@ -111,6 +117,7 @@ export const createRoomRoomsPost = <ThrowOnError extends boolean = false>(option
  */
 export const getRoomsCountTagsPost = <ThrowOnError extends boolean = false>(options: Options<GetRoomsCountTagsPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<unknown, GetRoomsCountTagsPostError, ThrowOnError>({
+        responseType: 'json',
         url: '/tags',
         ...options,
         headers: {
@@ -125,6 +132,7 @@ export const getRoomsCountTagsPost = <ThrowOnError extends boolean = false>(opti
  */
 export const getPlacesWithRoomsPlacesGet = <ThrowOnError extends boolean = false>(options?: Options<GetPlacesWithRoomsPlacesGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<unknown, GetPlacesWithRoomsPlacesGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/places',
         ...options
     });
@@ -149,6 +157,7 @@ export const addRoomPlacesPost = <ThrowOnError extends boolean = false>(options:
  */
 export const getCityDetailsPlacesCityAsciiNameGet = <ThrowOnError extends boolean = false>(options: Options<GetCityDetailsPlacesCityAsciiNameGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetCityDetailsPlacesCityAsciiNameGetResponse, GetCityDetailsPlacesCityAsciiNameGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/places/{city_ascii_name}',
         ...options
     });
@@ -159,6 +168,7 @@ export const getCityDetailsPlacesCityAsciiNameGet = <ThrowOnError extends boolea
  */
 export const getNearbyCitiesPlacesNearbyCityCityNameGet = <ThrowOnError extends boolean = false>(options: Options<GetNearbyCitiesPlacesNearbyCityCityNameGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetNearbyCitiesPlacesNearbyCityCityNameGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/places/nearby_city/{city_name}',
         ...options
     });
@@ -169,6 +179,7 @@ export const getNearbyCitiesPlacesNearbyCityCityNameGet = <ThrowOnError extends 
  */
 export const getRoomsByLocationPlacesRoomsLocationNameGet = <ThrowOnError extends boolean = false>(options: Options<GetRoomsByLocationPlacesRoomsLocationNameGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetRoomsByLocationPlacesRoomsLocationNameGetResponse, GetRoomsByLocationPlacesRoomsLocationNameGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/places/rooms/{location_name}',
         ...options
     });
@@ -179,6 +190,7 @@ export const getRoomsByLocationPlacesRoomsLocationNameGet = <ThrowOnError extend
  */
 export const getRoomsByGeolocationPlacesRoomsGeoipGet = <ThrowOnError extends boolean = false>(options?: Options<GetRoomsByGeolocationPlacesRoomsGeoipGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<unknown, GetRoomsByGeolocationPlacesRoomsGeoipGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/places/rooms/geoip',
         ...options
     });
@@ -189,6 +201,7 @@ export const getRoomsByGeolocationPlacesRoomsGeoipGet = <ThrowOnError extends bo
  */
 export const getCompaniesCompaniesGet = <ThrowOnError extends boolean = false>(options?: Options<GetCompaniesCompaniesGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<GetCompaniesCompaniesGetResponse, GetCompaniesCompaniesGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies',
         ...options
     });
@@ -199,6 +212,7 @@ export const getCompaniesCompaniesGet = <ThrowOnError extends boolean = false>(o
  */
 export const createCompanyCompaniesPost = <ThrowOnError extends boolean = false>(options: Options<CreateCompanyCompaniesPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<CreateCompanyCompaniesPostResponse, CreateCompanyCompaniesPostError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies',
         ...options,
         headers: {
@@ -223,6 +237,7 @@ export const deleteCompanyCompaniesCompanyUuidDelete = <ThrowOnError extends boo
  */
 export const getCompanyByUuidCompaniesCompanyUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetCompanyByUuidCompaniesCompanyUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetCompanyByUuidCompaniesCompanyUuidGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/{company_uuid}',
         ...options
     });
@@ -247,6 +262,7 @@ export const updateCompanyCompaniesCompanyUuidPatch = <ThrowOnError extends bool
  */
 export const getCompanyDepartmentsCompaniesCompanyUuidDepartmentsGet = <ThrowOnError extends boolean = false>(options: Options<GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetCompanyDepartmentsCompaniesCompanyUuidDepartmentsGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/{company_uuid}/departments',
         ...options
     });
@@ -267,6 +283,7 @@ export const deleteDepartmentCompaniesDepartmentsDepartmentUuidDelete = <ThrowOn
  */
 export const getDepartmentCompaniesDepartmentsDepartmentUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetDepartmentCompaniesDepartmentsDepartmentUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetDepartmentCompaniesDepartmentsDepartmentUuidGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/departments/{department_uuid}',
         ...options
     });
@@ -291,6 +308,7 @@ export const updateDepartmentCompaniesDepartmentsDepartmentUuidPatch = <ThrowOnE
  */
 export const createDepartmentCompaniesDepartmentsPost = <ThrowOnError extends boolean = false>(options: Options<CreateDepartmentCompaniesDepartmentsPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<CreateDepartmentCompaniesDepartmentsPostResponse, CreateDepartmentCompaniesDepartmentsPostError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/departments',
         ...options,
         headers: {
@@ -305,6 +323,7 @@ export const createDepartmentCompaniesDepartmentsPost = <ThrowOnError extends bo
  */
 export const getCompanyContactsCompaniesCompanyUuidContactsGet = <ThrowOnError extends boolean = false>(options: Options<GetCompanyContactsCompaniesCompanyUuidContactsGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<unknown, GetCompanyContactsCompaniesCompanyUuidContactsGetError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/{company_uuid}/contacts',
         ...options
     });
@@ -315,6 +334,7 @@ export const getCompanyContactsCompaniesCompanyUuidContactsGet = <ThrowOnError e
  */
 export const createContactCompaniesContactsPost = <ThrowOnError extends boolean = false>(options: Options<CreateContactCompaniesContactsPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<CreateContactCompaniesContactsPostResponse, CreateContactCompaniesContactsPostError, ThrowOnError>({
+        responseType: 'json',
         url: '/companies/contacts',
         ...options,
         headers: {
@@ -329,6 +349,7 @@ export const createContactCompaniesContactsPost = <ThrowOnError extends boolean 
  */
 export const startGameGamesStartPost = <ThrowOnError extends boolean = false>(options: Options<StartGameGamesStartPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<StartGameGamesStartPostResponse, StartGameGamesStartPostError, ThrowOnError>({
+        responseType: 'json',
         security: [
             {
                 scheme: 'bearer',
@@ -349,6 +370,7 @@ export const startGameGamesStartPost = <ThrowOnError extends boolean = false>(op
  */
 export const getIntroGamesIntroGameUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetIntroGamesIntroGameUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetIntroGamesIntroGameUuidGetResponse, GetIntroGamesIntroGameUuidGetError, ThrowOnError>({
+        responseType: 'json',
         security: [
             {
                 scheme: 'bearer',
@@ -365,6 +387,7 @@ export const getIntroGamesIntroGameUuidGet = <ThrowOnError extends boolean = fal
  */
 export const getPuzzleGamesPuzzleGameUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetPuzzleGamesPuzzleGameUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetPuzzleGamesPuzzleGameUuidGetResponse, GetPuzzleGamesPuzzleGameUuidGetError, ThrowOnError>({
+        responseType: 'json',
         security: [
             {
                 scheme: 'bearer',
@@ -381,6 +404,7 @@ export const getPuzzleGamesPuzzleGameUuidGet = <ThrowOnError extends boolean = f
  */
 export const submitAnswerGamesAnswerGameUuidPost = <ThrowOnError extends boolean = false>(options: Options<SubmitAnswerGamesAnswerGameUuidPostData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<SubmitAnswerGamesAnswerGameUuidPostResponse, SubmitAnswerGamesAnswerGameUuidPostError, ThrowOnError>({
+        responseType: 'json',
         security: [
             {
                 scheme: 'bearer',
@@ -401,6 +425,7 @@ export const submitAnswerGamesAnswerGameUuidPost = <ThrowOnError extends boolean
  */
 export const getEndingGamesEndingGameUuidGet = <ThrowOnError extends boolean = false>(options: Options<GetEndingGamesEndingGameUuidGetData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<GetEndingGamesEndingGameUuidGetResponse, GetEndingGamesEndingGameUuidGetError, ThrowOnError>({
+        responseType: 'json',
         security: [
             {
                 scheme: 'bearer',
@@ -457,6 +482,7 @@ export const roomsSitemapSeoRoomsSitemapGet = <ThrowOnError extends boolean = fa
  */
 export const getFirstUnverifiedCompanyCcCompanyGet = <ThrowOnError extends boolean = false>(options?: Options<GetFirstUnverifiedCompanyCcCompanyGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<unknown, unknown, ThrowOnError>({
+        responseType: 'json',
         url: '/cc/company',
         ...options
     });
@@ -467,6 +493,7 @@ export const getFirstUnverifiedCompanyCcCompanyGet = <ThrowOnError extends boole
  */
 export const readRootGet = <ThrowOnError extends boolean = false>(options?: Options<ReadRootGetData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<unknown, unknown, ThrowOnError>({
+        responseType: 'json',
         url: '/',
         ...options
     });
