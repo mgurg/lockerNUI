@@ -20,71 +20,18 @@
         </h1>
 
         <TransitionGroup name="list" tag="div" class="space-y-4">
-          <UCard
+          <RoomCardComponent
               v-for="room in rooms"
               :key="room.uuid"
-              @click="redirectToExternalPage(`/escape-room/${room.url_slug}`)"
-              class="cursor-pointer"
-          >
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold">
-                  {{ room.translation.title }}
-                </h2>
-                <UChip/>
-              </div>
-            </template>
-
-            <p class="text-gray-500 dark:text-gray-400 line-clamp-2">
-              {{ room.translation.lead }}
-            </p>
-
-            <template #footer>
-              <div class="flex gap-4">
-                <UBadge
-                    :label="`${room.duration} min`"
-                    icon="i-lucide-clock"
-                    color="primary"
-                    variant="solid"
-                />
-                <UBadge
-                    :label="`${room.players_min}-${room.players_max} graczy`"
-                    icon="i-lucide-users"
-                    color="primary"
-                    variant="solid"
-                />
-                <UBadge
-                    :label="`od ${room.price_from} PLN`"
-                    icon="i-lucide-circle-dollar-sign"
-                    color="primary"
-                    variant="solid"
-                />
-              </div>
-            </template>
-          </UCard>
+              :room="room"
+              @navigate="redirectToExternalPage"
+          />
         </TransitionGroup>
       </section>
 
       <!-- No rooms in city section -->
       <section v-else-if="cityDetails" class="space-y-8">
-        <div>
-          <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl mb-4">
-            Escape room w {{ cityDetails.city_name_inflect }}
-          </h1>
-
-          <p class="text-gray-500 dark:text-gray-400">
-            Szukasz <span class="font-bold">escape room w mieście {{ cityDetails.city_name }}?</span>
-            <span v-if="cityDetails.importance >= 0.60">
-              To jedno z najważniejszych miast w Polsce, oferujące bogatą historię i niezapomniane atrakcje.
-            </span>
-            <span v-else-if="cityDetails.importance >= 0.50">
-              To piękne miasto z interesującą historią i miejscami wartymi odwiedzenia.
-            </span>
-            <span v-else>
-              To urokliwe miasteczko, które kryje w sobie wiele ciekawych zakątków do odkrycia.
-            </span>
-          </p>
-        </div>
+        <CityIntroComponent :city-details="cityDetails" />
 
         <UAlert
             title="Brak pokoi w bazie"
@@ -93,112 +40,38 @@
         />
 
         <!-- Virtual escape room section -->
-        <div class="space-y-4">
-          <h2 class="text-2xl font-bold">Wirtualny escape room</h2>
-          <p class="text-gray-500 dark:text-gray-400">
-            Wypróbuj wirtualny escape room generowany przez ChatGPT.
-            Każda gra jest unikatowa i tworzona specjalnie dla Ciebie.
-          </p>
-          <UButton
-              to="/er_game"
-              icon="i-lucide-gamepad-2"
-              size="lg"
-          >
-            Escape room on-line - graj!
-          </UButton>
-        </div>
+        <VirtualEscapeRoomComponent />
 
         <!-- Nearby rooms section -->
         <div v-if="nearbyRooms?.length" class="space-y-4">
-          <h2 class="text-2xl font-bold">Najbliższe escape room-y</h2>
-          <p class="text-gray-500 dark:text-gray-400 mb-4">
+          <SectionHeaderComponent title="Najbliższe escape room-y">
             Sprawdź dostępne pokoje w pobliskich miastach:
-          </p>
+          </SectionHeaderComponent>
 
           <TransitionGroup name="list" tag="div" class="space-y-4">
-            <UCard
+            <RoomCardComponent
                 v-for="room in nearbyRooms"
                 :key="room.uuid"
-                @click="redirectToExternalPage(`/escape-room/${room.url_slug}`)"
-            >
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <h3 class="text-xl font-semibold">
-                    {{ getTranslation(room).title }}
-                  </h3>
-                  <UBadge
-                      v-if="room.location?.city"
-                      color="neutral"
-                      variant="solid"
-                      :label="room.location.city"
-                  />
-                </div>
-              </template>
-
-              <p class="text-gray-500 dark:text-gray-400 line-clamp-2">
-                {{ getTranslation(room).lead }}
-              </p>
-
-              <template #footer>
-                <div class="flex gap-4">
-                  <UBadge
-                      :label="`${room.duration} min`"
-                      icon="i-lucide-clock"
-                      color="primary"
-                      variant="solid"
-                  />
-                  <UBadge
-                      :label="`${room.players_min}-${room.players_max} graczy`"
-                      icon="i-lucide-users"
-                      color="primary"
-                      variant="solid"
-                  />
-                  <UBadge
-                      :label="`od ${room.price_from} PLN`"
-                      icon="i-lucide-circle-dollar-sign"
-                      color="primary"
-                      variant="solid"
-                  />
-                </div>
-              </template>
-            </UCard>
+                :room="room"
+                :show-location="true"
+                @navigate="redirectToExternalPage"
+            />
           </TransitionGroup>
         </div>
 
 
         <!-- Google Maps section -->
-        <div class="space-y-4">
-          <h2 class="text-2xl font-bold">Znajdź escape room na mapie</h2>
-          <p class="text-gray-500 dark:text-gray-400">
-            Sprawdź dostępne escape room-y w {{ cityDetails.city_name_inflect }} na Google Maps
-          </p>
-          <UButton
-              :to="mapLink"
-              icon="i-lucide-map"
-              size="lg"
-              target="_blank"
-          >
-            Otwórz mapę escape room
-          </UButton>
-        </div>
+        <GoogleMapsSectionComponent 
+          :map-link="mapLink"
+          :description="`Sprawdź dostępne escape room-y w ${cityDetails.city_name_inflect} na Google Maps`"
+        />
 
 
-        <!-- Google Maps section -->
-        <div class="space-y-4">
-          <h2 class="text-2xl font-bold">Pobliskie miejscowości</h2>
-          <p class="text-gray-500 dark:text-gray-400">
-            Podrzucam jeszcze listę najbliższych miejscowości która mam w bazie na wypadek gdybym przegapił jakiś ER
-          </p>
-
-          <div class="my-4 py-4 flex flex-wrap gap-2">
-            <UButton
-                v-for="(city, index) in nearbyCities"
-                :key="index"
-                @click="redirectToExternalPage(`/escape-rooms/${city.name}`)"
-            >Escape room w {{ city.name }}
-            </UButton>
-          </div>
-        </div>
+        <!-- Nearby locations section -->
+        <NearbyLocationsComponent 
+          :cities="nearbyCities"
+          @navigate="redirectToExternalPage"
+        />
       </section>
     </template>
   </UContainer>
@@ -214,6 +87,12 @@ import {
   getRoomsCountRoomsCountGet,
   getRoomsNearbyRoomsNearbyCityNameGet,
 } from "~/client"
+import RoomCardComponent from '~/components/RoomCardComponent.vue'
+import SectionHeaderComponent from '~/components/SectionHeaderComponent.vue'
+import GoogleMapsSectionComponent from '~/components/GoogleMapsSectionComponent.vue'
+import NearbyLocationsComponent from '~/components/NearbyLocationsComponent.vue'
+import VirtualEscapeRoomComponent from '~/components/VirtualEscapeRoomComponent.vue'
+import CityIntroComponent from '~/components/CityIntroComponent.vue'
 
 // State
 const localePath = useLocalePath()
