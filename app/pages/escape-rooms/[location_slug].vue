@@ -31,7 +31,7 @@
 
       <!-- No rooms in city section -->
       <section v-else-if="cityDetails" class="space-y-8">
-        <CityIntroComponent :city-details="cityDetails" />
+        <CityIntroComponent :city-details="cityDetails"/>
 
         <UAlert
             title="Brak pokoi w bazie"
@@ -40,7 +40,7 @@
         />
 
         <!-- Virtual escape room section -->
-        <VirtualEscapeRoomComponent />
+        <VirtualEscapeRoomComponent/>
 
         <!-- Nearby rooms section -->
         <div v-if="nearbyRooms?.length" class="space-y-4">
@@ -61,16 +61,16 @@
 
 
         <!-- Google Maps section -->
-        <GoogleMapsSectionComponent 
-          :map-link="mapLink"
-          :description="`Sprawdź dostępne escape room-y w ${cityDetails.city_name_inflect} na Google Maps`"
+        <GoogleMapsSectionComponent
+            :map-link="mapLink"
+            :description="`Sprawdź dostępne escape room-y w ${cityDetails.city_name_inflect} na Google Maps`"
         />
 
 
         <!-- Nearby locations section -->
-        <NearbyLocationsComponent 
-          :cities="nearbyCities"
-          @navigate="redirectToExternalPage"
+        <NearbyLocationsComponent
+            :cities="nearbyCities"
+            @navigate="redirectToExternalPage"
         />
       </section>
     </template>
@@ -87,12 +87,12 @@ import {
   getRoomsCountRoomsCountGet,
   getRoomsNearbyRoomsNearbyCityNameGet,
 } from "~/client"
-import RoomCardComponent from '~/components/RoomCardComponent.vue'
-import SectionHeaderComponent from '~/components/SectionHeaderComponent.vue'
-import GoogleMapsSectionComponent from '~/components/GoogleMapsSectionComponent.vue'
-import NearbyLocationsComponent from '~/components/NearbyLocationsComponent.vue'
-import VirtualEscapeRoomComponent from '~/components/VirtualEscapeRoomComponent.vue'
-import CityIntroComponent from '~/components/CityIntroComponent.vue'
+import RoomCardComponent from '~/components/escape-rooms/RoomCardComponent.vue'
+import SectionHeaderComponent from '~/components/escape-rooms/SectionHeaderComponent.vue'
+import GoogleMapsSectionComponent from '~/components/escape-rooms/GoogleMapsSectionComponent.vue'
+import NearbyLocationsComponent from '~/components/escape-rooms/NearbyLocationsComponent.vue'
+import VirtualEscapeRoomComponent from '~/components/escape-rooms/VirtualEscapeRoomComponent.vue'
+import CityIntroComponent from '~/components/escape-rooms/CityIntroComponent.vue'
 
 // State
 const localePath = useLocalePath()
