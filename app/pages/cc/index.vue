@@ -124,9 +124,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getCompaniesCompaniesGet } from '@/client/index.ts'
-import { useToast } from '#imports'
+import {ref, onMounted} from 'vue'
+import {getCompaniesCompaniesGet} from '@/client/index.ts'
+import {useToast} from '#imports'
 
 // Route and navigation
 const route = useRoute()
@@ -158,7 +158,7 @@ async function fetchCompanies(page = 1) {
       query.search = search.value
     }
 
-    const response = await getCompaniesCompaniesGet({ query })
+    const response = await getCompaniesCompaniesGet({query})
 
     if (response.data) {
       companies.value = response.data.data
@@ -180,7 +180,7 @@ async function fetchCompanies(page = 1) {
 function handlePageChange(newPage) {
   currentPage.value = newPage
 
-  const newQuery = { ...route.query }
+  const newQuery = {...route.query}
 
   // Don't include page=1 in URL to keep it clean
   if (newPage === 1) {
@@ -219,10 +219,10 @@ function handleSearchChange() {
 }
 
 function handleSearchClear() {
-  search.value='';
+  search.value = '';
   currentPage.value = 1
 
-  const newQuery = { ...route.query }
+  const newQuery = {...route.query}
   delete newQuery.search
   delete newQuery.page // optional: reset to first page
 
