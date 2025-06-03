@@ -452,7 +452,7 @@ useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: computed(() => room.value ? JSON.stringify(jsonLdData.value) : '{}')
+      innerHTML: computed(() => room.value ? JSON.stringify(jsonLdData.value) : '{}')
     }
   ]
 });
