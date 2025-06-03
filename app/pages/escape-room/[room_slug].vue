@@ -381,6 +381,66 @@ const excludedSlugs = [
 
 const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
 
+// Create JSON-LD structured data for the escape room (local business)
+const jsonLdData = computed(() => {
+  console.log("jsonLdData")
+  if (!room.value || !room.value.translation) return null;
+
+  // Safely access nested properties with fallbacks
+  const title = room.value.translation?.title || '';
+  const description = room.value.translation?.description || room.value.translation?.lead || '';
+  const streetName = room.value.location?.street_name || '';
+  const streetNumber = room.value.location?.street_number || '';
+  const city = room.value.location?.city || '';
+  const postalCode = room.value.location?.postal_code || '';
+  const country = room.value.location?.country || 'PL';
+  const lat = room.value.location?.lat || null;
+  const lon = room.value.location?.lon || null; // Note: API uses 'lon' not 'lng'
+  const priceFrom = room.value.price_from || '';
+  const playersMin = room.value.players_min || 1;
+  const playersMax = room.value.players_max || 6;
+  const duration = room.value.duration || 60;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'EntertainmentBusiness', // https://schema.org/EntertainmentBusiness
+    '@id': canonicalUrl,
+    'name': title,
+    'description': description,
+    //'image': 'https://picsum.photos/1200/800', // Replace with actual image URL when available
+    'url': canonicalUrl,
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': `${streetName} ${streetNumber}`.trim(),
+      'addressLocality': city,
+      'postalCode': postalCode,
+      'addressCountry': country
+    },
+    // Only include geo coordinates if they exist
+    ...(lat && lon ? {
+      'geo': {
+        '@type': 'GeoCoordinates',
+        'latitude': lat,
+        'longitude': lon
+      }
+    } : {}),
+    'priceRange': priceFrom ? `From ${priceFrom} PLN` : 'Varies',
+    // Add specific details about the escape room
+    'additionalProperty': [
+      {
+        '@type': 'PropertyValue',
+        'name': 'Players',
+        'value': `${playersMin}-${playersMax} people`
+      },
+      {
+        '@type': 'PropertyValue',
+        'name': 'Duration',
+        'value': `${duration} minutes`
+      }
+    ]
+  };
+});
+
 useHead({
   link: [
     {rel: 'canonical', href: canonicalUrl},
@@ -389,6 +449,12 @@ useHead({
   htmlAttrs: {
     lang: 'pl',
   },
+  script: [
+    {
+      type: 'application/ld+json',
+      children: computed(() => room.value ? JSON.stringify(jsonLdData.value) : '{}')
+    }
+  ]
 });
 
 useSeoMeta({
