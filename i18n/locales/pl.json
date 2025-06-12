@@ -8,7 +8,8 @@
     "escapeRoom": "Escape room",
     "priceRange": "Od {price} PLN",
     "playersRange": "{min}-{max} osób",
-    "durationValue": "{duration} minut"
+    "durationValue": "{duration} minut",
+    "error": "Błąd"
   },
   "escapeRoom": {
     "book": "Rezerwuj",
@@ -20,5 +21,55 @@
     "locationContact": "Lokalizacja & Kontakt",
     "address": "Address",
     "varies": "Varies"
+  },
+  "erGame": {
+    "title": "Wirtualny escape room w Twoim domu",
+    "form": {
+      "theme": "Wprowadź motyw/lokalizację",
+      "description": "Dodatkowe szczegóły/opis/'straszność' :)",
+      "difficultyLevel": "Poziom trudności",
+      "category": "Kategoria",
+      "occasion": "Dla kogo/na jaką okazję?",
+      "placeholders": {
+        "theme": "np. opuszczona świątynia, stacja kosmiczna",
+        "description": "podaj dodatkowe wskazówki/wytyczne",
+        "category": "przygodowy, historyczny, itp."
+      }
+    },
+    "buttons": {
+      "createRoom": "Stwórz pokój i zacznij grę 🚀️",
+      "next": "Dalej",
+      "hint": "Podpowiedź",
+      "shareOpinion": "Podziel się opinią 🚀️",
+      "shareOpinionClick": "Kliknij i podziel się opinią"
+    },
+    "messages": {
+      "initializing": "Initializing escape room...",
+      "loadingTextures": "Loading ancient temple textures...",
+      "configuringPuzzles": "Configuring puzzles and traps...",
+      "calibratingDifficulty": "Calibrating difficulty level...",
+      "finalizingSetup": "Finalizing escape room setup...",
+      "loadingAvatars": "Loading virtual avatars...",
+      "encryptingKeys": "Encrypting secret keys...",
+      "generatingStoryline": "Generating storyline twists...",
+      "readyCountdown": "Escape room ready in 3... 2... 1...",
+      "chooseAction": "Wybierz działanie:",
+      "clickNext": "Kliknij Dalej, aby kontynuować",
+      "gameFinished": "Gra skończona! 🎉",
+      "somethingWentWrong": "Coś poszło nie tak :/",
+      "loadingError": "Błąd ładowania gry",
+      "thankYouForPlaying": "Thank you for playing!",
+      "noScenario": "No scenario received",
+      "noHints": "No hints available",
+      "correctAnswer": "Correct answer!",
+      "trapped": "You are trapped!",
+      "failedToSubmit": "Failed to submit answer. Please try again.",
+      "gameCreationFailed": "Game creation failed. Please try again.",
+      "formSubmissionError": "An error occurred while submitting the form."
+    },
+    "summary": {
+      "reviewLabel": "Podziel się opinią/pomysłami na przyszłość",
+      "ratingLabel": "Jak Ci się podobało?"
+    }
   }
 }

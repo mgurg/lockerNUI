@@ -3,7 +3,7 @@
     <div class="flex justify-center items-start min-h-screen py-10">
       <div class="flex flex-col gap-10 max-w-lg w-full">
         <div class="flex flex-col gap-4">
-          <h1 class="text-2xl text-center">Wirtualny escape room w Twoim domu</h1>
+          <h1 class="text-2xl text-center">{{ t('erGame.title') }}</h1>
           <div class="flex flex-col gap-4">
             <UForm
                 :schema="schema"
@@ -12,7 +12,7 @@
                 class="space-y-4"
             >
               <!-- Additional Details -->
-              <UFormField label="Podziel się opinią/pomysłami na przyszłość" name="reviewText">
+              <UFormField :label="t('erGame.summary.reviewLabel')" name="reviewText">
                 <UTextarea
                     v-model="state.reviewText"
                     maxlength=140
@@ -23,7 +23,7 @@
               </UFormField>
 
               <!-- Rating -->
-              <UFormField label="Jak Ci się podobało?" name="rating">
+              <UFormField :label="t('erGame.summary.ratingLabel')" name="rating">
                 <div class="grid gap-4 grid-cols-5">
                   <UButton
                       v-for="rating in [1, 2, 3, 4, 5]"
@@ -38,7 +38,7 @@
 
               <!-- Submit Button -->
               <UButton type="submit" block>
-                Podziel się opinią 🚀️
+                {{ t('erGame.buttons.shareOpinion') }}
               </UButton>
             </UForm>
           </div>
@@ -51,11 +51,13 @@
 <script setup>
 import {useRoute, useRouter} from "#vue-router";
 import {reactive} from "vue";
+import {useI18n} from "vue-i18n";
 import {addReviewGamesReviewGameUuidPost} from "@/client/index.ts";
 
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 const uuid = route.query.uuid;
 
@@ -77,8 +79,8 @@ async function onSubmit() {
   } catch (error) {
     console.error('Error submitting form:', error);
     toast.add({
-      title: 'Error',
-      description: 'An error occurred while submitting the form.',
+      title: t('common.error'),
+      description: t('erGame.messages.formSubmissionError'),
       color: 'error',
     });
   }

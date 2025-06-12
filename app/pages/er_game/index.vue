@@ -6,7 +6,7 @@
           <div v-for="(message, index) in bootMessages" :key="index">{{ message }}</div>
         </div>
         <div v-else class="flex flex-col gap-4">
-          <h1 class="text-2xl text-center my-8">Wirtualny escape room w Twoim domu</h1>
+          <h1 class="text-2xl text-center my-8">{{ t('erGame.title') }}</h1>
           <div class="flex flex-col gap-4">
             <UForm
                 :schema="schema"
@@ -15,29 +15,29 @@
                 class="space-y-4"
             >
               <!-- Game Location -->
-              <UFormField label="Wprowadź motyw/lokalizację" name="theme">
+              <UFormField :label="t('erGame.form.theme')" name="theme">
                 <UInput
                     v-model="state.theme"
                     maxlength=100
-                    placeholder="np. opuszczona świątynia, stacja kosmiczna"
+                    :placeholder="t('erGame.form.placeholders.theme')"
                     size="xl"
                     class="w-full"
                 />
               </UFormField>
 
               <!-- Additional Details -->
-              <UFormField label="Dodatkowe szczegóły/opis/'straszność' :)" name="description">
+              <UFormField :label="t('erGame.form.description')" name="description">
                 <UTextarea
                     v-model="state.description"
                     maxlength=140
-                    placeholder="podaj dodatkowe wskazówki/wytyczne"
+                    :placeholder="t('erGame.form.placeholders.description')"
                     size="xl"
                     class="w-full"
                 />
               </UFormField>
 
               <!-- Difficulty Level -->
-              <UFormField label="Poziom trudności" name="difficultyLevel">
+              <UFormField :label="t('erGame.form.difficultyLevel')" name="difficultyLevel">
                 <UInput
                     v-model="state.difficultyLevel"
                     maxlength=100
@@ -48,18 +48,18 @@
               </UFormField>
 
               <!-- Escape Room Category -->
-              <UFormField label="Kategoria" name="category">
+              <UFormField :label="t('erGame.form.category')" name="category">
                 <UInput
                     v-model="state.category"
                     maxlength=100
-                    placeholder="przygodowy, historyczny, itp."
+                    :placeholder="t('erGame.form.placeholders.category')"
                     size="xl"
                     class="w-full"
                 />
               </UFormField>
 
               <!-- Audience / Occasion -->
-              <UFormField label="Dla kogo/na jaką okazję?" name="occasion">
+              <UFormField :label="t('erGame.form.occasion')" name="occasion">
                 <UInput
                     v-model="state.occasion"
                     maxlength=100
@@ -82,7 +82,7 @@
 
               <!-- Submit Button -->
               <UButton type="submit">
-                Stwórz pokój i zacznij grę 🚀️
+                {{ t('erGame.buttons.createRoom') }}
               </UButton>
             </UForm>
           </div>
@@ -96,11 +96,12 @@
 import {object, string} from 'yup'
 import {reactive} from 'vue'
 import {startGameGamesStartPost} from "@/client/index.ts";
-
+import {useI18n} from "vue-i18n";
 
 const router = useRouter()
 const localePath = useLocalePath()
 const toast = useToast()
+const { t } = useI18n();
 
 const LATIN_SCRIPT_PATTERN = /^[\p{L}\p{N}\s\p{P}\p{Emoji}]*$/u;
 
@@ -124,20 +125,19 @@ const state = reactive({
 
 const loading = ref(false);
 const bootMessages = ref([
-  "Initializing escape room...",
-
+  t('erGame.messages.initializing'),
 ]);
 
 function updateBootMessages() {
   const additionalMessages = [
-    "Loading ancient temple textures...",
-    "Configuring puzzles and traps...",
-    "Calibrating difficulty level...",
-    "Finalizing escape room setup...",
-    "Loading virtual avatars...",
-    "Encrypting secret keys...",
-    "Generating storyline twists...",
-    "Escape room ready in 3... 2... 1...",
+    t('erGame.messages.loadingTextures'),
+    t('erGame.messages.configuringPuzzles'),
+    t('erGame.messages.calibratingDifficulty'),
+    t('erGame.messages.finalizingSetup'),
+    t('erGame.messages.loadingAvatars'),
+    t('erGame.messages.encryptingKeys'),
+    t('erGame.messages.generatingStoryline'),
+    t('erGame.messages.readyCountdown'),
   ];
 
   let counter = 0;
@@ -175,8 +175,8 @@ async function onSubmit() {
       });
     } else {
       toast.add({
-        title: 'Error',
-        description: 'Game creation failed. Please try again.',
+        title: t('common.error'),
+        description: t('erGame.messages.gameCreationFailed'),
         color: 'error',
       });
     }
@@ -184,8 +184,8 @@ async function onSubmit() {
     loading.value = false;
     console.error('Error submitting form:', error);
     toast.add({
-      title: 'Error',
-      description: 'An error occurred while submitting the form.',
+      title: t('common.error'),
+      description: t('erGame.messages.formSubmissionError'),
       color: 'error',
     });
   }

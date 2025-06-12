@@ -32,7 +32,7 @@
         <!-- Options and Actions -->
         <div v-if="!isGameFinished || gameEnding.length === 0" class="mt-6">
           <p class="text-sm mb-4 text-gray-600 dark:text-gray-400">
-            {{ isPuzzleCompleted ? "Kliknij Dalej, aby kontynuować" : "Wybierz działanie:" }}
+            {{ isPuzzleCompleted ? t('erGame.messages.clickNext') : t('erGame.messages.chooseAction') }}
           </p>
 
           <!-- Options -->
@@ -50,7 +50,7 @@
                   class="p-3 rounded-lg cursor-pointer transition text-center bg-gray-200 text-gray-900 hover:bg-sky-600 hover:text-white dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-sky-500"
                   @click="submitAnswer('hint')"
               >
-                Podpowiedź
+                {{ t('erGame.buttons.hint') }}
               </li>
             </ul>
           </div>
@@ -63,20 +63,20 @@
                 @click="fetchPuzzle"
                 :loading="loading"
             >
-              Dalej
+              {{ t('erGame.buttons.next') }}
             </UButton>
           </div>
         </div>
 
         <!-- Game Finished Section -->
         <div class="mt-6 text-center" v-if="isGameFinished && gameEnding.length > 1">
-          <h2 class="text-xl font-bold text-green-500">Gra skończona! 🎉</h2>
+          <h2 class="text-xl font-bold text-green-500">{{ t('erGame.messages.gameFinished') }}</h2>
           <UButton
               size="lg"
               class="mt-4 bg-red-600 hover:bg-red-700 transition text-white"
               @click="redirectToExternalPage"
           >
-            Kliknij i podziel się opinią
+            {{ t('erGame.buttons.shareOpinionClick') }}
           </UButton>
         </div>
       </div>
@@ -88,6 +88,7 @@
 <script setup>
 import {computed, nextTick, ref} from "vue";
 import {useRoute} from "vue-router";
+import {useI18n} from "vue-i18n";
 import {
   getEndingGamesEndingGameUuidGet,
   getIntroGamesIntroGameUuidGet,
@@ -98,6 +99,7 @@ import {
 const toast = useToast();
 const localePath = useLocalePath()
 const route = useRoute();
+const { t } = useI18n();
 
 const loading = ref(false);
 const intro = ref("");
@@ -127,8 +129,8 @@ const fetchIntro = async () => {
     const response = await getIntroGamesIntroGameUuidGet({
       path: {game_uuid: uuid},
     });
-    intro.value = response?.data?.intro || "Coś poszło nie tak :/";
-    theme.value = response?.data?.theme || "Błąd ładowania gry";
+    intro.value = response?.data?.intro || t('erGame.messages.somethingWentWrong');
+    theme.value = response?.data?.theme || t('erGame.messages.loadingError');
   } catch (error) {
     console.error("Error fetching intro:", error);
   }
@@ -140,7 +142,7 @@ const fetchPuzzle = async () => {
     const response = await getEndingGamesEndingGameUuidGet({
       path: {game_uuid: uuid},
     });
-    gameEnding.value = response?.data?.outro || "Thank you for playing!";
+    gameEnding.value = response?.data?.outro || t('erGame.messages.thankYouForPlaying');
     addMessage(gameEnding.value);
     loading.value = false;
     return;
@@ -151,12 +153,12 @@ const fetchPuzzle = async () => {
       path: {game_uuid: uuid},
     });
 
-    scenario.value = response?.data?.scenario || "No scenario received";
-    baseHint.value = response?.data?.base_hint || "No hints available";
+    scenario.value = response?.data?.scenario || t('erGame.messages.noScenario');
+    baseHint.value = response?.data?.base_hint || t('erGame.messages.noHints');
     options.value = response?.data?.options || [];
     wrongFeedback.value = response?.data?.wrong_feedback || [];
     correctAnswer.value = response?.data?.correct || null;
-    correctAnswerText.value = response?.data?.result || "Correct answer!";
+    correctAnswerText.value = response?.data?.result || t('erGame.messages.correctAnswer');
     currentPuzzleNumber.value = response?.data?.current_puzzle || null;
 
     lastSolvedPuzzleNumber.value = null;
@@ -173,7 +175,7 @@ const fetchPuzzle = async () => {
 const submitAnswer = async (answer) => {
   if (answer === "hint") {
     toast.add({
-      title: baseHint.value || "No hints available.",
+      title: baseHint.value || t('erGame.messages.noHints'),
       icon: "i-lucide-lightbulb",
     });
     return;
@@ -188,7 +190,7 @@ const submitAnswer = async (answer) => {
     const isCorrect = response?.data?.correct;
     const feedback = response?.data?.result;
 
-    if (feedback === "You are trapped!") {
+    if (feedback === t('erGame.messages.trapped')) {
       addMessage(feedback);
       isGameFinished.value = true;
       return;
@@ -206,7 +208,7 @@ const submitAnswer = async (answer) => {
   } catch (error) {
     console.error("Error submitting answer:", error);
     toast.add({
-      title: "Failed to submit answer. Please try again.",
+      title: t('erGame.messages.failedToSubmit'),
       icon: "i-lucide-alert-triangle",
     });
   }
@@ -284,4 +286,3 @@ onMounted(fetchIntro);
   color: #fff;
 }
 </style>
-
