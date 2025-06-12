@@ -32,7 +32,7 @@
 
           <!-- Actions -->
           <div class="mt-6 flex space-x-4">
-            <UButton color="primary" variant="solid" :to="room.booking_url" target="_blank">Rezerwuj</UButton>
+            <UButton color="primary" variant="solid" :to="room.booking_url" target="_blank">{{ t('escapeRoom.book') }}</UButton>
             <!--            <UButton color="primary" variant="outline">Share</UButton>-->
           </div>
         </div>
@@ -45,7 +45,7 @@
         <!-- Room Description -->
         <UCard class="mb-8">
           <template #header>
-            <h2 class="text-xl font-semibold">Opis pokoju</h2>
+            <h2 class="text-xl font-semibold">{{ t('escapeRoom.roomDescription') }}</h2>
           </template>
           <p class="description-text">{{ room.translation.description }}</p>
         </UCard>
@@ -53,23 +53,23 @@
         <!-- Key Information -->
         <UCard class="mb-8">
           <template #header>
-            <h2 class="text-xl font-semibold">Szczegóły</h2>
+            <h2 class="text-xl font-semibold">{{ t('escapeRoom.details') }}</h2>
           </template>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
             <div>
               <UIcon name="i-lucide-clock-4" class="mb-2"/>
-              <h3 class="font-medium">Czas gry</h3>
-              <p class="text-gray-500 dark:text-gray-400">{{ room.duration }} min.</p>
+              <h3 class="font-medium">{{ t('escapeRoom.gameTime') }}</h3>
+              <p class="text-gray-500 dark:text-gray-400">{{ room.duration }} {{ t('common.minutes') }}</p>
             </div>
             <div>
               <UIcon name="i-lucide-users" class="mb-2"/>
-              <h3 class="font-medium">Gracze</h3>
-              <p class="text-gray-500 dark:text-gray-400">{{ room.players_min }}-{{ room.players_max }} os.</p>
+              <h3 class="font-medium">{{ t('common.players') }}</h3>
+              <p class="text-gray-500 dark:text-gray-400">{{ room.players_min }}-{{ room.players_max }} {{ t('common.people') }}</p>
             </div>
             <div>
               <UIcon name="i-lucide-circle-dollar-sign" class="mb-2"/>
-              <h3 class="font-medium">Cena od</h3>
-              <p class="text-gray-500 dark:text-gray-400">Od {{ room.price_from }} PLN</p>
+              <h3 class="font-medium">{{ t('escapeRoom.priceFrom') }}</h3>
+              <p class="text-gray-500 dark:text-gray-400">{{ t('common.from') }} {{ room.price_from }} PLN</p>
             </div>
             <div>
               <!--              <UIcon name="i-lucide-gauge" class="mb-2"/>-->
@@ -83,7 +83,7 @@
               <!--            </div>-->
               <!--            <div>-->
               <UIcon name="i-lucide-languages" class="mb-2"/>
-              <h3 class="font-medium">Języki</h3>
+              <h3 class="font-medium">{{ t('escapeRoom.languages') }}</h3>
               <p class="text-gray-500 dark:text-gray-400">
                       <span
                           v-for="(lang, index) in room.languages"
@@ -128,13 +128,13 @@
         <!-- Location Information -->
         <UCard>
           <template #header>
-            <h2 class="text-xl font-semibold">Lokalizacja & Kontakt</h2>
+            <h2 class="text-xl font-semibold">{{ t('escapeRoom.locationContact') }}</h2>
           </template>
           <div class="space-y-4">
             <div class="flex items-start gap-3">
               <UIcon name="i-lucide-map-pin" class="flex-shrink-0 mt-1"/>
               <div>
-                <h3 class="font-medium">Address</h3>
+                <h3 class="font-medium">{{ t('escapeRoom.address') }}</h3>
                 <p class="text-gray-500 dark:text-gray-400">
                   {{ room.location.street_name }} {{ room.location.street_number }}<br/>
                   {{ room.location.postal_code }} {{ room.location.city }}<br/>
@@ -271,11 +271,13 @@ import {computed, ref} from 'vue';
 
 import {roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet} from "~/client/index.ts";
 import {useRoute} from "vue-router";
+import {useI18n} from "vue-i18n";
 
 const localePath = useLocalePath()
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig()
 const roomSlug = route.params.slug || route.path.split("/").pop();
+const { t } = useI18n();
 
 
 const room = ref()
@@ -383,7 +385,6 @@ const shouldNoIndex = computed(() => !excludedSlugs.includes(roomSlug));
 
 // Create JSON-LD structured data for the escape room (local business)
 const jsonLdData = computed(() => {
-  console.log("jsonLdData")
   if (!room.value || !room.value.translation) return null;
 
   // Safely access nested properties with fallbacks

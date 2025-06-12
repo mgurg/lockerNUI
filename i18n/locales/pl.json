@@ -1,0 +1,24 @@
+{
+  "common": {
+    "from": "Od",
+    "players": "Gracze",
+    "people": "osób",
+    "duration": "Czas trwania",
+    "minutes": "minut",
+    "escapeRoom": "Escape room",
+    "priceRange": "Od {price} PLN",
+    "playersRange": "{min}-{max} osób",
+    "durationValue": "{duration} minut"
+  },
+  "escapeRoom": {
+    "book": "Rezerwuj",
+    "roomDescription": "Opis pokoju",
+    "details": "Szczegóły",
+    "gameTime": "Czas gry",
+    "priceFrom": "Cena od",
+    "languages": "Języki",
+    "locationContact": "Lokalizacja & Kontakt",
+    "address": "Address",
+    "varies": "Varies"
+  }
+}

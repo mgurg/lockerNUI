@@ -18,13 +18,16 @@ export default defineNuxtConfig({
     i18n: {
         strategy: 'prefix',
         locales: [
-            {code: 'pl', iso: 'pl-PL', name: 'Polski'},
+            {code: 'pl', iso: 'pl-PL', name: 'Polski', file: 'pl.json'},
             // {code: 'en', iso: 'en-US', name: 'English'}
         ],
         defaultLocale: 'pl',
         bundle: {
             optimizeTranslationDirective: false,
         },
+        langDir: 'locales',
+        lazy: true,
+        vueI18n: './i18n.config.ts'
     },
     router: {
         options: {
