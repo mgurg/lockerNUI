@@ -2,34 +2,33 @@
   <UContainer>
     <UCard>
       <template #header>
-        <h1 class="text-4xl font-extrabold">Escape roomy w Polsce</h1>
+        <h1 class="text-4xl font-extrabold">{{ t('homepage.title') }}</h1>
       </template>
-      Jeżeli interesuje cię polski rynek ER to na
-      <ULink as="button" :href="runtimeConfig.public.blogUrl">blogu</ULink>
-      są już pierwsze artykuły 🙂
+      {{ t('homepage.blogIntro') }}
+      <ULink as="button" :href="runtimeConfig.public.blogUrl">{{ t('common.blog') }}</ULink>
+      {{ t('homepage.blogOutro') }}
     </UCard>
 
     <UCard class="mt-5">
       <template #header>
-        <h2 class="text-3xl">Wirtualny escape room</h2>
+        <h2 class="text-3xl">{{ t('homepage.virtualTitle') }}</h2>
       </template>
 
-      Wymyśl temat gry i pozwól 🤖 AI stworzyć unikatową rozgrywkę tylko dla Ciebie 🎲.
+      {{ t('homepage.virtualDescription') }}
 
-      Powodzenia w eksperymentowaniu i dobrej zabawy 🙂
+      {{ t('homepage.virtualFooter') }}
 
       <template #footer>
-        <UButton :to="localePath('/er_game')">Rozpocznij grę 🕹️</UButton>
+        <UButton :to="localePath('/er_game')">{{ t('homepage.startGame') }}</UButton>
       </template>
     </UCard>
 
     <UCard class="mt-5" v-if="cities && cities.length">
       <template #header>
-        <h2 class="text-3xl">Lista escape room-ów w Polsce</h2>
+        <h2 class="text-3xl">{{ t('homepage.listTitle') }}</h2>
       </template>
 
-      Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie
-      króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:
+      {{ t('homepage.listDescription') }}
       <div class="my-4 py-4 flex flex-wrap gap-2">
         <UButton
             v-for="(city, index) in cities"
@@ -43,9 +42,11 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n"
 
 const runtimeConfig = useRuntimeConfig()
 const localePath = useLocalePath()
+const { t } = useI18n()
 
 import {getPlacesWithRoomsPlacesGet} from "@/client/index.ts";
 
@@ -64,10 +65,10 @@ const fetchCities = async () => {
 fetchCities()
 
 useSeoMeta({
-  title: 'Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI',
-  ogTitle: 'Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI',
-  description: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
-  ogDescription: 'Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj  wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!',
+  title: t('homepage.seo.title'),
+  ogTitle: t('homepage.seo.title'),
+  description: t('homepage.seo.description'),
+  ogDescription: t('homepage.seo.description'),
   ogImage: '/og/er_a.jpg',
   twitterCard: 'summary_large_image',
   twitterImage: '/og/er_a.jpg',

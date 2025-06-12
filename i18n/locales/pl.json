@@ -9,7 +9,8 @@
     "priceRange": "Od {price} PLN",
     "playersRange": "{min}-{max} osób",
     "durationValue": "{duration} minut",
-    "error": "Błąd"
+    "error": "Błąd",
+    "blog": "blogu"
   },
   "escapeRoom": {
     "book": "Rezerwuj",
@@ -21,6 +22,21 @@
     "locationContact": "Lokalizacja & Kontakt",
     "address": "Address",
     "varies": "Varies"
+  },
+  "homepage": {
+    "title": "Escape roomy w Polsce",
+    "blogIntro": "Jeżeli interesuje cię polski rynek ER to na",
+    "blogOutro": "są już pierwsze artykuły 🙂",
+    "virtualTitle": "Wirtualny escape room",
+    "virtualDescription": "Wymyśl temat gry i pozwól 🤖 AI stworzyć unikatową rozgrywkę tylko dla Ciebie 🎲.",
+    "virtualFooter": "Powodzenia w eksperymentowaniu i dobrej zabawy 🙂",
+    "startGame": "Rozpocznij grę 🕹️",
+    "listTitle": "Lista escape room-ów w Polsce",
+    "listDescription": "Do analizy danych o rynku Escape room potrzebowałem zbudować własny katalog pokojów zagadek. Lista jest na razie króciutka, ale baza danych będzie rozszerzana co miesiąc. Dostępne miasta:",
+    "seo": {
+      "title": "Escape Roomy Polska - Katalog, Analizy i Wirtualne Przygody z AI",
+      "description": "Odkryj najlepsze escape roomy w Polsce! Porównuj oferty w katalogu, czytaj analizy i przetestuj wirtualny ER generowany przez ChatGPT. Znajdź idealny escape room dla siebie i swoich znajomych!"
+    }
   },
   "erGame": {
     "title": "Wirtualny escape room w Twoim domu",
