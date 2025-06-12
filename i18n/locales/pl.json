@@ -10,7 +10,12 @@
     "playersRange": "{min}-{max} osób",
     "durationValue": "{duration} minut",
     "error": "Błąd",
-    "blog": "blogu"
+    "blog": "blogu",
+    "navigation": {
+      "start": "Start",
+      "virtualEscapeRoom": "Wirtualny Escape Room",
+      "blog": "Blog"
+    }
   },
   "escapeRoom": {
     "book": "Rezerwuj",

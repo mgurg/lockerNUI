@@ -19,7 +19,7 @@ export default defineNuxtConfig({
         strategy: 'prefix',
         locales: [
             {code: 'pl', iso: 'pl-PL', name: 'Polski', file: 'pl.json'},
-            // {code: 'en', iso: 'en-US', name: 'English'}
+            {code: 'en', iso: 'en-US', name: 'English', file: 'en.json'}
         ],
         defaultLocale: 'pl',
         bundle: {

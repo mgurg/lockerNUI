@@ -277,7 +277,7 @@ const localePath = useLocalePath()
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig()
 const roomSlug = route.params.slug || route.path.split("/").pop();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 
 const room = ref()
@@ -295,7 +295,7 @@ const emojiMap = {
 const fetchRoom = async () => {
   try {
     const response = await roomByUrlSlugRoomsUrlLanguageRoomUrlSlugGet({
-      path: {language: "pl", room_url_slug: roomSlug},
+      path: {language: locale.value, room_url_slug: roomSlug},
     });
     room.value = response.data;
     roomName.value = response.data.translation.title;
@@ -310,6 +310,7 @@ fetchRoom();
 const canonicalUrl = `${runtimeConfig.public.baseDomain}${route.fullPath}`;
 const hreflangLinks = [
   {rel: 'alternate', hreflang: 'pl', href: canonicalUrl},
+  {rel: 'alternate', hreflang: 'en', href: canonicalUrl},
   {rel: 'alternate', hreflang: 'x-default', href: canonicalUrl}
 ];
 
@@ -448,7 +449,7 @@ useHead({
     ...hreflangLinks,
   ],
   htmlAttrs: {
-    lang: 'pl',
+    lang: locale.value,
   },
   script: [
     {
